@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OGS</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#6b6e5a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OGS">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: one-column phone app, sticky title bar + fixed bottom tab bar; colors follow the user's own mind-map (olive / tan / clay on peach) */
+:root{
+  --bg:#fbe9dc;
+  --surface:#fff6ef;
+  --ink:#3a3a31;
+  --muted:#7b7266;
+  --line:#ecd3c0;
+  --olive:#6b6e5a;
+  --tan:#ddbca5;
+  --clay:#c9927a;
+  --clay-ink:#8f553f;
+  --ok:#5d7a4f;
+  --warn:#b0612f;
+  --display:"Noto Serif TC","Songti TC",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#22231d;--surface:#2c2d26;--ink:#efe6dc;--muted:#b3a99c;--line:#3f3f35;
+  --olive:#a7ab92;--tan:#7c6555;--clay:#d59f86;--clay-ink:#e7b39b;--ok:#9cbf8a;--warn:#e39a68;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#22231d;--surface:#2c2d26;--ink:#efe6dc;--muted:#b3a99c;--line:#3f3f35;
+  --olive:#a7ab92;--tan:#7c6555;--clay:#d59f86;--clay-ink:#e7b39b;--ok:#9cbf8a;--warn:#e39a68;color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65;padding-inline:16px;padding-block:0 96px}
+.wrap{max-width:640px;margin:0 auto}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+header.top h1{font-family:var(--display);font-weight:800;font-size:22px;margin:0;letter-spacing:.04em}
+header.top span{font-size:12px;color:var(--muted)}
+h2{font-family:var(--display);font-size:19px;margin:28px 0 10px;text-wrap:balance}
+h3{font-size:15px;margin:0 0 6px}
+p{margin:0 0 8px}
+.lede{color:var(--muted);font-size:13px}
+section.tab{padding-top:8px}
+
+/* hexagon badge echoing the mind map nodes */
+.hex{display:inline-grid;place-items:center;clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%);padding:4px 16px;font-size:12px;font-weight:700;letter-spacing:.06em}
+.hex.olive{background:var(--olive);color:var(--surface)}
+.hex.tan{background:var(--tan);color:var(--ink)}
+.hex.clay{background:var(--clay);color:var(--ink)}
+
+/* countdown */
+.count{margin-top:18px;background:var(--olive);color:var(--surface);border-radius:4px 28px 4px 28px;padding:22px 22px 18px;display:grid;gap:6px}
+.count .label{font-size:13px;opacity:.85;letter-spacing:.05em}
+.count .num{font-family:var(--display);font-weight:800;font-size:64px;line-height:1;font-variant-numeric:tabular-nums}
+.count .num small{font-size:20px;margin-left:6px;font-weight:600}
+.count .sub{font-size:13px;opacity:.9}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stack{display:grid;gap:10px}
+
+/* milestone timeline */
+.tl{list-style:none;margin:0;padding:0;display:grid}
+.tl li{display:grid;grid-template-columns:62px 18px 1fr;gap:10px;align-items:start;padding-bottom:14px;position:relative}
+.tl .d{font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;text-align:right;color:var(--clay-ink)}
+.tl .dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--clay);background:var(--bg);margin-top:6px;position:relative;z-index:1}
+.tl li:not(:last-child)::before{content:"";position:absolute;left:77px;top:18px;bottom:0;width:2px;background:var(--line)}
+.tl li.past .dot{background:var(--clay)}
+.tl li.past .t{color:var(--muted)}
+.tl li.big .dot{background:var(--olive);border-color:var(--olive)}
+.tl .t b{display:block}
+.tl .t span{font-size:13px;color:var(--muted)}
+
+/* checklist */
+.prog{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:6px 0 2px}
+.prog i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.group{margin-top:18px}
+.group-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.group-h h3{margin:0}
+.group-h small{color:var(--muted);font-variant-numeric:tabular-nums}
+.chk{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:start;padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.chk:last-child{border-bottom:0}
+.chk input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ok)}
+.chk .q{font-size:12px;color:var(--muted);white-space:nowrap}
+.chk.done span:first-of-type{text-decoration:line-through;color:var(--muted)}
+.chk .note{display:block;font-size:12px;color:var(--muted)}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+
+/* stage picker */
+.stages{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin:0 -16px;padding-inline:16px;scrollbar-width:none}
+.stages button{flex:0 0 auto;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.stages button[aria-pressed="true"]{background:var(--olive);border-color:var(--olive);color:var(--surface)}
+.stages button.now::after{content:"・現在";color:var(--clay-ink)}
+.stages button[aria-pressed="true"].now::after{color:var(--tan)}
+.stage-body dl{margin:0;display:grid;gap:12px}
+.stage-body dt{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--clay-ink)}
+.stage-body dd{margin:2px 0 0}
+.budget{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)}
+
+.rule{display:grid;gap:4px}
+.rule .gold{font-weight:700}
+.rule ul{margin:4px 0 0;padding-left:1.1em}
+.rule .why{font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:6px;margin-top:4px}
+.alert{background:var(--surface);border:1.5px solid var(--warn);border-radius:12px;padding:12px 14px;font-size:14px}
+.alert b{color:var(--warn)}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:13px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:700;background:var(--bg)}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+blockquote{margin:0;padding:12px 14px;border-radius:12px;background:var(--tan);color:var(--ink);font-size:14px}
+.qs{counter-reset:q;display:grid;gap:10px;list-style:none;padding:0;margin:0}
+.qs li{counter-increment:q;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 48px;position:relative}
+.qs li::before{content:counter(q);position:absolute;left:14px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--clay);color:var(--ink);font-weight:700;font-size:13px;display:grid;place-items:center}
+.qs ul{margin:4px 0 0;padding-left:1.1em;font-size:14px}
+
+.foot{margin-top:32px;font-size:12px;color:var(--muted);text-align:center}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs button{font:inherit;font-size:11px;background:none;border:0;color:var(--muted);padding:8px 2px 9px;display:grid;justify-items:center;gap:2px;cursor:pointer}
+nav.tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button[aria-current="page"]{color:var(--olive);font-weight:700}
+button:focus-visible,input:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top"><h1>正顎手冊</h1><span id="today"></span></header>
+
+  <!-- 首頁 -->
+  <section class="tab" id="home">
+    <div class="count" id="count"></div>
+
+    <h2>重要日期</h2>
+    <ul class="tl" id="milestones"></ul>
+
+    <h2>手術須知</h2>
+    <div class="stack">
+      <div class="card">
+        <h3>住院與休養</h3>
+        <p>住院 4 天（12/17 入院、12/18 手術、12/20 出院）。建議休息 2 週、1 個月內不運動。</p>
+        <p class="lede">傷口在口腔內，免拆線，約 6 週會消失；臉頰後面有小傷口。疼痛約 5/10。</p>
+      </div>
+      <div class="card">
+        <h3>醫師說明的風險</h3>
+        <ul style="margin:0;padding-left:1.1em">
+          <li>細菌感染：會吃抗生素</li>
+          <li>失血過多：醫院有血庫備血</li>
+          <li>下巴麻：約 30% 會比較久，會慢慢恢復</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>恢復里程碑</h3>
+        <p>兩週後：可以走路 15 分鐘<br>一個月後：可以騎車</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 清單 -->
+  <section class="tab" id="list" hidden>
+    <h2>術前備品清單</h2>
+    <p class="lede">打勾會記在這支手機的瀏覽器裡。</p>
+    <div class="prog"><i id="progbar"></i></div>
+    <p class="lede" id="progtext"></p>
+    <div id="groups"></div>
+  </section>
+
+  <!-- 恢復 -->
+  <section class="tab" id="recover" hidden>
+    <h2>術後恢復階段</h2>
+    <p class="lede">點選階段查看，會自動標出你現在在哪一段。</p>
+    <div class="stages" id="stagebtns" role="group" aria-label="恢復階段"></div>
+    <div class="card stage-body" id="stagebody" style="margin-top:10px"></div>
+
+    <h2>營養品怎麼帶</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>階段</th><th>安素</th><th>高蛋白飲</th><th>滴雞精</th><th>明治濃湯</th></tr></thead>
+      <tbody>
+        <tr><td>醫院 3 天</td><td class="n">3–4 罐</td><td class="n">3–4 瓶</td><td class="n">3–4 包</td><td class="n">2–3 包</td></tr>
+        <tr><td>哥哥家 14 天</td><td class="n">12–14 罐</td><td class="n">12–14 瓶</td><td class="n">14–20 包</td><td class="n">5–8 包</td></tr>
+        <tr><td>回家後（第 3 週起）</td><td class="n">6–8 罐</td><td class="n">6–8 瓶</td><td class="n">6–10 包</td><td class="n">—</td></tr>
+      </tbody>
+    </table></div>
+    <p class="lede" style="margin-top:8px">哥哥家每天一組：1 罐安素 + 1 瓶高蛋白 + 1 包滴雞精 + 1 杯濃湯。醫院前三天胃口小，醫院也會提供流質，帶這些當點心就夠。</p>
+
+    <h2>四種營養品比較</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>品項</th><th>熱量</th><th>蛋白質</th><th>定位</th><th>什麼時候喝</th></tr></thead>
+      <tbody>
+        <tr><td>亞培安素</td><td>極高</td><td>中～高</td><td>全方位能量底座</td><td>當正餐主食</td></tr>
+        <tr><td>義美高蛋白飲</td><td>中</td><td>極高</td><td>強力組織修復</td><td>需要加速傷口癒合時</td></tr>
+        <tr><td>華齊堂滴雞精</td><td>低</td><td>低</td><td>快速補元氣</td><td>精神不濟、虛弱時</td></tr>
+        <tr><td>明治濃湯</td><td>中～高</td><td>中</td><td>鹹味救贖</td><td>甜的喝膩、想換口味時</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 守則 -->
+  <section class="tab" id="rules" hidden>
+    <h2>照護守則</h2>
+    <div class="stack">
+      <div class="alert"><b>手術前一天</b>：白天可以正常吃，但護理師宣布「禁食禁水」後（通常是前一天半夜或術前 8 小時），一口水、一口營養品都不能碰。時間以麻醉醫師說的為準。</div>
+
+      <div class="card rule">
+        <h3>1. 術後進食</h3>
+        <div class="gold">少量多餐，絕對不用吸管</div>
+        <ul>
+          <li>前兩週以流質為主：安素、高蛋白、滴雞精、濃湯</li>
+          <li>用餵食針筒（接軟管）或杯子慢慢喝</li>
+          <li>不用調理機打顆粒食物</li>
+        </ul>
+        <div class="why">吸管的口腔負壓會拉扯傷口、讓血水滲出；少量多餐避免脹氣和吞嚥困難。</div>
+      </div>
+
+      <div class="card rule">
+        <h3>2. 口腔清潔</h3>
+        <div class="gold">吃完立刻漱口，溫柔為主</div>
+        <ul>
+          <li>每次進食後用針筒抽清水輕輕沖牙縫</li>
+          <li>含一口無酒精漱口水，輕柔漱動後吐掉</li>
+          <li>不用電動牙刷，只用軟毛牙刷輕輕帶過</li>
+        </ul>
+        <div class="why">前期傷口多，電動牙刷震動會刺激甚至裂開傷口；酒精會刺痛傷口。</div>
+      </div>
+
+      <div class="card rule">
+        <h3>3. 怎麼知道有沒有清乾淨</h3>
+        <div class="gold">靠口感和味道判斷</div>
+        <ul>
+          <li>不用拿鏡子放大檢查</li>
+          <li>每次沖過、漱過，嘴裡沒有黏膩感、沒有酸臭味，就是乾淨的</li>
+        </ul>
+      </div>
+
+      <div class="card rule">
+        <h3>4. 臉部清潔與消腫</h3>
+        <div class="gold">不用噴水壺裝生水噴臉</div>
+        <ul>
+          <li>臉發熱腫脹時，用乾淨毛巾包軟式冰袋冰敷</li>
+          <li>想清爽時，用生理食鹽水或煮沸放涼的開水沾濕紗布、嬰兒濕紙巾輕擦</li>
+        </ul>
+        <div class="why">生水的細菌碰到傷口會提高感染風險。</div>
+      </div>
+
+      <div class="card rule">
+        <h3>5. 睡覺姿勢</h3>
+        <div class="gold">半坐臥，頭高於心臟</div>
+        <ul>
+          <li>用三角靠枕墊高約 30 度，不要平躺</li>
+          <li>床上鋪看護墊，防血水滲透</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 溝通 -->
+  <section class="tab" id="talk" hidden>
+    <h2>跟醫師確認的 4 件事</h2>
+    <p class="lede">10/5 白醫師、11/9 羅醫師，帶著這頁和 Mood Board 照片去。</p>
+    <ol class="qs">
+      <li><h3>審美偏好</h3><ul><li>下巴要後退／上移多少？保留一點下巴線條，還是要收得很圓順？</li><li>中面部（蘋果肌、笑起來的骨骼支撐）會不會凹陷或太凸？</li></ul></li>
+      <li><h3>側臉弧度與比例</h3><ul><li>E-line（鼻尖到下巴連線）的目標比例</li><li>笑起來露牙齦要保留多少？</li></ul></li>
+      <li><h3>功能與對稱</h3><ul><li>術後咬合的對齊位置</li><li>原本臉型的左右不對稱，骨頭移動後軟組織會怎麼覆蓋？</li></ul></li>
+      <li><h3>案例對照</h3><ul><li>「以我的骨骼條件，照建議的移動量，最接近你過去哪一位案例？」</li></ul></li>
+    </ol>
+
+    <h2>我最怕的結果</h2>
+    <div class="card">
+      <p>下巴太短、太後縮，下庭比例偏短，側臉看起來太圓、少了俐落的下巴線條。</p>
+    </div>
+    <h2>可以直接這樣說</h2>
+    <blockquote>醫師，我很怕術後下巴變太短、下巴後縮，側臉看起來太圓、下庭比例偏短。我希望下巴能保有適當的長度和向前的支撐度，讓下巴線條順暢俐落，但又不要太過銳利。</blockquote>
+
+    <h2>什麼時候可以放心</h2>
+    <div class="card"><p>把最介意的地方講出來後，醫師能用<b>具體的骨頭移動方向、毫米數</b>或<b>類似案例照片</b>回應你，而且你感覺他懂你要的美感，就可以放心交給他。</p></div>
+
+    <h2>Mood Board 準備</h2>
+    <div class="list" id="moodlist"></div>
+  </section>
+
+  <p class="foot">個人經驗紀錄，醫療處置請以主治醫師指示為準。</p>
+</div>
+
+<nav class="tabs" aria-label="主選單">
+  <button data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg>首頁</button>
+  <button data-tab="list"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 10l2 2 4-4M9 16h6"/></svg>清單</button>
+  <button data-tab="recover"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>恢復</button>
+  <button data-tab="rules"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h6"/></svg>守則</button>
+  <button data-tab="talk"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>溝通</button>
+</nav>
+
+<script>
+const SURGERY = [2026,12,18];
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+function taipeiToday(){
+  const s=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Taipei'});
+  const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d);
+}
+const DAY=86400000;
+const today=taipeiToday();
+const surgery=Date.UTC(SURGERY[0],SURGERY[1]-1,SURGERY[2]);
+const diff=Math.round((surgery-today)/DAY); // >0 days until surgery
+const post=-diff; // days after surgery
+const fmt=t=>{const d=new Date(t);return (d.getUTCMonth()+1)+'/'+d.getUTCDate()};
+document.getElementById('today').textContent='今天 '+fmt(today);
+
+/* countdown */
+const c=document.getElementById('count');
+if(diff>1){c.innerHTML=`<div class="label">距離手術還有</div><div class="num">${diff}<small>天</small></div><div class="sub">12/17 住院 · 12/18 手術 · 12/20 出院</div>`}
+else if(diff===1){c.innerHTML=`<div class="label">明天就是手術日</div><div class="num">D-1</div><div class="sub">今天住院。記得聽護理師宣布禁食禁水的時間。</div>`}
+else if(diff===0){c.innerHTML=`<div class="label">今天</div><div class="num">手術日</div><div class="sub">加油，醒來就是新的開始。</div>`}
+else{c.innerHTML=`<div class="label">術後第</div><div class="num">${post}<small>天</small></div><div class="sub">到「恢復」頁看這個階段要注意什麼。</div>`}
+
+/* milestones */
+const ms=[
+  [2026,10,5,'白醫師討論','帶 Mood Board 照片'],
+  [2026,11,9,'羅醫師看診','對齊美感方向'],
+  [2026,12,17,'住院',''],
+  [2026,12,18,'手術','',true],
+  [2026,12,20,'出院','到哥哥家休養'],
+  [null,7,null,'術後一週回診','洗頭、補貨'],
+  [null,14,null,'術後兩週回診','可走路 15 分鐘'],
+  [null,30,null,'術後一個月回診','可以騎車']
+];
+document.getElementById('milestones').innerHTML=ms.map(m=>{
+  const t=m[0]?Date.UTC(m[0],m[1]-1,m[2]):surgery+m[1]*DAY;
+  const past=t<today;
+  return `<li class="${past?'past':''} ${m[5]?'big':''}"><div class="d">${fmt(t)}</div><div class="dot"></div><div class="t"><b>${m[3]}</b>${m[4]?`<span>${m[4]}</span>`:''}</div></li>`;
+}).join('');
+
+/* checklist */
+const groups=[
+  ['術前事務',[['特休請假（兩週）'],['預約接駁車'],['卸甲'],['確認保險、團險、公司條款'],['請醫師開診斷書（理賠用）']]],
+  ['冰敷與消腫',[['軟式敷眼／敷臉冰袋','x3'],['術後加壓冰敷頭套']]],
+  ['進食與營養',[['大容量餵食針筒（附軟管）','x3'],['安素','依攜帶表'],['高蛋白飲','依攜帶表'],['滴雞精','依攜帶表'],['明治濃湯','依攜帶表'],['布丁、優酪乳、米漿','第4–5天補貨']]],
+  ['清潔與衛生',[['不含酒精漱口水（大瓶）','x2'],['軟毛牙刷'],['嬰兒濕紙巾'],['濕紙巾（如廁用）'],['牙套牙線、牙間刷'],['小毛巾']]],
+  ['居家舒適',[['三角靠枕／床頭靠墊','x1'],['拋棄式看護墊'],['矮桌／腳架'],['鏡子']]],
+  ['衣物',[['前開式扣子睡衣','x3–4','不能穿套頭衣服'],['保暖衣物'],['免洗內褲']]],
+  ['個人護理',[['保濕護唇膏'],['乾洗髮噴霧'],['立體醫療口罩','多盒']]]
+];
+const checked=store.get('checks',{});
+function renderChecks(){
+  let total=0,done=0;
+  document.getElementById('groups').innerHTML=groups.map((g,gi)=>{
+    let gd=0;
+    const rows=g[1].map((it,ii)=>{
+      const id=`c${gi}_${ii}`;const on=!!checked[id];total++;if(on){done++;gd++}
+      return `<label class="chk ${on?'done':''}" for="${id}"><input type="checkbox" id="${id}" ${on?'checked':''}><span>${it[0]}${it[2]?`<span class="note">${it[2]}</span>`:''}</span><span class="q">${it[1]||''}</span></label>`;
+    }).join('');
+    return `<div class="group"><div class="group-h"><h3>${g[0]}</h3><small>${gd}/${g[1].length}</small></div><div class="list">${rows}</div></div>`;
+  }).join('');
+  document.getElementById('progbar').style.width=(done/total*100)+'%';
+  document.getElementById('progtext').textContent=`已準備 ${done} / ${total} 項`;
+}
+document.getElementById('groups').addEventListener('change',e=>{
+  if(e.target.type!=='checkbox')return;checked[e.target.id]=e.target.checked;store.set('checks',checked);renderChecks();
+});
+renderChecks();
+
+/* mood board */
+const mood=[['m1','找 2–3 張「最漂亮的側臉／笑容」照片'],['m2','找 2 張「絕對不想要的臉型」照片'],['m3','10/5 帶給白醫師討論'],['m4','11/9 給羅醫師看']];
+const moodEl=document.getElementById('moodlist');
+function renderMood(){moodEl.innerHTML=mood.map(([id,t])=>{const on=!!checked[id];return `<label class="chk ${on?'done':''}" for="${id}"><input type="checkbox" id="${id}" ${on?'checked':''}><span>${t}</span><span class="q"></span></label>`}).join('')}
+moodEl.addEventListener('change',e=>{checked[e.target.id]=e.target.checked;store.set('checks',checked);renderMood()});
+renderMood();
+
+/* recovery stages */
+const stages=[
+  {name:'術後當天',from:0,to:0,place:'醫院',
+   body:'麻醉退後開始脹痛，雙頰快速腫脹，口內有血水，大多只能靠眼神或打字溝通。',
+   care:'嚴格冰敷、半坐臥休息（三角靠枕）、穿前開式睡衣，避免嘴巴張太大。',
+   food:'禁食或少量開水，依醫囑。',
+   stuff:'冰敷袋、頭套、靠枕、看護墊、針筒、漱口水、衣物',budget:'約 $4,300–8,300（第一階段總備品）'},
+  {name:'第 1–3 天',from:1,to:3,place:'醫院',
+   body:'腫脹最高峰期，眼周可能出現黃斑瘀青，體力很弱。',
+   care:'持續冰敷，用針筒灌食安素、滴雞精；每次進食後用無酒精漱口水輕漱。',
+   food:'純流質：安素、高蛋白、滴雞精、米湯。',
+   stuff:'延續第一階段備品',budget:''},
+  {name:'第 1 週',from:4,to:7,place:'哥哥家',
+   body:'進入消腫轉換期，腫脹從臉頰往下巴移，瘀青轉黃綠色；體力恢復到可在房間走動。',
+   care:'問醫生是否改溫敷；改喝高營養濃湯、流質，絕對不要嚼東西。',
+   food:'純流質和無顆粒滑順濃湯。不用吸管、不用調理機。',
+   stuff:'第 4–5 天補貨：鮮優酪乳、布丁、濃湯',budget:'約 $500–1,000'},
+  {name:'第 2 週',from:8,to:14,place:'哥哥家',
+   body:'外觀腫脹消 40–50%，笑起來還會緊繃僵硬，準備回診。',
+   care:'體力允許下可以洗頭洗澡。',
+   food:'半流質：優酪乳、布丁、濾渣豆漿、稀飯、蒸蛋、豆花。',
+   stuff:'延續前階段物資',budget:''},
+  {name:'第 3 週～1 個月',from:15,to:30,place:'回家',
+   body:'消腫 70–80%，輪廓線條變明顯，開始看到直面型和下巴成形。',
+   care:'準備立體口罩回歸社交和上班，持續追蹤恢復狀況。',
+   food:'告別純流質，過渡到免咀嚼食物：蒸蛋、豆腐、魚肉、軟爛麵線、粥。',
+   stuff:'食物和營養品升級',budget:'約 $1,000–2,000'},
+  {name:'第 2～6 個月',from:31,to:99999,place:'定型期',
+   body:'剩最後 10–15% 深層水腫，骨頭癒合定型，側臉線條完整呈現。',
+   care:'臉部保濕保養，搭配溫敷輕柔按摩僵硬的咀嚼肌。',
+   food:'逐步恢復正常飲食（依醫師評估）。',
+   stuff:'臉部保濕修護保養品',budget:'約 $500–1,500'}
+];
+const nowIdx=post<0?-1:stages.findIndex(s=>post>=s.from&&post<=s.to);
+let sel=nowIdx>=0?nowIdx:0;
+const btns=document.getElementById('stagebtns');
+function renderStage(){
+  btns.innerHTML=stages.map((s,i)=>`<button aria-pressed="${i===sel}" class="${i===nowIdx?'now':''}" data-i="${i}">${s.name}</button>`).join('');
+  const s=stages[sel];
+  document.getElementById('stagebody').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px">
+      <h3 style="margin:0;font-family:var(--display);font-size:18px">${s.name}</h3><span class="hex tan">${s.place}</span></div>
+    <dl><div><dt>身體狀態</dt><dd>${s.body}</dd></div>
+    <div><dt>照護重點</dt><dd>${s.care}</dd></div>
+    <div><dt>飲食</dt><dd>${s.food}</dd></div>
+    <div><dt>物資</dt><dd>${s.stuff}${s.budget?`<div class="budget">${s.budget}</div>`:''}</dd></div></dl>`;
+}
+btns.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;sel=+b.dataset.i;renderStage()});
+renderStage();
+
+/* tabs */
+const tabs=['home','list','recover','rules','talk'];
+function show(t){
+  if(!tabs.includes(t))t='home';
+  tabs.forEach(x=>document.getElementById(x).hidden=x!==t);
+  document.querySelectorAll('nav.tabs button').forEach(b=>{if(b.dataset.tab===t)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  store.set('tab',t);window.scrollTo(0,0);
+}
+document.querySelector('nav.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.tab)});
+show((location.hash||'').slice(1)||store.get('tab','home'));
+</script>
+
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script>
+</body>
+</html>
