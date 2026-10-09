@@ -1,5 +1,5 @@
 // 版本號：每次更新內容就改這裡，手機才會抓到新版
-const CACHE = 'ogs-v5';
+const CACHE = 'ogs-v6';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
