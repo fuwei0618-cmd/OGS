@@ -135,18 +135,96 @@ nav.tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1
 nav.tabs button[aria-current="page"]{color:var(--olive);font-weight:700}
 button:focus-visible,input:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== 2.0：照 Origina 操作規則表統一（回首頁左上、新增右下＋、點卡片改、刪除在最下面） ===== */
+header.top{align-items:center}
+header.top .back{font-size:13px;color:var(--muted);text-decoration:none;white-space:nowrap}
+header.top .mid{flex:1;min-width:0}
+nav.tabs{grid-template-columns:repeat(5,1fr)}
+.fab{position:fixed;right:12px;bottom:calc(132px + env(safe-area-inset-bottom,0px));z-index:12;width:54px;height:54px;border-radius:50%;border:0;background:var(--olive);color:var(--surface);font-size:30px;line-height:1;box-shadow:0 6px 18px rgba(0,0,0,.2);cursor:pointer}
+.chips{display:flex;gap:6px;overflow-x:auto;margin:0 -16px 10px;padding:2px 16px 4px;scrollbar-width:none}
+.chips button{flex:0 0 auto;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--olive);border-color:var(--olive);color:var(--surface)}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.quick button{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:12px;cursor:pointer;text-align:left}
+.quick button b{display:block;font-size:15px}
+.quick button span{font-size:12px;color:var(--muted)}
+.banner{background:var(--clay);color:var(--ink);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.banner button{font:inherit;font-size:13px;border:0;background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+/* 紀錄時間軸 */
+.rec{display:grid;gap:10px}
+.rcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.rcard .h{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:6px}
+.rcard .h b{font-size:15px}
+.rcard .h small{color:var(--muted);font-variant-numeric:tabular-nums}
+.rcard .meta{font-size:13px;color:var(--muted)}
+.thumbs{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px}
+.thumbs.few{grid-template-columns:repeat(3,1fr)}
+.thumbs div{aspect-ratio:1;border-radius:6px;background:var(--line) center/cover no-repeat}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--tan);color:var(--ink);margin-right:6px}
+.tag.teeth{background:var(--olive);color:var(--surface)}
+.tag.daily{background:var(--clay)}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:24px 8px;border:1px dashed var(--line);border-radius:12px}
+/* 比較 */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cmp figure{margin:0}
+.cmp .ph{aspect-ratio:3/4;border-radius:10px;background:var(--line) center/cover no-repeat;display:grid;place-items:center;color:var(--muted);font-size:12px}
+.cmp figcaption{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+.cmp select{width:100%;font:inherit;font-size:13px;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+/* 物品 */
+.item{display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.st{font:inherit;font-size:12px;font-weight:700;border:0;border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap;min-width:52px}
+.st.buy{background:var(--bg);color:var(--clay-ink);box-shadow:inset 0 0 0 1.5px var(--clay)}
+.st.got{background:var(--tan);color:var(--ink)}
+.st.use{background:var(--ok);color:#fff}
+.item .pic{width:44px;height:44px;border-radius:8px;background:var(--line) center/cover no-repeat}
+.item .pic.none{width:0;margin-left:-10px}
+.item .nm{cursor:pointer;min-width:0}
+.item .nm b{display:block;font-weight:500}
+.item .nm span{display:block;font-size:12px;color:var(--muted)}
+.item .q{font-size:12px;color:var(--muted);white-space:nowrap}
+.item.dn .nm b{color:var(--muted)}
+/* 對話框 */
+.dlg{position:fixed;inset:0;z-index:30;background:rgba(30,28,24,.45);display:grid;align-items:end;justify-items:center}
+.dlg .box{width:100%;max-width:640px;max-height:92vh;overflow:auto;background:var(--bg);border-radius:18px 18px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.dlg h3{font-family:var(--display);font-size:19px;margin:0 0 12px}
+.fld{display:grid;gap:4px;margin-bottom:12px;font-size:13px;color:var(--muted)}
+.fld input,.fld select,.fld textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%}
+.fld textarea{min-height:70px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--olive);border-color:var(--olive);color:var(--surface)}
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.shot{position:relative;aspect-ratio:3/4;border-radius:10px;border:1.5px dashed var(--line);background:var(--surface) center/cover no-repeat;display:grid;place-items:center;font-size:12px;color:var(--muted);cursor:pointer;overflow:hidden;text-align:center;padding:4px}
+.shot.has{border-style:solid;border-color:var(--olive)}
+.shot.has span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);color:#fff;font-size:11px;padding:3px}
+.shot input{display:none}
+.pain{display:flex;align-items:center;gap:10px}
+.pain input{flex:1}
+.pain b{font-size:20px;font-variant-numeric:tabular-nums;min-width:1.6em;text-align:right;color:var(--clay-ink)}
+.acts{display:flex;gap:8px;margin-top:6px}
+.acts button{font:inherit;font-size:15px;border-radius:999px;padding:10px 18px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.acts .pri{background:var(--olive);border-color:var(--olive);color:var(--surface);flex:1}
+.del{display:block;margin:18px auto 0;font:inherit;font-size:13px;background:none;border:0;color:var(--warn);cursor:pointer}
+.backup{display:block;margin:20px auto 0;font:inherit;font-size:12px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer}
+#toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;background:var(--ink);color:var(--bg);font-size:13px;padding:8px 14px;border-radius:999px}
 </style>
-<script src="https://fuwei0618-cmd.github.io/Entry/sync/origina-sync.js" data-app="ogs" data-keys="checks" data-pos="br"></script>
+<script src="https://fuwei0618-cmd.github.io/Entry/sync/origina-sync.js" data-app="ogs" data-keys="checks,ogs.v2" data-pos="br"></script>
 </head>
 <body>
 
-
 <div class="wrap">
-  <header class="top"><h1>正顎手冊</h1><span id="today"></span></header>
+  <header class="top"><a class="back" id="back" href="https://fuwei0618-cmd.github.io/Entry/map/">← Origina</a><h1 class="mid">正顎手冊</h1><span id="today"></span></header>
 
   <!-- 首頁 -->
   <section class="tab" id="home">
     <div class="count" id="count"></div>
+    <div class="quick">
+      <button data-new="teeth"><b>＋ 齒列照</b><span>固定六個角度，每次回診拍一組</span></button>
+      <button data-new="daily"><b>＋ 今天的紀錄</b><span>疼痛、腫脹、吃了什麼</span></button>
+    </div>
 
     <h2>重要日期</h2>
     <ul class="tl" id="milestones"></ul>
@@ -173,16 +251,27 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--clay);outline-o
     </div>
   </section>
 
-  <!-- 清單 -->
-  <section class="tab" id="list" hidden>
-    <h2>術前備品清單</h2>
-    <p class="lede">打勾會記在這支手機的瀏覽器裡。</p>
+  <!-- 紀錄 -->
+  <section class="tab" id="log" hidden>
+    <h2>紀錄</h2>
+    <div id="dense"></div>
+    <div class="chips" id="logchips"></div>
+    <div id="cmpwrap"></div>
+    <div class="rec" id="reclist"></div>
+    <button class="backup" id="backup">下載備份（文字資料）</button>
+  </section>
+
+  <!-- 物品 -->
+  <section class="tab" id="items" hidden>
+    <h2>物品</h2>
+    <p class="lede">點左邊的狀態就換下一個：要買 → 已買 → 在用。點名字可以改。</p>
     <div class="prog"><i id="progbar"></i></div>
     <p class="lede" id="progtext"></p>
+    <div class="chips" id="itemchips"></div>
     <div id="groups"></div>
   </section>
 
-  <!-- 恢復 -->
+  <!-- 恢復＋守則 -->
   <section class="tab" id="recover" hidden>
     <h2>術後恢復階段</h2>
     <p class="lede">點選階段查看，會自動標出你現在在哪一段。</p>
@@ -210,87 +299,34 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--clay);outline-o
         <tr><td>明治濃湯</td><td>中～高</td><td>中</td><td>鹹味救贖</td><td>甜的喝膩、想換口味時</td></tr>
       </tbody>
     </table></div>
-  </section>
 
-  <!-- 守則 -->
-  <section class="tab" id="rules" hidden>
     <h2>照護守則</h2>
     <div class="stack">
       <div class="alert"><b>手術前一天</b>：白天可以正常吃，但護理師宣布「禁食禁水」後（通常是前一天半夜或術前 8 小時），一口水、一口營養品都不能碰。時間以麻醉醫師說的為準。</div>
-
-      <div class="card rule">
-        <h3>1. 術後進食</h3>
-        <div class="gold">少量多餐，絕對不用吸管</div>
-        <ul>
-          <li>前兩週以流質為主：安素、高蛋白、滴雞精、濃湯</li>
-          <li>用餵食針筒（接軟管）或杯子慢慢喝</li>
-          <li>不用調理機打顆粒食物</li>
-        </ul>
-        <div class="why">吸管的口腔負壓會拉扯傷口、讓血水滲出；少量多餐避免脹氣和吞嚥困難。</div>
-      </div>
-
-      <div class="card rule">
-        <h3>2. 口腔清潔</h3>
-        <div class="gold">吃完立刻漱口，溫柔為主</div>
-        <ul>
-          <li>每次進食後用針筒抽清水輕輕沖牙縫</li>
-          <li>含一口無酒精漱口水，輕柔漱動後吐掉</li>
-          <li>不用電動牙刷，只用軟毛牙刷輕輕帶過</li>
-        </ul>
-        <div class="why">前期傷口多，電動牙刷震動會刺激甚至裂開傷口；酒精會刺痛傷口。</div>
-      </div>
-
-      <div class="card rule">
-        <h3>3. 怎麼知道有沒有清乾淨</h3>
-        <div class="gold">靠口感和味道判斷</div>
-        <ul>
-          <li>不用拿鏡子放大檢查</li>
-          <li>每次沖過、漱過，嘴裡沒有黏膩感、沒有酸臭味，就是乾淨的</li>
-        </ul>
-      </div>
-
-      <div class="card rule">
-        <h3>4. 臉部清潔與消腫</h3>
-        <div class="gold">不用噴水壺裝生水噴臉</div>
-        <ul>
-          <li>臉發熱腫脹時，用乾淨毛巾包軟式冰袋冰敷</li>
-          <li>想清爽時，用生理食鹽水或煮沸放涼的開水沾濕紗布、嬰兒濕紙巾輕擦</li>
-        </ul>
-        <div class="why">生水的細菌碰到傷口會提高感染風險。</div>
-      </div>
-
-      <div class="card rule">
-        <h3>5. 睡覺姿勢</h3>
-        <div class="gold">半坐臥，頭高於心臟</div>
-        <ul>
-          <li>用三角靠枕墊高約 30 度，不要平躺</li>
-          <li>床上鋪看護墊，防血水滲透</li>
-        </ul>
-      </div>
+      <div class="card rule"><h3>1. 術後進食</h3><div class="gold">少量多餐，絕對不用吸管</div><ul><li>前兩週以流質為主：安素、高蛋白、滴雞精、濃湯</li><li>用餵食針筒（接軟管）或杯子慢慢喝</li><li>不用調理機打顆粒食物</li></ul><div class="why">吸管的口腔負壓會拉扯傷口、讓血水滲出；少量多餐避免脹氣和吞嚥困難。</div></div>
+      <div class="card rule"><h3>2. 口腔清潔</h3><div class="gold">吃完立刻漱口，溫柔為主</div><ul><li>每次進食後用針筒抽清水輕輕沖牙縫</li><li>含一口無酒精漱口水，輕柔漱動後吐掉</li><li>不用電動牙刷，只用軟毛牙刷輕輕帶過</li></ul><div class="why">前期傷口多，電動牙刷震動會刺激甚至裂開傷口；酒精會刺痛傷口。</div></div>
+      <div class="card rule"><h3>3. 怎麼知道有沒有清乾淨</h3><div class="gold">靠口感和味道判斷</div><ul><li>不用拿鏡子放大檢查</li><li>每次沖過、漱過，嘴裡沒有黏膩感、沒有酸臭味，就是乾淨的</li></ul></div>
+      <div class="card rule"><h3>4. 臉部清潔與消腫</h3><div class="gold">不用噴水壺裝生水噴臉</div><ul><li>臉發熱腫脹時，用乾淨毛巾包軟式冰袋冰敷</li><li>想清爽時，用生理食鹽水或煮沸放涼的開水沾濕紗布、嬰兒濕紙巾輕擦</li></ul><div class="why">生水的細菌碰到傷口會提高感染風險。</div></div>
+      <div class="card rule"><h3>5. 睡覺姿勢</h3><div class="gold">半坐臥，頭高於心臟</div><ul><li>用三角靠枕墊高約 30 度，不要平躺</li><li>床上鋪看護墊，防血水滲透</li></ul></div>
     </div>
   </section>
 
-  <!-- 溝通 -->
+  <!-- 醫師 -->
   <section class="tab" id="talk" hidden>
     <h2>跟醫師確認的 4 件事</h2>
-    <p class="lede">10/5 白醫師、11/9 羅醫師，帶著這頁和 Mood Board 照片去。</p>
+    <p class="lede">10/5 白醫師、11/9 羅醫師，帶著這頁和 Mood Board 照片去。11/9 也可以問診所能不能給一份齒列紀錄。</p>
     <ol class="qs">
       <li><h3>審美偏好</h3><ul><li>下巴要後退／上移多少？保留一點下巴線條，還是要收得很圓順？</li><li>中面部（蘋果肌、笑起來的骨骼支撐）會不會凹陷或太凸？</li></ul></li>
       <li><h3>側臉弧度與比例</h3><ul><li>E-line（鼻尖到下巴連線）的目標比例</li><li>笑起來露牙齦要保留多少？</li></ul></li>
       <li><h3>功能與對稱</h3><ul><li>術後咬合的對齊位置</li><li>原本臉型的左右不對稱，骨頭移動後軟組織會怎麼覆蓋？</li></ul></li>
       <li><h3>案例對照</h3><ul><li>「以我的骨骼條件，照建議的移動量，最接近你過去哪一位案例？」</li></ul></li>
     </ol>
-
     <h2>我最怕的結果</h2>
-    <div class="card">
-      <p>下巴太短、太後縮，下庭比例偏短，側臉看起來太圓、少了俐落的下巴線條。</p>
-    </div>
+    <div class="card"><p>下巴太短、太後縮，下庭比例偏短，側臉看起來太圓、少了俐落的下巴線條。</p></div>
     <h2>可以直接這樣說</h2>
     <blockquote>醫師，我很怕術後下巴變太短、下巴後縮，側臉看起來太圓、下庭比例偏短。我希望下巴能保有適當的長度和向前的支撐度，讓下巴線條順暢俐落，但又不要太過銳利。</blockquote>
-
     <h2>什麼時候可以放心</h2>
     <div class="card"><p>把最介意的地方講出來後，醫師能用<b>具體的骨頭移動方向、毫米數</b>或<b>類似案例照片</b>回應你，而且你感覺他懂你要的美感，就可以放心交給他。</p></div>
-
     <h2>Mood Board 準備</h2>
     <div class="list" id="moodlist"></div>
   </section>
@@ -298,58 +334,41 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--clay);outline-o
   <p class="foot">個人經驗紀錄，醫療處置請以主治醫師指示為準。</p>
 </div>
 
+<button class="fab" id="fab" aria-label="新增" hidden>＋</button>
+<div id="toast" hidden></div>
+
 <nav class="tabs" aria-label="主選單">
   <button data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg>首頁</button>
-  <button data-tab="list"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 10l2 2 4-4M9 16h6"/></svg>清單</button>
+  <button data-tab="log"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.2"/><path d="M9 6l1.5-2h3L15 6"/></svg>紀錄</button>
+  <button data-tab="items"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 10l2 2 4-4M9 16h6"/></svg>物品</button>
   <button data-tab="recover"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>恢復</button>
-  <button data-tab="rules"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h6"/></svg>守則</button>
-  <button data-tab="talk"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>溝通</button>
+  <button data-tab="talk"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>醫師</button>
 </nav>
 
 <script>
-const SURGERY = [2026,12,18];
-const store = {
+"use strict";
+const SURGERY=[2026,12,18];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store={
   get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 };
-function taipeiToday(){
-  const s=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Taipei'});
-  const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d);
-}
-const DAY=86400000;
-const today=taipeiToday();
-const surgery=Date.UTC(SURGERY[0],SURGERY[1]-1,SURGERY[2]);
-const diff=Math.round((surgery-today)/DAY); // >0 days until surgery
-const post=-diff; // days after surgery
+function taipeiToday(){const s=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Taipei'});const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d);}
+const todayStr=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Taipei'});
+const DAY=86400000,today=taipeiToday(),surgery=Date.UTC(SURGERY[0],SURGERY[1]-1,SURGERY[2]);
+const diff=Math.round((surgery-today)/DAY),post=-diff;
 const fmt=t=>{const d=new Date(t);return (d.getUTCMonth()+1)+'/'+d.getUTCDate()};
-document.getElementById('today').textContent='今天 '+fmt(today);
+const fmtS=s=>{const [y,m,d]=s.split('-').map(Number);return m+'/'+d};
+const dayTag=s=>{const [y,m,d]=s.split('-').map(Number);const n=Math.round((Date.UTC(y,m-1,d)-surgery)/DAY);return n<0?`術前 ${-n} 天`:n===0?'手術日':`術後第 ${n} 天`;};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2400);}
+$('#today').textContent='今天 '+fmt(today);
+if(window.top!==window.self)$('#back').style.visibility='hidden';
 
-/* countdown */
-const c=document.getElementById('count');
-if(diff>1){c.innerHTML=`<div class="label">距離手術還有</div><div class="num">${diff}<small>天</small></div><div class="sub">12/17 住院 · 12/18 手術 · 12/20 出院</div>`}
-else if(diff===1){c.innerHTML=`<div class="label">明天就是手術日</div><div class="num">D-1</div><div class="sub">今天住院。記得聽護理師宣布禁食禁水的時間。</div>`}
-else if(diff===0){c.innerHTML=`<div class="label">今天</div><div class="num">手術日</div><div class="sub">加油，醒來就是新的開始。</div>`}
-else{c.innerHTML=`<div class="label">術後第</div><div class="num">${post}<small>天</small></div><div class="sub">到「恢復」頁看這個階段要注意什麼。</div>`}
-
-/* milestones */
-const ms=[
-  [2026,10,5,'白醫師討論','帶 Mood Board 照片'],
-  [2026,11,9,'羅醫師看診','對齊美感方向'],
-  [2026,12,17,'住院',''],
-  [2026,12,18,'手術','',true],
-  [2026,12,20,'出院','到哥哥家休養'],
-  [null,7,null,'術後一週回診','洗頭、補貨'],
-  [null,14,null,'術後兩週回診','可走路 15 分鐘'],
-  [null,30,null,'術後一個月回診','可以騎車']
-];
-document.getElementById('milestones').innerHTML=ms.map(m=>{
-  const t=m[0]?Date.UTC(m[0],m[1]-1,m[2]):surgery+m[1]*DAY;
-  const past=t<today;
-  return `<li class="${past?'past':''} ${m[5]?'big':''}"><div class="d">${fmt(t)}</div><div class="dot"></div><div class="t"><b>${m[3]}</b>${m[4]?`<span>${m[4]}</span>`:''}</div></li>`;
-}).join('');
-
-/* checklist */
-const groups=[
+/* ---------- 資料（2.0）：物品、紀錄都存在 ogs.v2，跟著 OneDrive 同步 ---------- */
+const checked=store.get('checks',{});
+const OLD=[
   ['術前事務',[['特休請假（兩週）'],['預約接駁車'],['卸甲'],['確認保險、團險、公司條款'],['請醫師開診斷書（理賠用）']]],
   ['冰敷與消腫',[['軟式敷眼／敷臉冰袋','x3'],['術後加壓冰敷頭套']]],
   ['進食與營養',[['大容量餵食針筒（附軟管）','x3'],['安素','依攜帶表'],['高蛋白飲','依攜帶表'],['滴雞精','依攜帶表'],['明治濃湯','依攜帶表'],['布丁、優酪乳、米漿','第4–5天補貨']]],
@@ -358,88 +377,206 @@ const groups=[
   ['衣物',[['前開式扣子睡衣','x3–4','不能穿套頭衣服'],['保暖衣物'],['免洗內褲']]],
   ['個人護理',[['保濕護唇膏'],['乾洗髮噴霧'],['立體醫療口罩','多盒']]]
 ];
-const checked=store.get('checks',{});
-function renderChecks(){
-  let total=0,done=0;
-  document.getElementById('groups').innerHTML=groups.map((g,gi)=>{
-    let gd=0;
-    const rows=g[1].map((it,ii)=>{
-      const id=`c${gi}_${ii}`;const on=!!checked[id];total++;if(on){done++;gd++}
-      return `<label class="chk ${on?'done':''}" for="${id}"><input type="checkbox" id="${id}" ${on?'checked':''}><span>${it[0]}${it[2]?`<span class="note">${it[2]}</span>`:''}</span><span class="q">${it[1]||''}</span></label>`;
-    }).join('');
-    return `<div class="group"><div class="group-h"><h3>${g[0]}</h3><small>${gd}/${g[1].length}</small></div><div class="list">${rows}</div></div>`;
-  }).join('');
-  document.getElementById('progbar').style.width=(done/total*100)+'%';
-  document.getElementById('progtext').textContent=`已準備 ${done} / ${total} 項`;
+const CATS=['日常在用',...OLD.map(g=>g[0])];
+const WHEN=['','術前','住院','術後第一週','恢復期','日常'];
+let D=store.get('ogs.v2',null);
+if(!D){
+  D={v:2,items:[],records:[]};
+  OLD.forEach((g,gi)=>g[1].forEach((it,ii)=>D.items.push({id:`c${gi}_${ii}`,name:it[0],cat:g[0],qty:it[1]||'',note:it[2]||'',status:checked[`c${gi}_${ii}`]?'got':'buy',when:g[0]==='術前事務'?'術前':''})));
+  D.items.unshift({id:uid(),name:'電動牙刷',cat:'日常在用',qty:'',note:'術後前期先不用，改軟毛牙刷',status:'use',when:'日常'},{id:uid(),name:'果汁機',cat:'日常在用',qty:'',note:'',status:'use',when:'日常'});
+  store.set('ogs.v2',D);
 }
-document.getElementById('groups').addEventListener('change',e=>{
-  if(e.target.type!=='checkbox')return;checked[e.target.id]=e.target.checked;store.set('checks',checked);renderChecks();
-});
-renderChecks();
+const save=()=>store.set('ogs.v2',D);
 
-/* mood board */
+/* ---------- 照片：先存這台裝置，登入 OneDrive 就上傳到 OGS/media（.jpg，不加密） ---------- */
+const IDB=(()=>{let p;const open=()=>p||(p=new Promise((res,rej)=>{const r=indexedDB.open('ogs-media',1);r.onupgradeneeded=()=>r.result.createObjectStore('m');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}));
+  const tx=(mode,f)=>open().then(db=>new Promise((res,rej)=>{const t=db.transaction('m',mode),s=t.objectStore('m');const q=f(s);t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);}));
+  return{get:k=>tx('readonly',s=>s.get(k)),put:(k,v)=>tx('readwrite',s=>s.put(v,k)),del:k=>tx('readwrite',s=>s.delete(k))};})();
+const urls={};
+async function mediaURL(id){
+  if(!id)return '';if(urls[id])return urls[id];
+  let b=await IDB.get(id).catch(()=>null);
+  if(!b&&window.OriginaSync){try{if(await OriginaSync.getToken()){b=await OriginaSync.api.getBlob(`${OriginaSync.folder()}/media/${id}.jpg`);if(b)await IDB.put(id,b).catch(()=>{});}}catch(e){}}
+  if(!b)return '';return urls[id]=URL.createObjectURL(b);
+}
+async function shrink(file){
+  const img=await createImageBitmap(file).catch(()=>null);if(!img)return file;
+  const k=Math.min(1,1600/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);return new Promise(r=>c.toBlob(b=>r(b||file),'image/jpeg',.85));
+}
+async function addPhoto(file){const id=uid(),b=await shrink(file);await IDB.put(id,b);const up=store.get('ogs.pending',[]);up.push(id);store.set('ogs.pending',up);uploadPending();return id;}
+let uploading=false;
+async function uploadPending(){
+  if(uploading||!window.OriginaSync)return;let up=store.get('ogs.pending',[]);if(!up.length)return;
+  try{if(!(await OriginaSync.getToken()))return;}catch(e){return}
+  uploading=true;
+  for(const id of up.slice()){try{const b=await IDB.get(id);if(b)await OriginaSync.api.putBlob(`${OriginaSync.folder()}/media/${id}.jpg`,b);up=up.filter(x=>x!==id);store.set('ogs.pending',up);}catch(e){break}}
+  uploading=false;
+}
+setTimeout(uploadPending,4000);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')uploadPending();});
+function paint(root){(root||document).querySelectorAll('[data-m]').forEach(async el=>{const u=await mediaURL(el.dataset.m);if(u)el.style.backgroundImage=`url("${u}")`;});}
+
+/* ---------- 首頁 ---------- */
+const c=$('#count');
+if(diff>1)c.innerHTML=`<div class="label">距離手術還有</div><div class="num">${diff}<small>天</small></div><div class="sub">12/17 住院 · 12/18 手術 · 12/20 出院</div>`;
+else if(diff===1)c.innerHTML=`<div class="label">明天就是手術日</div><div class="num">D-1</div><div class="sub">今天住院。記得聽護理師宣布禁食禁水的時間。</div>`;
+else if(diff===0)c.innerHTML=`<div class="label">今天</div><div class="num">手術日</div><div class="sub">加油，醒來就是新的開始。</div>`;
+else c.innerHTML=`<div class="label">術後第</div><div class="num">${post}<small>天</small></div><div class="sub">到「恢復」頁看這個階段要注意什麼。</div>`;
+const ms=[[2026,10,5,'白醫師討論','帶 Mood Board 照片'],[2026,11,9,'羅醫師看診','對齊美感方向；拍一組齒列照'],[2026,12,17,'住院',''],[2026,12,18,'手術','',true],[2026,12,20,'出院','到哥哥家休養'],[null,7,null,'術後一週回診','洗頭、補貨'],[null,14,null,'術後兩週回診','可走路 15 分鐘'],[null,30,null,'術後一個月回診','可以騎車']];
+$('#milestones').innerHTML=ms.map(m=>{const t=m[0]?Date.UTC(m[0],m[1]-1,m[2]):surgery+m[1]*DAY;return `<li class="${t<today?'past':''} ${m[5]?'big':''}"><div class="d">${fmt(t)}</div><div class="dot"></div><div class="t"><b>${m[3]}</b>${m[4]?`<span>${m[4]}</span>`:''}</div></li>`;}).join('');
+
+/* ---------- 紀錄 ---------- */
+const ANGLES=['正面咬合','左側','右側','上排','下排','微笑'];
+const TYPES={teeth:'齒列照',daily:'每日紀錄',note:'筆記'};
+let logF='all',cmp=false;
+const dense=diff<=7&&post<=30;
+function renderLog(){
+  $('#dense').innerHTML=dense?(()=>{const done=D.records.some(r=>r.type==='daily'&&r.date===todayStr());return `<div class="banner"><span>密集紀錄期（術前一週到術後一個月）：${done?'今天記好了 ✓':'今天還沒記'}</span>${done?'':'<button data-new="daily">記今天</button>'}</div>`;})():'';
+  $('#logchips').innerHTML=[['all','全部'],['teeth','齒列照'],['daily','每日紀錄'],['note','筆記']].map(([k,t])=>`<button data-lf="${k}" aria-pressed="${logF===k&&!cmp}">${t}</button>`).join('')+`<button data-cmp aria-pressed="${cmp}">前後比較</button>`;
+  const L=D.records.filter(r=>logF==='all'||r.type===logF).sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:(b.at||0)-(a.at||0));
+  $('#cmpwrap').innerHTML=cmp?cmpHTML():'';
+  $('#reclist').hidden=cmp;
+  $('#reclist').innerHTML=L.length?L.map(r=>{
+    const ph=r.type==='teeth'?ANGLES.map(a=>r.photos&&r.photos[a]).filter(Boolean):(r.photos||[]);
+    const meta=r.type==='daily'?[r.pain!=null&&r.pain!==''?`疼痛 ${r.pain}/10`:'',r.weight?`體重 ${r.weight} kg`:'',r.food?`吃：${r.food}`:''].filter(Boolean).join('・'):'';
+    return `<button class="rcard" data-rec="${r.id}"><div class="h"><b><span class="tag ${r.type}">${TYPES[r.type]}</span>${esc(r.title||'')}</b><small>${fmtS(r.date)}・${dayTag(r.date)}</small></div>${meta?`<div class="meta">${esc(meta)}</div>`:''}${r.text?`<div class="meta">${esc(r.text)}</div>`:''}${ph.length?`<div class="thumbs${ph.length<4?' few':''}">${ph.map(m=>`<div data-m="${m}"></div>`).join('')}</div>`:''}</button>`;}).join('')
+    :`<div class="empty">${logF==='teeth'||logF==='all'?'還沒有紀錄。先按右下角的「＋」拍第一組齒列照，當作起點。':'還沒有這種紀錄。'}</div>`;
+  paint($('#log'));
+}
+let cmpA=0,cmpAng='正面咬合';
+function cmpHTML(){
+  const T=D.records.filter(r=>r.type==='teeth'&&r.photos&&r.photos[cmpAng]).sort((a,b)=>a.date<b.date?-1:1);
+  if(T.length<2)return `<div class="empty">要有兩組以上「${cmpAng}」的齒列照才能比較。</div>${angSel()}`;
+  const a=T[Math.min(cmpA,T.length-2)],b=T[T.length-1];
+  const opt=(sel)=>T.slice(0,-1).map((r,i)=>`<option value="${i}" ${i===sel?'selected':''}>${fmtS(r.date)}・${dayTag(r.date)}</option>`).join('');
+  return `${angSel()}<div class="cmp"><figure><div class="ph" data-m="${a.photos[cmpAng]}"></div><figcaption><select id="cmpA">${opt(Math.min(cmpA,T.length-2))}</select></figcaption></figure><figure><div class="ph" data-m="${b.photos[cmpAng]}"></div><figcaption>最新：${fmtS(b.date)}・${dayTag(b.date)}</figcaption></figure></div>`;
+}
+const angSel=()=>`<div class="chips">${ANGLES.map(a=>`<button data-ang="${a}" aria-pressed="${a===cmpAng}">${a}</button>`).join('')}</div>`;
+$('#log').addEventListener('click',e=>{
+  const f=e.target.closest('[data-lf]');if(f){logF=f.dataset.lf;cmp=false;renderLog();return;}
+  if(e.target.closest('[data-cmp]')){cmp=!cmp;renderLog();return;}
+  const g=e.target.closest('[data-ang]');if(g){cmpAng=g.dataset.ang;renderLog();return;}
+  const r=e.target.closest('[data-rec]');if(r)recDialog(D.records.find(x=>x.id===r.dataset.rec));
+});
+$('#log').addEventListener('change',e=>{if(e.target.id==='cmpA'){cmpA=+e.target.value;renderLog();}});
+
+/* ---------- 對話框 ---------- */
+function dialog(html,bind){const w=document.createElement('div');w.className='dlg';w.innerHTML=`<div class="box" role="dialog">${html}</div>`;document.body.appendChild(w);
+  const close=()=>w.remove();w.addEventListener('click',e=>{if(e.target===w||e.target.closest('[data-x]'))close();});bind(w.querySelector('.box'),close);}
+function typePicker(){dialog(`<h3>新增</h3><div class="quick" style="margin:0"><button data-t="teeth"><b>齒列照</b><span>六個固定角度</span></button><button data-t="daily"><b>每日紀錄</b><span>疼痛、腫脹、飲食</span></button><button data-t="note"><b>筆記</b><span>回診、想法、照片</span></button><button data-t="item"><b>物品</b><span>在用或要買的東西</span></button></div><div class="acts"><button data-x>取消</button></div>`,
+  (box,close)=>box.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{close();const t=b.dataset.t;t==='item'?itemDialog(null):recDialog(null,t);}));}
+function recDialog(r,type){
+  const isNew=!r;r=r?JSON.parse(JSON.stringify(r)):{id:uid(),type,date:todayStr(),photos:type==='teeth'?{}:[],at:Date.now()};
+  if(r.type==='daily'&&isNew){const ex=D.records.find(x=>x.type==='daily'&&x.date===r.date);if(ex)return recDialog(ex);}
+  const shots=r.type==='teeth'?ANGLES.map(a=>`<label class="shot${r.photos[a]?' has':''}" data-shot="${a}" ${r.photos[a]?`data-m="${r.photos[a]}"`:''}><input type="file" accept="image/*"><span>${a}</span></label>`).join('')
+    :`${(r.photos||[]).map((m,i)=>`<label class="shot has" data-m="${m}" data-pi="${i}"><span>點一下拿掉</span></label>`).join('')}<label class="shot" data-add><input type="file" accept="image/*" multiple>＋ 照片<br>（拍照或相簿）</label>`;
+  const body=r.type==='daily'?`<div class="fld">疼痛（0 不痛～10 最痛）<div class="pain"><input type="range" min="0" max="10" step="1" id="f-pain" value="${r.pain??0}"><b id="painv">${r.pain??0}</b></div></div>
+      <div class="row2"><label class="fld">體重（kg）<input id="f-weight" inputmode="decimal" value="${esc(r.weight||'')}"></label><label class="fld">腫脹<select id="f-swell">${['','還好','有點腫','很腫','消了一些'].map(s=>`<option ${r.swell===s?'selected':''}>${s}</option>`).join('')}</select></label></div>
+      <label class="fld">今天吃了什麼<input id="f-food" value="${esc(r.food||'')}" placeholder="例如：安素 2 罐、滴雞精、濃湯"></label>
+      <label class="fld">一句話<input id="f-text" value="${esc(r.text||'')}" placeholder="心情、身體的感覺"></label>`
+    :`${r.type==='note'?`<label class="fld">標題<input id="f-title" value="${esc(r.title||'')}" placeholder="例如：11/9 羅醫師看診"></label>`:''}<label class="fld">${r.type==='teeth'?'備註（選填）':'內容'}<textarea id="f-text">${esc(r.text||'')}</textarea></label>`;
+  dialog(`<h3>${isNew?'新增':'修改'}${TYPES[r.type]}</h3><label class="fld">日期<input type="date" id="f-date" value="${r.date}"></label>
+    ${r.type==='teeth'?'<p class="lede">每次都用同樣的角度和光線拍，之後才能前後比較。</p>':''}
+    ${r.type!=='daily'?`<div class="shots">${shots}</div>`:''}${body}${r.type==='daily'?`<div class="fld">腫脹照（選填）</div><div class="shots">${shots}</div>`:''}
+    <div class="acts"><button data-x>取消</button><button class="pri" data-ok>存好</button></div>${isNew?'':'<button class="del" data-del>刪除這筆</button>'}`,
+  (box,close)=>{
+    const p=box.querySelector('#f-pain');if(p)p.oninput=()=>box.querySelector('#painv').textContent=p.value;
+    const redrawShots=()=>{const s=box.querySelectorAll('.shots');const html=r.type==='teeth'?ANGLES.map(a=>`<label class="shot${r.photos[a]?' has':''}" data-shot="${a}" ${r.photos[a]?`data-m="${r.photos[a]}"`:''}><input type="file" accept="image/*"><span>${a}</span></label>`).join(''):`${r.photos.map((m,i)=>`<label class="shot has" data-m="${m}" data-pi="${i}"><span>點一下拿掉</span></label>`).join('')}<label class="shot" data-add><input type="file" accept="image/*" multiple>＋ 照片<br>（拍照或相簿）</label>`;s.forEach(x=>x.innerHTML=html);paint(box);};
+    box.addEventListener('change',async e=>{
+      if(e.target.type!=='file'||!e.target.files.length)return;const sh=e.target.closest('[data-shot]');
+      if(sh){r.photos[sh.dataset.shot]=await addPhoto(e.target.files[0]);}else{for(const f of e.target.files)r.photos.push(await addPhoto(f));}
+      redrawShots();
+    });
+    box.addEventListener('click',e=>{const pi=e.target.closest('[data-pi]');if(pi){e.preventDefault();r.photos.splice(+pi.dataset.pi,1);redrawShots();}});
+    paint(box);
+    box.querySelector('[data-ok]').onclick=()=>{
+      const v=id=>{const el=box.querySelector(id);return el?el.value.trim():undefined};
+      r.date=v('#f-date')||todayStr();if(r.type==='daily'){r.pain=+v('#f-pain');r.weight=v('#f-weight');r.swell=v('#f-swell');r.food=v('#f-food');}
+      if(r.type==='note')r.title=v('#f-title');r.text=v('#f-text')||'';
+      const i=D.records.findIndex(x=>x.id===r.id);if(i>=0)D.records[i]=r;else D.records.push(r);save();close();toast('存好了');renderLog();
+    };
+    const d=box.querySelector('[data-del]');if(d)d.onclick=()=>{if(!confirm('確定刪除這筆紀錄？'))return;D.records=D.records.filter(x=>x.id!==r.id);save();close();renderLog();};
+  });
+}
+
+/* ---------- 物品 ---------- */
+const ST={buy:'要買',got:'已買',use:'在用'},ST_TASK={buy:'要辦',got:'辦好'};
+let itemF='全部';
+const isTask=it=>it.cat==='術前事務';
+function stLabel(it){return isTask(it)?ST_TASK[it.status==='buy'?'buy':'got']:ST[it.status];}
+function renderItems(){
+  const L=D.items.filter(it=>itemF==='全部'||(itemF==='要買'?it.status==='buy':itemF==='在用'?it.status==='use':false));
+  const goods=D.items.filter(it=>!isTask(it)&&it.status!=='use');const ready=goods.filter(it=>it.status==='got').length;
+  $('#progbar').style.width=(goods.length?ready/goods.length*100:0)+'%';
+  $('#progtext').textContent=`手術要準備的東西：已買 ${ready} / ${goods.length} 件`;
+  $('#itemchips').innerHTML=['全部','要買','在用'].map(k=>`<button data-if="${k}" aria-pressed="${itemF===k}">${k}</button>`).join('');
+  const cats=[...new Set([...CATS,...D.items.map(i=>i.cat)])];
+  $('#groups').innerHTML=cats.map(cat=>{const G=L.filter(i=>i.cat===cat);if(!G.length)return '';
+    return `<div class="group"><div class="group-h"><h3>${esc(cat)}</h3><small>${G.length} 件</small></div><div class="list">${G.map(it=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic${it.photo?'':' none'}" ${it.photo?`data-m="${it.photo}"`:''}></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${[it.when,it.note,it.place,it.price?`$${it.price}`:''].filter(Boolean).length?`<span>${esc([it.when,it.note,it.place,it.price?'$'+it.price:''].filter(Boolean).join('・'))}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`).join('')}</div></div>`;}).join('')||'<div class="empty">沒有符合的物品</div>';
+  paint($('#items'));
+}
+$('#items').addEventListener('click',e=>{
+  const f=e.target.closest('[data-if]');if(f){itemF=f.dataset.if;renderItems();return;}
+  const s=e.target.closest('[data-st]');if(s){const it=D.items.find(x=>x.id===s.dataset.st);it.status=isTask(it)?(it.status==='buy'?'got':'buy'):({buy:'got',got:'use',use:'buy'})[it.status];save();renderItems();return;}
+  const n=e.target.closest('[data-it]');if(n)itemDialog(D.items.find(x=>x.id===n.dataset.it));
+});
+function itemDialog(it){
+  const isNew=!it;it=it?{...it}:{id:uid(),name:'',cat:'日常在用',qty:'',note:'',status:'use',when:''};
+  dialog(`<h3>${isNew?'新增物品':'修改物品'}</h3>
+    <label class="fld">名稱<input id="f-name" value="${esc(it.name)}" placeholder="例如：電動牙刷"></label>
+    <div class="fld">狀態<div class="seg" id="f-st">${Object.entries(ST).map(([k,t])=>`<button data-v="${k}" aria-pressed="${it.status===k}">${t}</button>`).join('')}</div></div>
+    <div class="row2"><label class="fld">類別<select id="f-cat">${[...new Set([...CATS,it.cat])].map(c=>`<option ${c===it.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label class="fld">什麼時候用<select id="f-when">${WHEN.map(w=>`<option value="${w}" ${w===it.when?'selected':''}>${w||'—'}</option>`).join('')}</select></label></div>
+    <div class="row2"><label class="fld">數量<input id="f-qty" value="${esc(it.qty)}"></label><label class="fld">價格<input id="f-price" inputmode="numeric" value="${esc(it.price||'')}"></label></div>
+    <label class="fld">在哪買<input id="f-place" value="${esc(it.place||'')}" placeholder="店名或網址"></label>
+    <label class="fld">備註<input id="f-note" value="${esc(it.note)}"></label>
+    <div class="fld">照片</div><div class="shots" style="grid-template-columns:repeat(3,1fr)"><label class="shot${it.photo?' has':''}" ${it.photo?`data-m="${it.photo}"`:''}><input type="file" accept="image/*">${it.photo?'<span>換一張</span>':'＋ 照片'}</label></div>
+    <div class="acts"><button data-x>取消</button><button class="pri" data-ok>存好</button></div>${isNew?'':'<button class="del" data-del>刪除這件</button>'}`,
+  (box,close)=>{
+    paint(box);
+    box.querySelectorAll('#f-st [data-v]').forEach(b=>b.onclick=()=>{it.status=b.dataset.v;box.querySelectorAll('#f-st [data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+    box.querySelector('input[type=file]').onchange=async e=>{if(!e.target.files.length)return;it.photo=await addPhoto(e.target.files[0]);const s=box.querySelector('.shot');s.classList.add('has');s.dataset.m=it.photo;[...s.childNodes].forEach(n=>{if(n.nodeType===3)n.remove()});if(!s.querySelector('span'))s.insertAdjacentHTML('beforeend','<span>換一張</span>');paint(box);};
+    box.querySelector('[data-ok]').onclick=()=>{
+      const v=id=>box.querySelector(id).value.trim();it.name=v('#f-name');if(!it.name)return toast('先寫名稱');
+      Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price'),place:v('#f-place'),note:v('#f-note')});
+      const i=D.items.findIndex(x=>x.id===it.id);if(i>=0)D.items[i]=it;else D.items.unshift(it);save();close();renderItems();};
+    const d=box.querySelector('[data-del]');if(d)d.onclick=()=>{if(!confirm('確定刪除這件物品？'))return;D.items=D.items.filter(x=>x.id!==it.id);save();close();renderItems();};
+  });
+}
+
+/* ---------- Mood board ---------- */
 const mood=[['m1','找 2–3 張「最漂亮的側臉／笑容」照片'],['m2','找 2 張「絕對不想要的臉型」照片'],['m3','10/5 帶給白醫師討論'],['m4','11/9 給羅醫師看']];
-const moodEl=document.getElementById('moodlist');
+const moodEl=$('#moodlist');
 function renderMood(){moodEl.innerHTML=mood.map(([id,t])=>{const on=!!checked[id];return `<label class="chk ${on?'done':''}" for="${id}"><input type="checkbox" id="${id}" ${on?'checked':''}><span>${t}</span><span class="q"></span></label>`}).join('')}
 moodEl.addEventListener('change',e=>{checked[e.target.id]=e.target.checked;store.set('checks',checked);renderMood()});
 renderMood();
 
-/* recovery stages */
+/* ---------- 恢復階段 ---------- */
 const stages=[
-  {name:'術後當天',from:0,to:0,place:'醫院',
-   body:'麻醉退後開始脹痛，雙頰快速腫脹，口內有血水，大多只能靠眼神或打字溝通。',
-   care:'嚴格冰敷、半坐臥休息（三角靠枕）、穿前開式睡衣，避免嘴巴張太大。',
-   food:'禁食或少量開水，依醫囑。',
-   stuff:'冰敷袋、頭套、靠枕、看護墊、針筒、漱口水、衣物',budget:'約 $4,300–8,300（第一階段總備品）'},
-  {name:'第 1–3 天',from:1,to:3,place:'醫院',
-   body:'腫脹最高峰期，眼周可能出現黃斑瘀青，體力很弱。',
-   care:'持續冰敷，用針筒灌食安素、滴雞精；每次進食後用無酒精漱口水輕漱。',
-   food:'純流質：安素、高蛋白、滴雞精、米湯。',
-   stuff:'延續第一階段備品',budget:''},
-  {name:'第 1 週',from:4,to:7,place:'哥哥家',
-   body:'進入消腫轉換期，腫脹從臉頰往下巴移，瘀青轉黃綠色；體力恢復到可在房間走動。',
-   care:'問醫生是否改溫敷；改喝高營養濃湯、流質，絕對不要嚼東西。',
-   food:'純流質和無顆粒滑順濃湯。不用吸管、不用調理機。',
-   stuff:'第 4–5 天補貨：鮮優酪乳、布丁、濃湯',budget:'約 $500–1,000'},
-  {name:'第 2 週',from:8,to:14,place:'哥哥家',
-   body:'外觀腫脹消 40–50%，笑起來還會緊繃僵硬，準備回診。',
-   care:'體力允許下可以洗頭洗澡。',
-   food:'半流質：優酪乳、布丁、濾渣豆漿、稀飯、蒸蛋、豆花。',
-   stuff:'延續前階段物資',budget:''},
-  {name:'第 3 週～1 個月',from:15,to:30,place:'回家',
-   body:'消腫 70–80%，輪廓線條變明顯，開始看到直面型和下巴成形。',
-   care:'準備立體口罩回歸社交和上班，持續追蹤恢復狀況。',
-   food:'告別純流質，過渡到免咀嚼食物：蒸蛋、豆腐、魚肉、軟爛麵線、粥。',
-   stuff:'食物和營養品升級',budget:'約 $1,000–2,000'},
-  {name:'第 2～6 個月',from:31,to:99999,place:'定型期',
-   body:'剩最後 10–15% 深層水腫，骨頭癒合定型，側臉線條完整呈現。',
-   care:'臉部保濕保養，搭配溫敷輕柔按摩僵硬的咀嚼肌。',
-   food:'逐步恢復正常飲食（依醫師評估）。',
-   stuff:'臉部保濕修護保養品',budget:'約 $500–1,500'}
+  {name:'術後當天',from:0,to:0,place:'醫院',body:'麻醉退後開始脹痛，雙頰快速腫脹，口內有血水，大多只能靠眼神或打字溝通。',care:'嚴格冰敷、半坐臥休息（三角靠枕）、穿前開式睡衣，避免嘴巴張太大。',food:'禁食或少量開水，依醫囑。',stuff:'冰敷袋、頭套、靠枕、看護墊、針筒、漱口水、衣物',budget:'約 $4,300–8,300（第一階段總備品）'},
+  {name:'第 1–3 天',from:1,to:3,place:'醫院',body:'腫脹最高峰期，眼周可能出現黃斑瘀青，體力很弱。',care:'持續冰敷，用針筒灌食安素、滴雞精；每次進食後用無酒精漱口水輕漱。',food:'純流質：安素、高蛋白、滴雞精、米湯。',stuff:'延續第一階段備品',budget:''},
+  {name:'第 1 週',from:4,to:7,place:'哥哥家',body:'進入消腫轉換期，腫脹從臉頰往下巴移，瘀青轉黃綠色；體力恢復到可在房間走動。',care:'問醫生是否改溫敷；改喝高營養濃湯、流質，絕對不要嚼東西。',food:'純流質和無顆粒滑順濃湯。不用吸管、不用調理機。',stuff:'第 4–5 天補貨：鮮優酪乳、布丁、濃湯',budget:'約 $500–1,000'},
+  {name:'第 2 週',from:8,to:14,place:'哥哥家',body:'外觀腫脹消 40–50%，笑起來還會緊繃僵硬，準備回診。',care:'體力允許下可以洗頭洗澡。',food:'半流質：優酪乳、布丁、濾渣豆漿、稀飯、蒸蛋、豆花。',stuff:'延續前階段物資',budget:''},
+  {name:'第 3 週～1 個月',from:15,to:30,place:'回家',body:'消腫 70–80%，輪廓線條變明顯，開始看到直面型和下巴成形。',care:'準備立體口罩回歸社交和上班，持續追蹤恢復狀況。',food:'告別純流質，過渡到免咀嚼食物：蒸蛋、豆腐、魚肉、軟爛麵線、粥。',stuff:'食物和營養品升級',budget:'約 $1,000–2,000'},
+  {name:'第 2～6 個月',from:31,to:99999,place:'定型期',body:'剩最後 10–15% 深層水腫，骨頭癒合定型，側臉線條完整呈現。',care:'臉部保濕保養，搭配溫敷輕柔按摩僵硬的咀嚼肌。',food:'逐步恢復正常飲食（依醫師評估）。',stuff:'臉部保濕修護保養品',budget:'約 $500–1,500'}
 ];
-const nowIdx=post<0?-1:stages.findIndex(s=>post>=s.from&&post<=s.to);
-let sel=nowIdx>=0?nowIdx:0;
-const btns=document.getElementById('stagebtns');
-function renderStage(){
-  btns.innerHTML=stages.map((s,i)=>`<button aria-pressed="${i===sel}" class="${i===nowIdx?'now':''}" data-i="${i}">${s.name}</button>`).join('');
-  const s=stages[sel];
-  document.getElementById('stagebody').innerHTML=`
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px">
-      <h3 style="margin:0;font-family:var(--display);font-size:18px">${s.name}</h3><span class="hex tan">${s.place}</span></div>
-    <dl><div><dt>身體狀態</dt><dd>${s.body}</dd></div>
-    <div><dt>照護重點</dt><dd>${s.care}</dd></div>
-    <div><dt>飲食</dt><dd>${s.food}</dd></div>
-    <div><dt>物資</dt><dd>${s.stuff}${s.budget?`<div class="budget">${s.budget}</div>`:''}</dd></div></dl>`;
-}
+const nowIdx=post<0?-1:stages.findIndex(s=>post>=s.from&&post<=s.to);let sel=nowIdx>=0?nowIdx:0;
+const btns=$('#stagebtns');
+function renderStage(){btns.innerHTML=stages.map((s,i)=>`<button aria-pressed="${i===sel}" class="${i===nowIdx?'now':''}" data-i="${i}">${s.name}</button>`).join('');const s=stages[sel];
+  $('#stagebody').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0;font-family:var(--display);font-size:18px">${s.name}</h3><span class="hex tan">${s.place}</span></div><dl><div><dt>身體狀態</dt><dd>${s.body}</dd></div><div><dt>照護重點</dt><dd>${s.care}</dd></div><div><dt>飲食</dt><dd>${s.food}</dd></div><div><dt>物資</dt><dd>${s.stuff}${s.budget?`<div class="budget">${s.budget}</div>`:''}</dd></div></dl>`;}
 btns.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;sel=+b.dataset.i;renderStage()});
 renderStage();
 
-/* tabs */
-const tabs=['home','list','recover','rules','talk'];
+/* ---------- 新增（右下＋）、分頁、備份 ---------- */
+document.addEventListener('click',e=>{const n=e.target.closest('[data-new]');if(n)recDialog(null,n.dataset.new);});
+$('#fab').onclick=()=>{const t=store.get('tab','home');t==='items'?itemDialog(null):t==='log'?typePicker():typePicker();};
+$('#backup').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({ogs:D,checks:checked},null,2)],{type:'application/json'}));a.download=`正顎手冊備份-${todayStr()}.json`;a.click();};
+const tabs=['home','log','items','recover','talk'];
 function show(t){
-  if(!tabs.includes(t))t='home';
-  tabs.forEach(x=>document.getElementById(x).hidden=x!==t);
+  if(t==='list')t='items';if(t==='rules')t='recover';if(!tabs.includes(t))t='home';
+  tabs.forEach(x=>$('#'+x).hidden=x!==t);
   document.querySelectorAll('nav.tabs button').forEach(b=>{if(b.dataset.tab===t)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  $('#fab').hidden=!(t==='log'||t==='items'||t==='home');
+  if(t==='log')renderLog();if(t==='items')renderItems();
   store.set('tab',t);window.scrollTo(0,0);
 }
 document.querySelector('nav.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.tab)});
@@ -449,7 +586,5 @@ show((location.hash||'').slice(1)||store.get('tab','home'));
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 </script>
-<a class="to-origina" href="https://fuwei0618-cmd.github.io/Entry/map/" aria-label="回到 Origina 地圖">↖ Origina</a><script>if(window.top!==window.self){var _o=document.querySelector(".to-origina");_o&&_o.remove();}</script>
-<style>.to-origina{position:fixed;left:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:15;font:600 12px/1 "Noto Sans TC",system-ui,sans-serif;letter-spacing:.04em;text-decoration:none;color:#2B2724;background:rgba(236,232,225,.88);border:1px solid rgba(43,39,36,.18);border-radius:999px;padding:7px 11px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}</style>
 </body>
 </html>
