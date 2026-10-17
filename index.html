@@ -211,6 +211,7 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 .backup{display:block;margin:20px auto 0;font:inherit;font-size:12px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer}
 #toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;background:var(--ink);color:var(--bg);font-size:13px;padding:8px 14px;border-radius:999px}
 
+#scchips{flex-wrap:wrap;overflow:visible;margin:0 0 4px;padding:0}
 /* 恢復階段：橫向時間線 */
 .htl-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .htl-top .lede{margin:0}
@@ -325,15 +326,10 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
       </tbody>
     </table></div>
 
-    <h2>照護守則</h2>
-    <div class="stack rgrid">
-      <div class="alert"><b>手術前一天</b>：白天可以正常吃，但護理師宣布「禁食禁水」後（通常是前一天半夜或術前 8 小時），一口水、一口營養品都不能碰。時間以麻醉醫師說的為準。</div>
-      <div class="card rule"><h3>1. 術後進食</h3><div class="gold">少量多餐，絕對不用吸管</div><ul><li>前兩週以流質為主：安素、高蛋白、滴雞精、濃湯</li><li>用餵食針筒（接軟管）或杯子慢慢喝</li><li>不用調理機打顆粒食物</li></ul><div class="why">吸管的口腔負壓會拉扯傷口、讓血水滲出；少量多餐避免脹氣和吞嚥困難。</div></div>
-      <div class="card rule"><h3>2. 口腔清潔</h3><div class="gold">吃完立刻漱口，溫柔為主</div><ul><li>每次進食後用針筒抽清水輕輕沖牙縫</li><li>含一口無酒精漱口水，輕柔漱動後吐掉</li><li>不用電動牙刷，只用軟毛牙刷輕輕帶過</li></ul><div class="why">前期傷口多，電動牙刷震動會刺激甚至裂開傷口；酒精會刺痛傷口。</div></div>
-      <div class="card rule"><h3>3. 怎麼知道有沒有清乾淨</h3><div class="gold">靠口感和味道判斷</div><ul><li>不用拿鏡子放大檢查</li><li>每次沖過、漱過，嘴裡沒有黏膩感、沒有酸臭味，就是乾淨的</li></ul></div>
-      <div class="card rule"><h3>4. 臉部清潔與消腫</h3><div class="gold">不用噴水壺裝生水噴臉</div><ul><li>臉發熱腫脹時，用乾淨毛巾包軟式冰袋冰敷</li><li>想清爽時，用生理食鹽水或煮沸放涼的開水沾濕紗布、嬰兒濕紙巾輕擦</li></ul><div class="why">生水的細菌碰到傷口會提高感染風險。</div></div>
-      <div class="card rule"><h3>5. 睡覺姿勢</h3><div class="gold">半坐臥，頭高於心臟</div><ul><li>用三角靠枕墊高約 30 度，不要平躺</li><li>床上鋪看護墊，防血水滲透</li></ul></div>
-    </div>
+    <h2>照護守則：遇到這個情況怎麼辦</h2>
+    <p class="lede">點你現在的情況，就看到該怎麼做。</p>
+    <div class="chips" id="scchips"></div>
+    <div id="scbody"></div>
   </section>
 
   <!-- 醫師 -->
@@ -606,6 +602,26 @@ $('#stageAll').onclick=()=>{allOpen=!allOpen;renderStage();};
 renderStage();
 setTimeout(()=>{const n=htl.querySelector('.now');if(n)htl.scrollLeft=n.offsetLeft-16;},50);
 
+
+/* 照護守則（情境式）：點「現在的情況」看該怎麼做 */
+const SCENES=[
+ {k:'eve',q:'手術前一天晚上',when:'術前',do:['白天可以正常吃','護理師宣布「禁食禁水」後，一口水、一口營養品都不能碰','時間以麻醉醫師說的為準（通常是前一天半夜或術前 8 小時）'],why:'空腹麻醉比較安全。',alert:1},
+ {k:'hungry',q:'我肚子餓、想吃東西',when:'術後前兩週',do:['少量多餐，一次喝一點','前兩週以流質為主：安素、高蛋白、滴雞精、濃湯','用餵食針筒（接軟管）或杯子慢慢喝','絕對不用吸管，也不用調理機打顆粒食物'],why:'吸管的口腔負壓會拉扯傷口、讓血水滲出；少量多餐避免脹氣和吞嚥困難。'},
+ {k:'ate',q:'剛吃完東西',when:'每次吃完',do:['用針筒抽清水，輕輕沖牙縫','含一口無酒精漱口水，輕柔漱動後吐掉','只用軟毛牙刷輕輕帶過，先不要用電動牙刷'],why:'前期傷口多，電動牙刷的震動會刺激甚至裂開傷口；酒精會刺痛傷口。'},
+ {k:'clean',q:'不確定嘴巴有沒有清乾淨',when:'任何時候',do:['不用拿鏡子放大檢查','沖過、漱過之後，嘴裡沒有黏膩感、沒有酸臭味，就是乾淨的'],why:'越去檢查越想動傷口，用口感和味道判斷就夠了。'},
+ {k:'hot',q:'臉好熱、好腫',when:'術後第一週',do:['用乾淨毛巾包著軟式冰袋冰敷','戴上加壓冰敷頭套','第一週過後，問醫師要不要改溫敷'],why:'冰敷能消腫止痛；第一週後腫脹轉換期，可能改溫敷比較好。'},
+ {k:'face',q:'想把臉弄清爽',when:'術後前期',do:['用生理食鹽水，或煮沸放涼的開水沾濕紗布輕擦','也可以用嬰兒濕紙巾','不要用噴水壺裝生水噴臉'],why:'生水的細菌碰到傷口，會提高感染風險。'},
+ {k:'sleep',q:'我想睡覺了',when:'術後一個月內',do:['半坐臥，用三角靠枕墊高約 30 度','頭要高於心臟，不要平躺','床上鋪看護墊，防血水滲透'],why:'頭抬高可以減少腫脹，也比較不會嗆到。'},
+ {k:'talk',q:'說不出話、很難溝通',when:'術後前幾天',do:['先準備好手機打字或白板','跟家人約好簡單的手勢：點頭、搖頭、要喝水、會痛'],why:'術後當天大多只能靠眼神或打字溝通，先講好會安心很多。'}
+];
+let scSel=post>=0&&post<=1?'hot':diff<=1&&diff>=0?'eve':'hungry';
+function renderScenes(){
+  $('#scchips').innerHTML=SCENES.map(c=>`<button data-sc="${c.k}" aria-pressed="${c.k===scSel}">${c.q}</button>`).join('');
+  const c=SCENES.find(x=>x.k===scSel);
+  $('#scbody').innerHTML=`<div class="${c.alert?'alert':'card rule'}" style="margin-top:6px"><h3 style="margin:0 0 4px">${c.q}</h3><div class="lede" style="margin:0 0 6px">${c.when}</div><ol style="margin:0;padding-left:1.3em">${c.do.map(x=>`<li>${x}</li>`).join('')}</ol><div class="why">${c.why}</div></div>`;
+}
+$('#scchips').addEventListener('click',e=>{const b=e.target.closest('[data-sc]');if(!b)return;scSel=b.dataset.sc;renderScenes();});
+renderScenes();
 /* ---------- 新增（右下＋）、分頁、備份 ---------- */
 document.addEventListener('click',e=>{const n=e.target.closest('[data-new]');if(n)recDialog(null,n.dataset.new);});
 $('#fab').onclick=()=>{const t=store.get('tab','home');t==='items'?itemDialog(null):t==='log'?typePicker():typePicker();};
