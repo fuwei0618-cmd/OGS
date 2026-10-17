@@ -210,6 +210,32 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 .del{display:block;margin:18px auto 0;font:inherit;font-size:13px;background:none;border:0;color:var(--warn);cursor:pointer}
 .backup{display:block;margin:20px auto 0;font:inherit;font-size:12px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer}
 #toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;background:var(--ink);color:var(--bg);font-size:13px;padding:8px 14px;border-radius:999px}
+
+/* 恢復階段：橫向時間線 */
+.htl-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.htl-top .lede{margin:0}
+.mini{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+.mini[aria-pressed="true"]{background:var(--olive);border-color:var(--olive);color:var(--surface)}
+.htl{scroll-padding-inline:16px;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(240px,1fr);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:18px 16px 10px;position:relative;align-items:start}
+.hcol{scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 14px 12px;position:relative;cursor:pointer;min-width:0}
+.hcol .hdot{position:absolute;top:-12px;left:14px;width:12px;height:12px;border-radius:50%;border:2px solid var(--clay);background:var(--bg)}
+.hcol.past .hdot{background:var(--clay)}
+.hcol.now{border-color:var(--olive);box-shadow:0 0 0 2px var(--olive)}
+.hcol.now .hdot{background:var(--olive);border-color:var(--olive)}
+.hnow{position:absolute;top:-10px;right:12px;font-size:11px;font-weight:700;background:var(--olive);color:var(--surface);border-radius:999px;padding:1px 8px}
+.hhd{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px}
+.hhd b{font-family:var(--display);font-size:16px}
+.hcol dl{margin:0;display:grid;gap:10px}
+.hcol dt{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--clay-ink)}
+.hcol dd{margin:2px 0 0;font-size:14px}
+.hcol .more{font-size:12px;color:var(--muted)}
+/* iPad：框架放大，守則排成兩欄 */
+@media (min-width:820px){
+  .wrap{max-width:1000px}
+  .htl{margin:0;padding-inline:0;grid-auto-columns:minmax(260px,1fr)}
+  .rgrid{grid-template-columns:1fr 1fr}
+  .rgrid .alert{grid-column:1/-1}
+}
 </style>
 <script src="https://fuwei0618-cmd.github.io/Entry/sync/origina-sync.js" data-app="ogs" data-keys="checks,ogs.v2" data-pos="br"></script>
 </head>
@@ -274,9 +300,8 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
   <!-- 恢復＋守則 -->
   <section class="tab" id="recover" hidden>
     <h2>術後恢復階段</h2>
-    <p class="lede">點選階段查看，會自動標出你現在在哪一段。</p>
-    <div class="stages" id="stagebtns" role="group" aria-label="恢復階段"></div>
-    <div class="card stage-body" id="stagebody" style="margin-top:10px"></div>
+    <div class="htl-top"><p class="lede">往右滑看下一段，「現在」會自動標出來。點一段看完整內容。</p><button class="mini" id="stageAll" aria-pressed="false">展開全部</button></div>
+    <div class="htl" id="htl" role="list" aria-label="恢復階段時間線"></div>
 
     <h2>營養品怎麼帶</h2>
     <div class="tablewrap"><table>
@@ -301,7 +326,7 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     </table></div>
 
     <h2>照護守則</h2>
-    <div class="stack">
+    <div class="stack rgrid">
       <div class="alert"><b>手術前一天</b>：白天可以正常吃，但護理師宣布「禁食禁水」後（通常是前一天半夜或術前 8 小時），一口水、一口營養品都不能碰。時間以麻醉醫師說的為準。</div>
       <div class="card rule"><h3>1. 術後進食</h3><div class="gold">少量多餐，絕對不用吸管</div><ul><li>前兩週以流質為主：安素、高蛋白、滴雞精、濃湯</li><li>用餵食針筒（接軟管）或杯子慢慢喝</li><li>不用調理機打顆粒食物</li></ul><div class="why">吸管的口腔負壓會拉扯傷口、讓血水滲出；少量多餐避免脹氣和吞嚥困難。</div></div>
       <div class="card rule"><h3>2. 口腔清潔</h3><div class="gold">吃完立刻漱口，溫柔為主</div><ul><li>每次進食後用針筒抽清水輕輕沖牙縫</li><li>含一口無酒精漱口水，輕柔漱動後吐掉</li><li>不用電動牙刷，只用軟毛牙刷輕輕帶過</li></ul><div class="why">前期傷口多，電動牙刷震動會刺激甚至裂開傷口；酒精會刺痛傷口。</div></div>
@@ -566,11 +591,20 @@ const stages=[
   {name:'第 2～6 個月',from:31,to:99999,place:'定型期',body:'剩最後 10–15% 深層水腫，骨頭癒合定型，側臉線條完整呈現。',care:'臉部保濕保養，搭配溫敷輕柔按摩僵硬的咀嚼肌。',food:'逐步恢復正常飲食（依醫師評估）。',stuff:'臉部保濕修護保養品',budget:'約 $500–1,500'}
 ];
 const nowIdx=post<0?-1:stages.findIndex(s=>post>=s.from&&post<=s.to);let sel=nowIdx>=0?nowIdx:0;
-const btns=$('#stagebtns');
-function renderStage(){btns.innerHTML=stages.map((s,i)=>`<button aria-pressed="${i===sel}" class="${i===nowIdx?'now':''}" data-i="${i}">${s.name}</button>`).join('');const s=stages[sel];
-  $('#stagebody').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0;font-family:var(--display);font-size:18px">${s.name}</h3><span class="hex tan">${s.place}</span></div><dl><div><dt>身體狀態</dt><dd>${s.body}</dd></div><div><dt>照護重點</dt><dd>${s.care}</dd></div><div><dt>飲食</dt><dd>${s.food}</dd></div><div><dt>物資</dt><dd>${s.stuff}${s.budget?`<div class="budget">${s.budget}</div>`:''}</dd></div></dl>`;}
-btns.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;sel=+b.dataset.i;renderStage()});
+/* 橫向時間線：每段一欄，平常只看身體狀態；點一段或「展開全部」看照護、飲食、物資 */
+const htl=$('#htl'),openSet=new Set(nowIdx>=0?[nowIdx]:[]);let allOpen=false;
+function renderStage(){
+  htl.innerHTML=stages.map((s,i)=>{const open=allOpen||openSet.has(i);return `<article class="hcol${i===nowIdx?' now':''}${open?' open':''}${nowIdx>i?' past':''}" data-i="${i}" role="listitem">
+    <div class="hdot"></div>
+    <div class="hhd"><b>${s.name}</b><span class="hex tan">${s.place}</span></div>
+    ${i===nowIdx?'<span class="hnow">現在</span>':''}
+    <dl><div><dt>身體狀態</dt><dd>${s.body}</dd></div>${open?`<div><dt>照護重點</dt><dd>${s.care}</dd></div><div><dt>飲食</dt><dd>${s.food}</dd></div><div><dt>物資</dt><dd>${s.stuff}${s.budget?`<div class="budget">${s.budget}</div>`:''}</dd></div>`:'<div class="more">照護・飲食・物資 ▾</div>'}</dl></article>`;}).join('');
+  $('#stageAll').textContent=allOpen?'收起來':'展開全部';$('#stageAll').setAttribute('aria-pressed',allOpen);
+}
+htl.addEventListener('click',e=>{const c=e.target.closest('.hcol');if(!c||allOpen)return;const i=+c.dataset.i;openSet.has(i)?openSet.delete(i):openSet.add(i);renderStage();});
+$('#stageAll').onclick=()=>{allOpen=!allOpen;renderStage();};
 renderStage();
+setTimeout(()=>{const n=htl.querySelector('.now');if(n)htl.scrollLeft=n.offsetLeft-16;},50);
 
 /* ---------- 新增（右下＋）、分頁、備份 ---------- */
 document.addEventListener('click',e=>{const n=e.target.closest('[data-new]');if(n)recDialog(null,n.dataset.new);});
