@@ -67,6 +67,7 @@ section.tab{padding-top:8px}
 .count .num small{font-size:20px;margin-left:6px;font-weight:600}
 .count .sub{font-size:13px;opacity:.9}
 
+.me-sum{display:grid;gap:8px}.me-sum div{display:flex;gap:12px;font-size:14px}.me-sum span{width:3em;flex:none;color:var(--muted)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .stack{display:grid;gap:10px}
 
@@ -123,9 +124,10 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 
 blockquote{margin:0;padding:12px 14px;border-radius:12px;background:var(--tan);color:var(--ink);font-size:14px}
 .qs{counter-reset:q;display:grid;gap:10px;list-style:none;padding:0;margin:0}
-.qs li{counter-increment:q;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 48px;position:relative}
-.qs li::before{content:counter(q);position:absolute;left:14px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--clay);color:var(--ink);font-weight:700;font-size:13px;display:grid;place-items:center}
+.qs>li{counter-increment:q;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 48px;position:relative}
+.qs>li::before{content:counter(q);position:absolute;left:14px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--clay);color:var(--ink);font-weight:700;font-size:13px;display:grid;place-items:center}
 .qs ul{margin:4px 0 0;padding-left:1.1em;font-size:14px}
+.qs ul li{margin:2px 0}
 
 .foot{margin-top:32px;font-size:12px;color:var(--muted);text-align:center}
 
@@ -294,7 +296,6 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     <div class="chips" id="logchips"></div>
     <div id="cmpwrap"></div>
     <div class="rec" id="reclist"></div>
-    <button class="backup" id="backup">下載備份（文字資料）</button>
   </section>
 
   <!-- 物品 -->
@@ -352,8 +353,21 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     <div id="scbody"></div>
   </section>
 
-  <!-- 醫師 -->
+  <!-- 我 -->
   <section class="tab" id="talk" hidden>
+    <h2>我的手術</h2>
+    <div class="card me-sum">
+      <div><span>住院</span><b>12/17（四）</b></div>
+      <div><span>手術</span><b>12/18（五）</b></div>
+      <div><span>出院</span><b>12/20（日）・到哥哥家休養</b></div>
+      <div><span>看診</span><b>10/5 白醫師・11/9 羅醫師</b></div>
+    </div>
+    <h2>我的基本資料</h2>
+    <p class="lede">住院、填表、回診時要報的東西放這裡，改了就自動存。</p>
+    <div class="row2"><label class="fld">身高（cm）<input id="me-height" data-me="height" inputmode="decimal"></label><label class="fld">術前體重（kg）<input id="me-weight" data-me="weight" inputmode="decimal"></label></div>
+    <label class="fld">藥物或食物過敏<input id="me-allergy" data-me="allergy" placeholder="沒有就寫「無」"></label>
+    <label class="fld">緊急聯絡人<input id="me-contact" data-me="contact" placeholder="例如：哥哥 0912…"></label>
+    <label class="fld">其他想記的<textarea id="me-note" data-me="note"></textarea></label>
     <h2>跟醫師確認的 4 件事</h2>
     <p class="lede">10/5 白醫師、11/9 羅醫師，帶著這頁和 Mood Board 照片去。11/9 也可以問診所能不能給一份齒列紀錄。</p>
     <ol class="qs">
@@ -370,6 +384,8 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     <div class="card"><p>把最介意的地方講出來後，醫師能用<b>具體的骨頭移動方向、毫米數</b>或<b>類似案例照片</b>回應你，而且你感覺他懂你要的美感，就可以放心交給他。</p></div>
     <h2>Mood Board 準備</h2>
     <div class="list" id="moodlist"></div>
+    <h2>設定</h2>
+    <button class="backup" id="backup" style="margin:0">下載備份（文字資料）</button>
   </section>
 
   <p class="foot">個人經驗紀錄，醫療處置請以主治醫師指示為準。</p>
@@ -383,7 +399,7 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
   <button data-tab="log"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.2"/><path d="M9 6l1.5-2h3L15 6"/></svg>紀錄</button>
   <button data-tab="items"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 10l2 2 4-4M9 16h6"/></svg>物品</button>
   <button data-tab="recover"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>恢復</button>
-  <button data-tab="talk"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>醫師</button>
+  <button data-tab="talk"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.8 3.6-6 7-6s6.2 2.2 7 6"/></svg>我</button>
 </nav>
 
 <script>
@@ -427,7 +443,9 @@ if(!D){
   D.items.unshift({id:uid(),name:'電動牙刷',cat:'日常在用',qty:'',note:'術後前期先不用，改軟毛牙刷',status:'use',when:'日常'},{id:uid(),name:'果汁機',cat:'日常在用',qty:'',note:'',status:'use',when:'日常'});
   store.set('ogs.v2',D);
 }
+initMe();
 const save=()=>store.set('ogs.v2',D);
+function initMe(){D.me=D.me||{};document.querySelectorAll('[data-me]').forEach(el=>{el.value=D.me[el.dataset.me]||'';el.oninput=()=>{D.me[el.dataset.me]=el.value;save();};});}
 
 /* ---------- 照片：先存這台裝置，登入 OneDrive 就上傳到 OGS/media（.jpg，不加密） ---------- */
 const IDB=(()=>{let p;const open=()=>p||(p=new Promise((res,rej)=>{const r=indexedDB.open('ogs-media',1);r.onupgradeneeded=()=>r.result.createObjectStore('m');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}));
