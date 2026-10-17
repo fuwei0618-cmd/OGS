@@ -503,6 +503,8 @@ function recDialog(r,type){
 const ST={buy:'要買',got:'已買',use:'在用'},ST_TASK={buy:'要辦',got:'辦好'};
 let itemF='全部';
 const isTask=it=>it.cat==='術前事務';
+const bmode=b=>!b?'':b.length===7?'month':'date';
+const fmtB=b=>{if(!b)return '';const [y,m,d]=b.split('-');return d?`${+m}/${+d} 買`:`${y}/${+m} 買`;};
 function stLabel(it){return isTask(it)?ST_TASK[it.status==='buy'?'buy':'got']:ST[it.status];}
 function renderItems(){
   const L=D.items.filter(it=>itemF==='全部'||(itemF==='要買'?it.status==='buy':itemF==='在用'?it.status==='use':false));
@@ -512,7 +514,7 @@ function renderItems(){
   $('#itemchips').innerHTML=['全部','要買','在用'].map(k=>`<button data-if="${k}" aria-pressed="${itemF===k}">${k}</button>`).join('');
   const cats=[...new Set([...CATS,...D.items.map(i=>i.cat)])];
   $('#groups').innerHTML=cats.map(cat=>{const G=L.filter(i=>i.cat===cat);if(!G.length)return '';
-    return `<div class="group"><div class="group-h"><h3>${esc(cat)}</h3><small>${G.length} 件</small></div><div class="list">${G.map(it=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic${it.photo?'':' none'}" ${it.photo?`data-m="${it.photo}"`:''}></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${[it.when,it.note,it.place,it.price?`$${it.price}`:''].filter(Boolean).length?`<span>${esc([it.when,it.note,it.place,it.price?'$'+it.price:''].filter(Boolean).join('・'))}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`).join('')}</div></div>`;}).join('')||'<div class="empty">沒有符合的物品</div>';
+    return `<div class="group"><div class="group-h"><h3>${esc(cat)}</h3><small>${G.length} 件</small></div><div class="list">${G.map(it=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic${it.photo?'':' none'}" ${it.photo?`data-m="${it.photo}"`:''}></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${[it.when,fmtB(it.bought),it.note,it.place,it.price?`$${it.price}`:''].filter(Boolean).length?`<span>${esc([it.when,fmtB(it.bought),it.note,it.place,it.price?'$'+it.price:''].filter(Boolean).join('・'))}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`).join('')}</div></div>`;}).join('')||'<div class="empty">沒有符合的物品</div>';
   paint($('#items'));
 }
 $('#items').addEventListener('click',e=>{
@@ -527,17 +529,21 @@ function itemDialog(it){
     <div class="fld">狀態<div class="seg" id="f-st">${Object.entries(ST).map(([k,t])=>`<button data-v="${k}" aria-pressed="${it.status===k}">${t}</button>`).join('')}</div></div>
     <div class="row2"><label class="fld">類別<select id="f-cat">${[...new Set([...CATS,it.cat])].map(c=>`<option ${c===it.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label class="fld">什麼時候用<select id="f-when">${WHEN.map(w=>`<option value="${w}" ${w===it.when?'selected':''}>${w||'—'}</option>`).join('')}</select></label></div>
     <div class="row2"><label class="fld">數量<input id="f-qty" value="${esc(it.qty)}"></label><label class="fld">價格<input id="f-price" inputmode="numeric" value="${esc(it.price||'')}"></label></div>
+    <div class="fld">購買日期<div class="seg" id="f-bm">${[['','不填'],['month','年月'],['date','年月日']].map(([k,t])=>`<button data-v="${k}" aria-pressed="${bmode(it.bought)===k}">${t}</button>`).join('')}</div><input id="f-bought" type="${bmode(it.bought)||'date'}" value="${esc(it.bought||'')}" ${bmode(it.bought)?'':'hidden'} style="margin-top:6px"></div>
     <label class="fld">在哪買<input id="f-place" value="${esc(it.place||'')}" placeholder="店名或網址"></label>
     <label class="fld">備註<input id="f-note" value="${esc(it.note)}"></label>
     <div class="fld">照片</div><div class="shots" style="grid-template-columns:repeat(3,1fr)"><label class="shot${it.photo?' has':''}" ${it.photo?`data-m="${it.photo}"`:''}><input type="file" accept="image/*">${it.photo?'<span>換一張</span>':'＋ 照片'}</label></div>
     <div class="acts"><button data-x>取消</button><button class="pri" data-ok>存好</button></div>${isNew?'':'<button class="del" data-del>刪除這件</button>'}`,
   (box,close)=>{
     paint(box);
+    const bi=box.querySelector('#f-bought');
+    box.querySelectorAll('#f-bm [data-v]').forEach(b=>b.onclick=()=>{const m=b.dataset.v;box.querySelectorAll('#f-bm [data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      const old=bi.value;bi.hidden=!m;if(m){bi.type=m;bi.value=m==='month'?old.slice(0,7):(old.length===7?old+'-01':old);}});
     box.querySelectorAll('#f-st [data-v]').forEach(b=>b.onclick=()=>{it.status=b.dataset.v;box.querySelectorAll('#f-st [data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
     box.querySelector('input[type=file]').onchange=async e=>{if(!e.target.files.length)return;it.photo=await addPhoto(e.target.files[0]);const s=box.querySelector('.shot');s.classList.add('has');s.dataset.m=it.photo;[...s.childNodes].forEach(n=>{if(n.nodeType===3)n.remove()});if(!s.querySelector('span'))s.insertAdjacentHTML('beforeend','<span>換一張</span>');paint(box);};
     box.querySelector('[data-ok]').onclick=()=>{
       const v=id=>box.querySelector(id).value.trim();it.name=v('#f-name');if(!it.name)return toast('先寫名稱');
-      Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price'),place:v('#f-place'),note:v('#f-note')});
+      const bmv=box.querySelector('#f-bought');it.bought=bmv.hidden?'':bmv.value;Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price'),place:v('#f-place'),note:v('#f-note')});
       const i=D.items.findIndex(x=>x.id===it.id);if(i>=0)D.items[i]=it;else D.items.unshift(it);save();close();renderItems();};
     const d=box.querySelector('[data-del]');if(d)d.onclick=()=>{if(!confirm('確定刪除這件物品？'))return;D.items=D.items.filter(x=>x.id!==it.id);save();close();renderItems();};
   });
