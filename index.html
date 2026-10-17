@@ -212,6 +212,28 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 #toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;background:var(--ink);color:var(--bg);font-size:13px;padding:8px 14px;border-radius:999px}
 
 #scchips{flex-wrap:wrap;overflow:visible;margin:0 0 4px;padding:0}
+
+/* 照護守則：恢復小房間（點東西看該怎麼做） */
+#sccats{flex-wrap:wrap;overflow:visible;margin:8px 0 0;padding:0}
+.room{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:720px}
+.room svg{display:block;width:100%;height:auto}
+.r-wall{fill:#f6e4d6}.r-floor{fill:#e7cdb8}.r-edge{stroke:#d6b59c;stroke-width:2}
+.r-win{fill:#dfe9e6;stroke:#c9b29e;stroke-width:3}.r-frame{stroke:#c9b29e;stroke-width:2}
+.r-paper{fill:#fffaf4;stroke:#d9bfa9}.r-clay{fill:var(--clay)}.r-num{font:700 15px var(--display);fill:#3a3a31}.r-tiny{font:600 7px var(--body);fill:#8f553f;letter-spacing:.1em}
+.r-board{fill:#fffdf9;stroke:#b9a796;stroke-width:2}.r-scribble{stroke:#6b6e5a;stroke-width:2;stroke-linecap:round;fill:none}
+.r-bed{fill:#fffaf4;stroke:#d9bfa9}.r-bedframe{fill:#a98466}.r-wedge{fill:#ddbca5}.r-pillow{fill:#fffaf4;stroke:#d9bfa9}.r-blanket{fill:#a8ab94}
+.r-fridge{fill:#f2f1ec;stroke:#c8c1b6;stroke-width:2}.r-frame2{stroke:#c8c1b6;stroke-width:2}.r-handle{fill:#b9b1a4}.r-snow{stroke:#7fa6b8;stroke-width:2.2;stroke-linecap:round;fill:none}
+.r-wood{fill:#b98e6b}.r-can{fill:#fffaf4;stroke:#c9b29e}.r-cup{fill:#dfe9e6;stroke:#9fb5b0}.r-syringe{fill:#fff;stroke:#9aa}
+.r-mirror{fill:#e3ecea;stroke:#c9b29e;stroke-width:2}.r-sink{fill:#fbfbf8;stroke:#c8c1b6}.r-sinkbase{fill:#efe9e1;stroke:#c8c1b6}.r-tap{stroke:#9a948b;stroke-width:3;fill:none;stroke-linecap:round}
+.room .hot{cursor:pointer;transition:opacity .2s}
+.room .hot:focus{outline:none}
+.room.has-on .hot:not(.on){opacity:.55}
+.room .hot.on{filter:drop-shadow(0 0 6px rgba(201,146,122,.65))}
+.pins circle{fill:var(--olive);stroke:#fffaf4;stroke-width:2}
+.pins text{fill:#fffaf4;font:700 9px var(--body);text-anchor:middle;pointer-events:none}
+.pins g{cursor:pointer}
+.pins g.on circle{fill:var(--clay)}
+@media (prefers-reduced-motion:no-preference){.pins g:not(.on) circle{animation:pinPulse 2.4s ease-in-out infinite}@keyframes pinPulse{50%{stroke-width:5;stroke-opacity:.5}}}
 /* 恢復階段：橫向時間線 */
 .htl-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .htl-top .lede{margin:0}
@@ -327,8 +349,64 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     </table></div>
 
     <h2>照護守則：遇到這個情況怎麼辦</h2>
-    <p class="lede">點你現在的情況，就看到該怎麼做。</p>
-    <div class="chips" id="scchips"></div>
+    <p class="lede">這是術後休養的小房間。點房間裡的東西，看那件事該怎麼做。</p>
+    <div class="room" id="room">
+      <svg viewBox="0 0 400 250" role="group" aria-label="恢復小房間">
+        <!-- 牆、地板、窗 -->
+        <rect x="0" y="0" width="400" height="182" class="r-wall"/>
+        <rect x="0" y="182" width="400" height="68" class="r-floor"/>
+        <line x1="0" y1="182" x2="400" y2="182" class="r-edge"/>
+        <rect x="150" y="22" width="86" height="64" rx="3" class="r-win"/>
+        <line x1="193" y1="22" x2="193" y2="86" class="r-frame"/><line x1="150" y1="54" x2="236" y2="54" class="r-frame"/>
+        <!-- 月曆（術前） -->
+        <g class="hot" data-cat="pre" tabindex="0" role="button" aria-label="月曆：手術前">
+          <rect x="22" y="26" width="46" height="50" rx="3" class="r-paper"/><rect x="22" y="26" width="46" height="12" rx="3" class="r-clay"/>
+          <text x="45" y="62" text-anchor="middle" class="r-num">18</text><text x="45" y="72" text-anchor="middle" class="r-tiny">DEC</text>
+        </g>
+        <!-- 白板（溝通） -->
+        <g class="hot" data-cat="talk" tabindex="0" role="button" aria-label="白板：溝通">
+          <rect x="84" y="30" width="54" height="40" rx="3" class="r-board"/><path d="M92 44h26M92 52h34M92 60h18" class="r-scribble"/>
+        </g>
+        <!-- 床（休息）：床頭墊高 30 度 -->
+        <g class="hot" data-cat="rest" tabindex="0" role="button" aria-label="床：休息和睡姿">
+          <rect x="250" y="112" width="132" height="44" rx="6" class="r-bed"/>
+          <rect x="248" y="150" width="136" height="12" rx="4" class="r-bedframe"/>
+          <path d="M262 148 L262 112 L300 92 L310 110 L300 148 Z" class="r-wedge"/>
+          <rect x="272" y="96" width="34" height="16" rx="7" transform="rotate(-28 289 104)" class="r-pillow"/>
+          <rect x="300" y="118" width="80" height="30" rx="6" class="r-blanket"/>
+          <rect x="250" y="162" width="6" height="22" class="r-bedframe"/><rect x="376" y="162" width="6" height="22" class="r-bedframe"/>
+        </g>
+        <!-- 冰箱（消腫） -->
+        <g class="hot" data-cat="cool" tabindex="0" role="button" aria-label="冰箱：冰敷消腫">
+          <rect x="18" y="98" width="50" height="86" rx="5" class="r-fridge"/><line x1="18" y1="128" x2="68" y2="128" class="r-frame2"/>
+          <rect x="58" y="106" width="4" height="14" rx="2" class="r-handle"/><rect x="58" y="136" width="4" height="20" rx="2" class="r-handle"/>
+          <path d="M43 146 v18 M35 150 l16 10 M51 150 l-16 10" class="r-snow"/>
+        </g>
+        <!-- 餐桌（飲食）：杯子、針筒、安素 -->
+        <g class="hot" data-cat="eat" tabindex="0" role="button" aria-label="餐桌：飲食">
+          <rect x="88" y="140" width="84" height="8" rx="2" class="r-wood"/><rect x="96" y="148" width="5" height="36" class="r-wood"/><rect x="159" y="148" width="5" height="36" class="r-wood"/>
+          <rect x="100" y="116" width="16" height="24" rx="3" class="r-can"/><rect x="100" y="122" width="16" height="6" class="r-clay"/>
+          <path d="M124 124 h14 l-2 16 h-10 z" class="r-cup"/>
+          <rect x="144" y="130" width="22" height="6" rx="2" class="r-syringe"/><rect x="140" y="131" width="5" height="4" class="r-syringe"/>
+        </g>
+        <!-- 洗手台和鏡子（清潔） -->
+        <g class="hot" data-cat="clean" tabindex="0" role="button" aria-label="洗手台：口腔和臉部清潔">
+          <rect x="186" y="98" width="44" height="30" rx="15" class="r-mirror"/>
+          <rect x="182" y="140" width="52" height="10" rx="3" class="r-sink"/><path d="M188 150 h40 l-6 34 h-28 z" class="r-sinkbase"/>
+          <path d="M208 140 v-8 h8" class="r-tap"/>
+        </g>
+        <!-- 提示點 -->
+        <g class="pins">
+          <g data-cat="pre"><circle cx="66" cy="28" r="9"/><text x="66" y="32">術</text></g>
+          <g data-cat="talk"><circle cx="136" cy="32" r="9"/><text x="136" y="36">說</text></g>
+          <g data-cat="rest"><circle cx="372" cy="110" r="9"/><text x="372" y="114">睡</text></g>
+          <g data-cat="cool"><circle cx="66" cy="100" r="9"/><text x="66" y="104">冰</text></g>
+          <g data-cat="eat"><circle cx="170" cy="116" r="9"/><text x="170" y="120">吃</text></g>
+          <g data-cat="clean"><circle cx="230" cy="100" r="9"/><text x="230" y="104">洗</text></g>
+        </g>
+      </svg>
+    </div>
+    <div class="chips" id="sccats"></div>
     <div id="scbody"></div>
   </section>
 
@@ -604,23 +682,27 @@ setTimeout(()=>{const n=htl.querySelector('.now');if(n)htl.scrollLeft=n.offsetLe
 
 
 /* 照護守則（情境式）：點「現在的情況」看該怎麼做 */
+const SCENE_CATS=[['eat','飲食'],['clean','清潔'],['cool','消腫'],['rest','休息'],['talk','溝通'],['pre','術前']];
 const SCENES=[
- {k:'eve',q:'手術前一天晚上',when:'術前',do:['白天可以正常吃','護理師宣布「禁食禁水」後，一口水、一口營養品都不能碰','時間以麻醉醫師說的為準（通常是前一天半夜或術前 8 小時）'],why:'空腹麻醉比較安全。',alert:1},
- {k:'hungry',q:'我肚子餓、想吃東西',when:'術後前兩週',do:['少量多餐，一次喝一點','前兩週以流質為主：安素、高蛋白、滴雞精、濃湯','用餵食針筒（接軟管）或杯子慢慢喝','絕對不用吸管，也不用調理機打顆粒食物'],why:'吸管的口腔負壓會拉扯傷口、讓血水滲出；少量多餐避免脹氣和吞嚥困難。'},
- {k:'ate',q:'剛吃完東西',when:'每次吃完',do:['用針筒抽清水，輕輕沖牙縫','含一口無酒精漱口水，輕柔漱動後吐掉','只用軟毛牙刷輕輕帶過，先不要用電動牙刷'],why:'前期傷口多，電動牙刷的震動會刺激甚至裂開傷口；酒精會刺痛傷口。'},
- {k:'clean',q:'不確定嘴巴有沒有清乾淨',when:'任何時候',do:['不用拿鏡子放大檢查','沖過、漱過之後，嘴裡沒有黏膩感、沒有酸臭味，就是乾淨的'],why:'越去檢查越想動傷口，用口感和味道判斷就夠了。'},
- {k:'hot',q:'臉好熱、好腫',when:'術後第一週',do:['用乾淨毛巾包著軟式冰袋冰敷','戴上加壓冰敷頭套','第一週過後，問醫師要不要改溫敷'],why:'冰敷能消腫止痛；第一週後腫脹轉換期，可能改溫敷比較好。'},
- {k:'face',q:'想把臉弄清爽',when:'術後前期',do:['用生理食鹽水，或煮沸放涼的開水沾濕紗布輕擦','也可以用嬰兒濕紙巾','不要用噴水壺裝生水噴臉'],why:'生水的細菌碰到傷口，會提高感染風險。'},
- {k:'sleep',q:'我想睡覺了',when:'術後一個月內',do:['半坐臥，用三角靠枕墊高約 30 度','頭要高於心臟，不要平躺','床上鋪看護墊，防血水滲透'],why:'頭抬高可以減少腫脹，也比較不會嗆到。'},
- {k:'talk',q:'說不出話、很難溝通',when:'術後前幾天',do:['先準備好手機打字或白板','跟家人約好簡單的手勢：點頭、搖頭、要喝水、會痛'],why:'術後當天大多只能靠眼神或打字溝通，先講好會安心很多。'}
+ {k:'eve',cat:'pre',q:'手術前一天晚上',when:'術前',do:['白天可以正常吃','護理師宣布「禁食禁水」後，一口水、一口營養品都不能碰','時間以麻醉醫師說的為準（通常是前一天半夜或術前 8 小時）'],why:'空腹麻醉比較安全。',alert:1},
+ {k:'hungry',cat:'eat',q:'我肚子餓、想吃東西',when:'術後前兩週',do:['少量多餐，一次喝一點','前兩週以流質為主：安素、高蛋白、滴雞精、濃湯','用餵食針筒（接軟管）或杯子慢慢喝','絕對不用吸管，也不用調理機打顆粒食物'],why:'吸管的口腔負壓會拉扯傷口、讓血水滲出；少量多餐避免脹氣和吞嚥困難。'},
+ {k:'ate',cat:'clean',q:'剛吃完東西',when:'每次吃完',do:['用針筒抽清水，輕輕沖牙縫','含一口無酒精漱口水，輕柔漱動後吐掉','只用軟毛牙刷輕輕帶過，先不要用電動牙刷'],why:'前期傷口多，電動牙刷的震動會刺激甚至裂開傷口；酒精會刺痛傷口。'},
+ {k:'clean',cat:'clean',q:'不確定嘴巴有沒有清乾淨',when:'任何時候',do:['不用拿鏡子放大檢查','沖過、漱過之後，嘴裡沒有黏膩感、沒有酸臭味，就是乾淨的'],why:'越去檢查越想動傷口，用口感和味道判斷就夠了。'},
+ {k:'hot',cat:'cool',q:'臉好熱、好腫',when:'術後第一週',do:['用乾淨毛巾包著軟式冰袋冰敷','戴上加壓冰敷頭套','第一週過後，問醫師要不要改溫敷'],why:'冰敷能消腫止痛；第一週後腫脹轉換期，可能改溫敷比較好。'},
+ {k:'face',cat:'clean',q:'想把臉弄清爽',when:'術後前期',do:['用生理食鹽水，或煮沸放涼的開水沾濕紗布輕擦','也可以用嬰兒濕紙巾','不要用噴水壺裝生水噴臉'],why:'生水的細菌碰到傷口，會提高感染風險。'},
+ {k:'sleep',cat:'rest',q:'我想睡覺了',when:'術後一個月內',do:['半坐臥，用三角靠枕墊高約 30 度','頭要高於心臟，不要平躺','床上鋪看護墊，防血水滲透'],why:'頭抬高可以減少腫脹，也比較不會嗆到。'},
+ {k:'talk',cat:'talk',q:'說不出話、很難溝通',when:'術後前幾天',do:['先準備好手機打字或白板','跟家人約好簡單的手勢：點頭、搖頭、要喝水、會痛'],why:'術後當天大多只能靠眼神或打字溝通，先講好會安心很多。'}
 ];
-let scSel=post>=0&&post<=1?'hot':diff<=1&&diff>=0?'eve':'hungry';
+let scCat=post>=0&&post<=7?'cool':diff<=1&&diff>=0?'pre':'eat';
 function renderScenes(){
-  $('#scchips').innerHTML=SCENES.map(c=>`<button data-sc="${c.k}" aria-pressed="${c.k===scSel}">${c.q}</button>`).join('');
-  const c=SCENES.find(x=>x.k===scSel);
-  $('#scbody').innerHTML=`<div class="${c.alert?'alert':'card rule'}" style="margin-top:6px"><h3 style="margin:0 0 4px">${c.q}</h3><div class="lede" style="margin:0 0 6px">${c.when}</div><ol style="margin:0;padding-left:1.3em">${c.do.map(x=>`<li>${x}</li>`).join('')}</ol><div class="why">${c.why}</div></div>`;
+  document.querySelectorAll('#room [data-cat]').forEach(g=>g.classList.toggle('on',g.dataset.cat===scCat));$('#room').classList.add('has-on');
+  $('#sccats').innerHTML=SCENE_CATS.map(([k,l])=>`<button data-scat="${k}" aria-pressed="${k===scCat}">${l}</button>`).join('');
+  $('#scbody').innerHTML=SCENES.filter(c=>c.cat===scCat).map(c=>`<div class="${c.alert?'alert':'card rule'}" style="margin-top:8px"><h3 style="margin:0 0 2px">${c.q}</h3><div class="lede" style="margin:0 0 6px">${c.when}</div><ol style="margin:0;padding-left:1.3em">${c.do.map(x=>`<li>${x}</li>`).join('')}</ol><div class="why">${c.why}</div></div>`).join('');
 }
-$('#scchips').addEventListener('click',e=>{const b=e.target.closest('[data-sc]');if(!b)return;scSel=b.dataset.sc;renderScenes();});
+const pickCat=k=>{scCat=k;renderScenes();};
+$('#room').addEventListener('click',e=>{const g=e.target.closest('[data-cat]');if(g)pickCat(g.dataset.cat);});
+$('#room').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const g=e.target.closest('[data-cat]');if(g){e.preventDefault();pickCat(g.dataset.cat);}}});
+$('#sccats').addEventListener('click',e=>{const b=e.target.closest('[data-scat]');if(b)pickCat(b.dataset.scat);});
 renderScenes();
 /* ---------- 新增（右下＋）、分頁、備份 ---------- */
 document.addEventListener('click',e=>{const n=e.target.closest('[data-new]');if(n)recDialog(null,n.dataset.new);});
