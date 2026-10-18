@@ -14,6 +14,32 @@
 <meta name="apple-mobile-web-app-title" content="OGS">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}table.nutri{table-layout:fixed}
+
+.cs-goal p{margin:2px 0 0}
+.cs-k{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--clay-ink)}
+.cs{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-top:10px;overflow:hidden}
+.cs>summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;align-items:center;gap:10px}
+.cs>summary::-webkit-details-marker{display:none}
+.cs>summary b{font-size:16px;flex:1}
+.cs>summary .cnt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cs>summary::after{content:"▾";color:var(--muted);transition:transform .2s}
+.cs[open]>summary::after{transform:rotate(180deg)}
+.cs .in{padding:0 14px 14px;display:grid;gap:12px}
+.cs .yn{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:420px){.cs .yn{grid-template-columns:1fr}}
+.cs .yn>div{border-radius:10px;padding:9px 11px;font-size:14px}
+.cs .yes{background:color-mix(in srgb,var(--ok) 12%,var(--surface))}
+.cs .no{background:color-mix(in srgb,var(--warn) 12%,var(--surface))}
+.cs .yn ul,.cs .ref ul{margin:4px 0 0;padding-left:1.1em}
+.cs .ref{font-size:13px;color:var(--muted);border-left:3px solid var(--tan);padding:2px 0 2px 10px}
+.cs .q{border-top:1px dashed var(--line);padding-top:10px;display:grid;gap:6px}
+.cs .q .qt{display:flex;gap:8px;align-items:flex-start;font-size:15px}
+.cs .q .qt input{width:20px;height:20px;margin:1px 0 0;flex:none;accent-color:var(--ok)}
+.cs .q.done .qt span{color:var(--muted)}
+.cs .q textarea{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;min-height:44px;resize:vertical}
+.cs .shots{grid-template-columns:repeat(4,1fr);margin:0}
+@media (max-width:420px){.cs .shots{grid-template-columns:repeat(3,1fr)}}
+.cs .ph{font-size:12px;color:var(--muted)}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -362,22 +388,20 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     <label class="fld">藥物或食物過敏<input id="me-allergy" data-me="allergy" placeholder="沒有就寫「無」"></label>
     <label class="fld">緊急聯絡人<input id="me-contact" data-me="contact" placeholder="例如：哥哥 0912…"></label>
     <label class="fld">其他想記的<textarea id="me-note" data-me="note"></textarea></label>
-    <h2>跟醫師確認的 4 件事</h2>
-    <p class="lede">10/5 白醫師、11/9 羅醫師，帶著這頁和 Mood Board 照片去。11/9 也可以問診所能不能給一份齒列紀錄。</p>
-    <ol class="qs">
-      <li><h3>審美偏好</h3><ul><li>下巴要後退／上移多少？保留一點下巴線條，還是要收得很圓順？</li><li>中面部（蘋果肌、笑起來的骨骼支撐）會不會凹陷或太凸？</li></ul></li>
-      <li><h3>側臉弧度與比例</h3><ul><li>E-line（鼻尖到下巴連線）的目標比例</li><li>笑起來露牙齦要保留多少？</li></ul></li>
-      <li><h3>功能與對稱</h3><ul><li>術後咬合的對齊位置</li><li>原本臉型的左右不對稱，骨頭移動後軟組織會怎麼覆蓋？</li></ul></li>
-      <li><h3>案例對照</h3><ul><li>「以我的骨骼條件，照建議的移動量，最接近你過去哪一位案例？」</li></ul></li>
-    </ol>
-    <h2>我最怕的結果</h2>
-    <div class="card"><p>下巴太短、太後縮，下庭比例偏短，側臉看起來太圓、少了俐落的下巴線條。</p></div>
+    <h2>看診討論</h2>
+    <p class="lede">11/9 羅醫師看診時打開這裡。每個主題有「我想要／我不要」、要問的問題、參考數字，問完把醫師的回答記在下面。</p>
+    <div class="card cs-goal">
+      <div class="cs-k">一句話講我要的</div>
+      <p>側臉是<b>直面型</b>：中臉不凹、嘴不癟，下巴保有長度和往前的支撐，下顎線俐落但不尖。</p>
+      <div class="cs-k" style="margin-top:10px">我最怕</div>
+      <p>上顎收太多變癟嘴；下巴太短、太後縮，側臉看起來太圓。</p>
+    </div>
+    <div id="consult"></div>
     <h2>可以直接這樣說</h2>
-    <blockquote>醫師，我很怕術後下巴變太短、下巴後縮，側臉看起來太圓、下庭比例偏短。我希望下巴能保有適當的長度和向前的支撐度，讓下巴線條順暢俐落，但又不要太過銳利。</blockquote>
+    <blockquote>醫師，我希望側臉是直面型。我最怕兩件事：一是上顎收太多變成癟嘴、鼻子下面凹下去；二是下巴變太短、往後縮。我希望下巴保有長度和往前的支撐，下顎線俐落但不要太尖。笑起來牙齦也希望不要露那麼多。</blockquote>
     <h2>什麼時候可以放心</h2>
-    <div class="card"><p>把最介意的地方講出來後，醫師能用<b>具體的骨頭移動方向、毫米數</b>或<b>類似案例照片</b>回應你，而且你感覺他懂你要的美感，就可以放心交給他。</p></div>
-    <h2>Mood Board 準備</h2>
-    <div class="list" id="moodlist"></div>
+    <div class="card"><p>把最介意的地方講出來後，醫師能用<b>骨頭移動的方向和毫米數</b>，或<b>類似案例的照片</b>回答你，而且你覺得他懂你要的樣子，就可以放心交給他。</p>
+    <p class="lede" style="margin:8px 0 0">這頁的數字大多是網友整理的網路資料，拿來幫你把話講清楚很好用；真正的數字要以醫師量你的側顱 X 光為準。</p></div>
     <h2>設定</h2>
     <button class="backup" id="backup" style="margin:0">下載備份（文字資料）</button>
   </section>
@@ -602,12 +626,57 @@ function itemDialog(it){
   });
 }
 
-/* ---------- Mood board ---------- */
-const mood=[['m1','找 2–3 張「最漂亮的側臉／笑容」照片'],['m2','找 2 張「絕對不想要的臉型」照片'],['m3','10/5 帶給白醫師討論'],['m4','11/9 給羅醫師看']];
-const moodEl=$('#moodlist');
-function renderMood(){moodEl.innerHTML=mood.map(([id,t])=>{const on=!!checked[id];return `<label class="chk ${on?'done':''}" for="${id}"><input type="checkbox" id="${id}" ${on?'checked':''}><span>${t}</span><span class="q"></span></label>`}).join('')}
-moodEl.addEventListener('change',e=>{checked[e.target.id]=e.target.checked;store.set('checks',checked);renderMood()});
-renderMood();
+/* ---------- 看診討論：主題、問題、醫師回答、私人照片（照片只存這台裝置＋自己的 OneDrive，不會放上網站） ---------- */
+const TOPICS=[
+ {k:'up',t:'上顎：內收與抬高',
+  yes:['直面型：印堂、鼻翼、下巴大約落在一直線','中臉有支撐，鼻子下面不凹','笑起來牙齦露少一點（目標接近中位笑線）'],
+  no:['上顎收太多，變成癟嘴','鼻唇角被拉太開、鼻基底凹陷','笑起來牙齦露太多（現在是高位笑線）'],
+  ref:['鼻唇角：一般 90–105°，網路資料說亞洲人理想約 97°','中臉凸度：理想約 170°','中位笑線：上門牙露 75–100%，牙齦露 2mm 以內'],
+  qs:['上顎預計往後收、往上抬各多少毫米？','收完會不會讓鼻子下面變凹、嘴巴變癟？鼻唇角大概會變多少？','術後笑起來牙齦大概還會露多少？','鼻基底和中臉需不需要額外補支撐？']},
+ {k:'jaw',t:'下顎角與下巴',
+  yes:['下巴有長度、往前有支撐，線條俐落','下顎角大約 120°，拐角位置正常','頦唇溝是自然的 S 型','側面嘴唇剛好在鼻尖到下巴的連線上，或往內 2–4mm'],
+  no:['下巴過長','方下巴、下顎骨太寬','下巴過短、後縮下巴','太尖的下巴'],
+  ref:['正面看，好看的下巴長度約是人中的 2 倍，大約是臉的 1/6','頦唇溝深度約 4mm 會比較立體','下顎角太小（小於 100°）偏方，太大（大於 130°）線條不明顯'],
+  qs:['我需不需要另外做下巴截骨（頦成形）？','下顎移動後，下巴長度和往前的量會怎麼變？','下顎角會變怎樣？會不會變寬或變方？','我有沒有舌頭放的位置不對的問題？會不會影響術後穩定？']},
+ {k:'op',t:'手術方式',
+  yes:['鼻翼不要變寬、不要朝天','能保留原本的酒窩','術後不用長時間綁牙'],
+  no:['上顎手術後鼻翼變寬、朝天','長時間綁牙，不能說話也不好清潔'],
+  ref:['鼻翼變寬的解法：鼻翼基底縫合（奇美 顏欽堉醫師 2016 年論文）','現在多用鈦骨板固定，網路資料說需要綁牙的比例已經不到 1%','術後可能戴咬合板，會影響說話和清潔'],
+  qs:['手術會不會做鼻翼基底縫合，避免鼻翼變寬？','我原本的酒窩會不會消失？','用什麼固定？術後要不要綁牙？要不要戴咬合板、戴多久？']},
+ {k:'soft',t:'消腫後的樣子',
+  yes:['皮膚和肌肉跟著骨頭服貼，線條乾淨'],
+  no:['骨頭動了但皮肉沒跟上，看起來厚重或模糊'],
+  ref:['消腫大約要 3–6 個月，最後的線條要半年後才看得準'],
+  qs:['骨頭移動後，臉頰、嘴唇、下巴的皮肉大概會怎麼跟著變？','有沒有模擬圖或跟我最像的案例可以看？']},
+ {k:'ins',t:'保險理賠',
+  yes:[],no:[],
+  ref:['外科約 35 萬加住院，牙科矯正 15 萬內'],
+  qs:['診斷書要怎麼寫，才能申請我的保險和團險？','住院和手術有哪些項目可以申請？']}
+];
+D.consult=D.consult||{ans:{},done:{},photos:{}};
+const CS=D.consult;
+const consultEl=$('#consult');
+function shotsHTML(k){const ps=CS.photos[k]||[];return ps.map((m,i)=>`<label class="shot has" data-m="${m}" data-k="${k}" data-pi="${i}"><span>點一下拿掉</span></label>`).join('')+`<label class="shot" data-k="${k}" data-add><input type="file" accept="image/*" multiple>＋ 照片</label>`;}
+function renderConsult(){
+  const opened=new Set([...consultEl.querySelectorAll('details[open]')].map(d=>d.dataset.k));
+  consultEl.innerHTML=TOPICS.map(T=>{const n=T.qs.filter((_,i)=>CS.done[T.k+i]).length;
+    return `<details class="cs" data-k="${T.k}" ${opened.has(T.k)?'open':''}><summary><b>${T.t}</b><span class="cnt">問了 ${n}/${T.qs.length}</span></summary><div class="in">
+    ${T.yes.length?`<div class="yn"><div class="yes"><div class="cs-k">我想要</div><ul>${T.yes.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="no"><div class="cs-k">我不要</div><ul>${T.no.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`:''}
+    <div class="ref"><b>參考</b><ul>${T.ref.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    ${T.qs.map((q,i)=>{const id=T.k+i;return `<div class="q${CS.done[id]?' done':''}"><label class="qt"><input type="checkbox" data-done="${id}" ${CS.done[id]?'checked':''}><span>${q}</span></label><textarea data-ans="${id}" placeholder="醫師怎麼說">${esc(CS.ans[id]||'')}</textarea></div>`}).join('')}
+    <div><div class="cs-k" style="margin-bottom:6px">我的照片</div><div class="shots">${shotsHTML(T.k)}</div><div class="ph">照片只存在你的手機和你的 OneDrive，不會出現在公開網站上。</div></div>
+    </div></details>`;}).join('');
+  paint(consultEl);
+}
+consultEl.addEventListener('input',e=>{const a=e.target.dataset.ans;if(a!==undefined){CS.ans[a]=e.target.value;save();}});
+consultEl.addEventListener('change',async e=>{
+  const d=e.target.dataset.done;if(d!==undefined){CS.done[d]=e.target.checked;save();renderConsult();return;}
+  if(e.target.type==='file'){const k=e.target.closest('[data-k]').dataset.k;CS.photos[k]=CS.photos[k]||[];for(const f of e.target.files){CS.photos[k].push(await addPhoto(f));}save();renderConsult();toast('照片已存好');}
+});
+consultEl.addEventListener('click',e=>{const sh=e.target.closest('.shot.has');if(!sh)return;e.preventDefault();
+  if(sh.dataset.sure!=='1'){sh.dataset.sure='1';sh.querySelector('span').textContent='再點一次拿掉';setTimeout(()=>{if(sh.isConnected){sh.dataset.sure='';sh.querySelector('span').textContent='點一下拿掉';}},2500);return;}
+  CS.photos[sh.dataset.k].splice(+sh.dataset.pi,1);save();renderConsult();});
+renderConsult();
 
 /* ---------- 恢復階段 ---------- */
 const stages=[
