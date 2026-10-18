@@ -13,7 +13,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="OGS">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}table.nutri{table-layout:fixed}
+</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
@@ -316,17 +317,18 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 
     <h2>營養品</h2>
     <h3 style="margin:4px 0 8px">四種各有什麼用</h3>
-    <div class="tablewrap"><table>
-      <thead><tr><th>品項</th><th>熱量</th><th>蛋白質</th><th>定位</th><th>什麼時候喝</th></tr></thead>
+    <div class="tablewrap"><table class="nutri"><colgroup><col style="width:24%"><col><col><col><col></colgroup>
+      <thead><tr><th>項目</th><th>安素</th><th>高蛋白飲</th><th>滴雞精</th><th>明治濃湯</th></tr></thead>
       <tbody>
-        <tr><td>亞培安素</td><td>極高</td><td>中～高</td><td>全方位能量底座</td><td>當正餐主食</td></tr>
-        <tr><td>義美高蛋白飲</td><td>中</td><td>極高</td><td>強力組織修復</td><td>需要加速傷口癒合時</td></tr>
-        <tr><td>華齊堂滴雞精</td><td>低</td><td>低</td><td>快速補元氣</td><td>精神不濟、虛弱時</td></tr>
-        <tr><td>明治濃湯</td><td>中～高</td><td>中</td><td>鹹味救贖</td><td>甜的喝膩、想換口味時</td></tr>
+        <tr><td>熱量</td><td>極高</td><td>中</td><td>低</td><td>中～高</td></tr>
+        <tr><td>蛋白質</td><td>中～高</td><td>極高</td><td>低</td><td>中</td></tr>
+        <tr><td>定位</td><td>全方位能量底座</td><td>強力組織修復</td><td>快速補元氣</td><td>鹹味救贖</td></tr>
+        <tr><td>什麼時候喝</td><td>當正餐主食</td><td>需要加速傷口癒合時</td><td>精神不濟、虛弱時</td><td>甜的喝膩、想換口味時</td></tr>
       </tbody>
     </table></div>
+    <p class="lede" style="margin-top:6px">安素＝亞培安素、高蛋白飲＝義美、滴雞精＝華齊堂、濃湯＝明治。</p>
     <h3 style="margin:18px 0 8px">每個階段帶多少</h3>
-    <div class="tablewrap"><table>
+    <div class="tablewrap"><table class="nutri"><colgroup><col style="width:24%"><col><col><col><col></colgroup>
       <thead><tr><th>階段</th><th>安素</th><th>高蛋白飲</th><th>滴雞精</th><th>明治濃湯</th></tr></thead>
       <tbody>
         <tr><td>醫院 3 天</td><td class="n">3–4 罐</td><td class="n">3–4 瓶</td><td class="n">3–4 包</td><td class="n">2–3 包</td></tr>
