@@ -118,6 +118,8 @@ section.tab{padding-top:8px}
 .alert b{color:var(--warn)}
 
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.inlh small{font-family:var(--body);font-weight:400;font-size:13px;line-height:1.5;color:var(--muted);margin-left:10px}
+.nutri tr.sub td{background:var(--soft,rgba(0,0,0,.035));text-align:center;padding:10px 8px}.nutri tr.sub b{font-size:15px;margin-right:10px}.nutri tr.sub small{color:var(--muted);font-size:12.5px}
 table{border-collapse:collapse;width:100%;min-width:480px;font-size:13px}
 th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 th{font-size:12px;color:var(--muted);font-weight:700;background:var(--bg)}
@@ -315,30 +317,20 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     <div class="htl-top"><p class="lede">往右滑看下一段，「現在」會自動標出來。點一段看完整內容。</p><button class="mini" id="stageAll" aria-pressed="false">展開全部</button></div>
     <div class="htl" id="htl" role="list" aria-label="恢復階段時間線"></div>
 
-    <h2>營養品</h2>
-    <h3 style="margin:4px 0 8px">四種各有什麼用</h3>
-    <div class="tablewrap"><table class="nutri"><colgroup><col style="width:24%"><col><col><col><col></colgroup>
-      <thead><tr><th>項目</th><th>安素</th><th>高蛋白飲</th><th>滴雞精</th><th>明治濃湯</th></tr></thead>
-      <tbody>
-        <tr><td>熱量</td><td>極高</td><td>中</td><td>低</td><td>中～高</td></tr>
-        <tr><td>蛋白質</td><td>中～高</td><td>極高</td><td>低</td><td>中</td></tr>
-        <tr><td>定位</td><td>全方位能量底座</td><td>強力組織修復</td><td>快速補元氣</td><td>鹹味救贖</td></tr>
-        <tr><td>什麼時候喝</td><td>當正餐主食</td><td>需要加速傷口癒合時</td><td>精神不濟、虛弱時</td><td>甜的喝膩、想換口味時</td></tr>
-      </tbody>
-    </table></div>
-    <p class="lede" style="margin-top:6px">安素＝亞培安素、高蛋白飲＝義美、滴雞精＝華齊堂、濃湯＝明治。</p>
-    <h3 style="margin:18px 0 8px">每個階段帶多少</h3>
+    <h2 class="inlh">每個階段帶多少<small>哥哥家每天一組：1 罐安素 + 1 瓶高蛋白 + 1 包滴雞精 + 1 杯濃湯。醫院前三天胃口小，醫院也會提供流質，帶這些當點心就夠。</small></h2>
     <div class="tablewrap"><table class="nutri"><colgroup><col style="width:24%"><col><col><col><col></colgroup>
       <thead><tr><th>階段</th><th>安素</th><th>高蛋白飲</th><th>滴雞精</th><th>明治濃湯</th></tr></thead>
       <tbody>
         <tr><td>醫院 3 天</td><td class="n">3–4 罐</td><td class="n">3–4 瓶</td><td class="n">3–4 包</td><td class="n">2–3 包</td></tr>
         <tr><td>哥哥家 14 天</td><td class="n">12–14 罐</td><td class="n">12–14 瓶</td><td class="n">14–20 包</td><td class="n">5–8 包</td></tr>
         <tr><td>回家後（第 3 週起）</td><td class="n">6–8 罐</td><td class="n">6–8 瓶</td><td class="n">6–10 包</td><td class="n">—</td></tr>
+        <tr class="sub"><td colspan="5"><b>四種各有什麼用</b><small>安素＝亞培安素、高蛋白飲＝義美、滴雞精＝華齊堂、濃湯＝明治。</small></td></tr>
+        <tr><td>熱量</td><td>極高</td><td>中</td><td>低</td><td>中～高</td></tr>
+        <tr><td>蛋白質</td><td>中～高</td><td>極高</td><td>低</td><td>中</td></tr>
+        <tr><td>定位</td><td>全方位能量底座</td><td>強力組織修復</td><td>快速補元氣</td><td>鹹味救贖</td></tr>
+        <tr><td>什麼時候喝</td><td>當正餐主食</td><td>需要加速傷口癒合時</td><td>精神不濟、虛弱時</td><td>甜的喝膩、想換口味時</td></tr>
       </tbody>
     </table></div>
-    <p class="lede" style="margin-top:8px">哥哥家每天一組：1 罐安素 + 1 瓶高蛋白 + 1 包滴雞精 + 1 杯濃湯。醫院前三天胃口小，醫院也會提供流質，帶這些當點心就夠。</p>
-
-
 
     <h2>照護守則：遇到這個情況怎麼辦</h2>
     <p class="lede">這是術後休養的小房間。點房間裡的東西，看那件事該怎麼做。</p>
