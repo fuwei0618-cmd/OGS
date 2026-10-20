@@ -1,7 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.ph:not(.ok){min-height:180px;background:#ecd8c6}
 </style></head><body>
 <a href="../" style="position:fixed;left:12px;top:calc(10px + env(safe-area-inset-top));z-index:9;font:600 13px system-ui,sans-serif;text-decoration:none;color:#33312b;background:#fffaf5;border:1px solid #ecd8c6;border-radius:999px;padding:6px 12px">← 正顎手冊</a>
-<a href="../" style="position:fixed;left:12px;top:calc(10px + env(safe-area-inset-top));z-index:9;font:600 13px system-ui,sans-serif;text-decoration:none;color:#33312b;background:#fffaf5;border:1px solid #ecd8c6;border-radius:999px;padding:6px 12px">← 正顎手冊</a>
 <title>我的側臉看診簡報</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
@@ -112,7 +111,7 @@ button:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
     <li><i></i><b>12/18</b>手術</li>
   </ol>
 
-  <section class="step">
+  <section class="step" id="s1">
     <div class="step-h"><span class="n">1</span><h2>先看懂我現在的側臉</h2></div>
     <p>網友報告講了很多標準。這裡挑出四個跟正顎最有關的，每一個都先看標準長怎樣，再看你的照片。</p>
 
@@ -226,7 +225,7 @@ button:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
     </div>
   </section>
 
-  <section class="step">
+  <section class="step" id="s2">
     <div class="step-h"><span class="n">2</span><h2>比一比修過的五個版本</h2></div>
     <p>全部用額頭到鼻尖的輪廓對齊成同一個基準，所以下面看到的差異，就是修圖改的地方。</p>
 
@@ -316,7 +315,7 @@ button:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
     </div>
   </section>
 
-  <section class="step">
+  <section class="step" id="s4">
     <div class="step-h"><span class="n">4</span><h2>我的目標</h2></div>
     <div class="goal">
       <div class="k">一句話</div>
@@ -327,7 +326,7 @@ button:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
     <p class="sub" style="margin-top:10px">這是依照你寫的「我想要／我不要」推出來的，不是幫你決定。</p>
   </section>
 
-  <section class="step">
+  <section class="step" id="s5">
     <div class="step-h"><span class="n">5</span><h2>11/9 拿這頁問羅醫師</h2></div>
     <ol class="qs">
       <li>這是我希望的樣子（給醫師看第 3 步的目標圖）。下巴往後退之後，能接近這個側面線條嗎？<small>我知道皮膚是修圖修的</small></li>
@@ -360,7 +359,7 @@ button:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
     </div>
   </section>
 
-  <section class="step">
+  <section class="step" id="s6">
     <div class="step-h"><span class="n">6</span><h2>看完醫師之後</h2></div>
     <p>把醫師的回答記在 OGS「我」那一頁的看診討論裡，每一題下面都有「醫師怎麼說」。有拿到模擬圖的話傳給我，我幫你跟這頁的疊圖對照。</p>
   </section>
@@ -416,5 +415,41 @@ document.querySelectorAll('#photoTodo input').forEach(i=>{i.checked=!!st[i.id];i
     if(location.hash.includes('c='))history.replaceState(null,'',location.pathname);
   }catch(e){note('這段解開或存檔失敗，請再用那個連結打開一次。');}
 })();})();
+</script>
+
+<button id="tocBtn" aria-expanded="false" aria-controls="toc">目錄</button>
+<nav id="toc" hidden aria-label="跳到主題">
+  <a href="#s1"><b>1</b>我現在的側臉</a>
+  <a href="#s2"><b>2</b>修過的五個版本</a>
+  <a href="#target"><b>3</b>目標圖：哪些做得到</a>
+  <a href="#s4"><b>4</b>我的目標</a>
+  <a href="#s5"><b>5</b>11/9 要問醫師</a>
+  <a href="#claim"><b>$</b>診斷書怎麼寫</a>
+  <a href="#todo"><b>★</b>待辦：拍新照片</a>
+  <a href="#s6"><b>6</b>看完醫師之後</a>
+  <a href="#top" class="totop">回到最上面</a>
+</nav>
+<style>
+html{scroll-behavior:smooth}.step{scroll-margin-top:calc(60px + env(safe-area-inset-top))}
+#tocBtn{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:20;border:0;border-radius:999px;padding:12px 18px;font:700 15px var(--body,system-ui);background:var(--olive,#6b6e5a);color:var(--paper,#fffaf5);box-shadow:0 6px 18px rgba(0,0,0,.18);cursor:pointer}
+#toc{position:fixed;right:16px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:20;width:min(280px,calc(100vw - 32px));max-height:calc(100vh - 140px);overflow:auto;background:var(--paper,#fffaf5);border:1px solid var(--line,#ecd8c6);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.18);padding:6px}
+#toc a{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;color:var(--ink,#33312b);text-decoration:none;font-size:15px}
+#toc a b{width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:12px;background:var(--tan,#e6c9b3);color:var(--ink,#33312b)}
+#toc a.on{background:color-mix(in srgb,var(--clay,#b9765c) 16%,transparent);font-weight:700}
+#toc a.on b{background:var(--clay,#b9765c);color:#fff}
+#toc .totop{justify-content:center;color:var(--muted,#7d7367);font-size:13px;border-top:1px solid var(--line,#ecd8c6);border-radius:0;margin-top:4px}
+#phNote{left:16px!important;transform:none!important;max-width:calc(100vw - 130px)!important}
+</style>
+<script>
+(function(){const b=document.getElementById('tocBtn'),t=document.getElementById('toc');
+const set=o=>{t.hidden=!o;b.setAttribute('aria-expanded',o);b.textContent=o?'關閉':'目錄';};
+b.onclick=()=>set(t.hidden);
+t.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();set(false);
+  const id=a.getAttribute('href').slice(1);if(id==='top'){window.scrollTo({top:0});return;}
+  const el=document.getElementById(id);if(el)el.scrollIntoView({block:'start'});});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')set(false);});
+const links=[...t.querySelectorAll('a[href^="#"]:not(.totop)')],secs=links.map(a=>document.getElementById(a.getAttribute('href').slice(1)));
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+en.target.id));}});},{rootMargin:'-30% 0px -60% 0px'});secs.forEach(s=>s&&io.observe(s));}
+})();
 </script>
 </body></html>
