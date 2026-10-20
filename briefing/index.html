@@ -444,10 +444,10 @@ html{scroll-behavior:smooth}.step{scroll-margin-top:calc(60px + env(safe-area-in
 (function(){const b=document.getElementById('tocBtn'),t=document.getElementById('toc');
 const set=o=>{t.hidden=!o;b.setAttribute('aria-expanded',o);b.textContent=o?'關閉':'目錄';};
 b.onclick=()=>set(t.hidden);
-t.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();set(false);
+t.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();
   const id=a.getAttribute('href').slice(1);if(id==='top'){window.scrollTo({top:0});return;}
   const el=document.getElementById(id);if(el)el.scrollIntoView({block:'start'});});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')set(false);});
+
 const links=[...t.querySelectorAll('a[href^="#"]:not(.totop)')],secs=links.map(a=>document.getElementById(a.getAttribute('href').slice(1)));
 if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+en.target.id));}});},{rootMargin:'-30% 0px -60% 0px'});secs.forEach(s=>s&&io.observe(s));}
 })();
