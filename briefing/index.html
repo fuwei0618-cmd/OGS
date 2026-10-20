@@ -343,66 +343,7 @@ button:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
 
   <section class="step" id="claim">
     <div class="step-h"><span class="n">$</span><h2>診斷書：請醫師幫忙寫清楚</h2></div>
-    <p>保險通常不賠「美容整形」，會賠「治療疾病的手術」。所以診斷書的重點，是讓理賠人員一看就知道：這是<b>治療咬合問題的必要手術</b>。前提是寫的都要是真實狀況，由醫師判斷。</p>
-
-    <div class="pt">
-      <h3>1. 診斷名稱（網友分享的寫法）</h3>
-      <p>顏面歪斜、下顎骨突出、咬合不正、第三級咬合不正合併咀嚼困難</p>
-      <p class="sub">可以請醫師一起寫上診斷代碼，例如第三級咬合不正、下顎骨過度生長、顎骨不對稱各有對應的代碼，以醫師開的為準。</p>
-    </div>
-
-    <div class="pt">
-      <h3>2. 功能上的問題（有的才寫）</h3>
-      <p>理賠最看重這段。你有的話，請醫師寫進去：</p>
-      <ul style="margin:0;padding-left:1.1em">
-        <li>咀嚼困難、前牙咬不斷東西</li>
-        <li>顳顎關節（耳朵前面）痠痛、喀喀響、嘴巴張不大</li>
-        <li>發音不清楚</li>
-        <li>呼吸、睡覺打呼的問題</li>
-      </ul>
-    </div>
-
-    <div class="pt">
-      <h3>3. 一句關鍵的話</h3>
-      <blockquote style="margin-top:6px">「因上述咬合不正及咀嚼功能障礙，經術前矯正後，需施行正顎手術治療。」</blockquote>
-      <p class="sub" style="margin-top:8px">意思是：這是為了治療，不是為了變漂亮。</p>
-    </div>
-
-    <div class="pt">
-      <h3>4. 手術和住院的細節</h3>
-      <ul style="margin:0;padding-left:1.1em">
-        <li><b>完整的手術名稱</b>：上顎截骨、雙側下顎截骨、下巴截骨，每一項都寫出來。手術險常常是對照保單上的手術表來賠，名稱要對得上</li>
-        <li>全身麻醉</li>
-        <li>住院日期 12/17–12/20、手術日期 12/18</li>
-        <li>建議休養多久（例如兩週），請假、公司那邊也用得到</li>
-      </ul>
-    </div>
-
-    <div class="pt">
-      <h3>5. 下巴截骨要特別問</h3>
-      <p>下巴截骨最容易被當成「美容」。可以問醫師：我的下巴截骨，是不是為了配合咬合矯正的必要一部分？如果是，請照實寫在同一份診斷書裡。</p>
-    </div>
-
-    <div class="pt">
-      <h3>6. 出院時要拿的文件</h3>
-      <ul style="margin:0;padding-left:1.1em">
-        <li>診斷證明書（多開幾份，每家保險公司都要正本）</li>
-        <li>收據正本和費用明細，自費項目（例如骨板）要分開列</li>
-        <li>住院證明</li>
-        <li>手術紀錄或病歷摘要，有些保險公司會要</li>
-      </ul>
-    </div>
-
-    <div class="pt">
-      <h3>7. 去醫院前先查保單</h3>
-      <ul style="margin:0;padding-left:1.1em">
-        <li>手術險：保單的手術表裡，有沒有這幾種截骨手術</li>
-        <li>實支實付：自費的部分能賠多少</li>
-        <li>除外條款：有沒有排除「美容」或「牙科」</li>
-        <li>團險：公司的團險也要一起申請</li>
-        <li>出院後兩年內要申請完</li>
-      </ul>
-    </div>
+    <div id="claimBody"><p class="sub" id="claimNote">這段有你的診斷內容，存在你的 OneDrive，登入之後才看得到。</p></div>
   </section>
 
   <section class="step" id="todo">
@@ -457,5 +398,23 @@ document.querySelectorAll('#photoTodo input').forEach(i=>{i.checked=!!st[i.id];i
     history.replaceState(null,'',location.pathname);say('照片都存進你的 OneDrive 了，之後直接打開這頁就好。');setTimeout(()=>say(''),4000);
   }catch(e){say('照片解開或上傳失敗，請再用那個連結打開一次。');}
 })();
+</script>
+<script>
+/* 診斷書這段：內容加密，第一次用帶鑰匙的連結打開時存進你的 OneDrive，之後只從 OneDrive 讀 */
+(function(){const ck=(location.hash.match(/c=([\w-]+)/)||[])[1];
+(async()=>{const box=document.getElementById('claimBody'),note=t=>{box.innerHTML='<p class="sub">'+t+'</p>';};
+  const path='OGS/briefing/claim.html';
+  const tok=window.OriginaSync&&await OriginaSync.getToken().catch(()=>null);
+  if(!tok){note('這段有你的診斷內容，存在你的 OneDrive，登入 OneDrive 之後才看得到。');return;}
+  try{const b=await OriginaSync.api.getBlob(path);if(b){box.innerHTML=await b.text();return;}}catch(e){}
+  if(!ck){note('這段還沒存進你的 OneDrive，請用 Claude 給你的那個連結打開一次。');return;}
+  try{const raw=Uint8Array.from(atob((await (await fetch('claim.enc',{cache:'no-store'})).text()).trim()),c=>c.charCodeAt(0));
+    const kb=Uint8Array.from(atob(ck.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-ck.length%4)%4)),c=>c.charCodeAt(0));
+    const key=await crypto.subtle.importKey('raw',kb,'AES-GCM',false,['decrypt']);
+    const html=new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:raw.slice(0,12)},key,raw.slice(12)));
+    box.innerHTML=html;await OriginaSync.api.putBlob(path,new Blob([html],{type:'text/html'}));
+    if(location.hash.includes('c='))history.replaceState(null,'',location.pathname);
+  }catch(e){note('這段解開或存檔失敗，請再用那個連結打開一次。');}
+})();})();
 </script>
 </body></html>
