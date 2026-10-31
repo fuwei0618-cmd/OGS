@@ -56,6 +56,10 @@
 .bc{display:grid;gap:2px;font-size:14px;font-variant-numeric:tabular-nums}
 .bq.carry{color:var(--olive);font-size:13px;font-weight:700}.bq.none{color:var(--line)}
 @media (max-width:520px){.bth,.btr{gap:6px;padding:8px}.bc{font-size:12px}.bq.carry{font-size:11px}}
+.bsub{padding:6px 12px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--clay-ink);background:color-mix(in srgb,var(--tan) 30%,var(--surface));border-bottom:1px solid var(--line)}
+.btr{padding:6px 12px}.btr .st{font-size:11px;padding:3px 8px;min-width:44px}.bth span:first-child{width:44px}
+.btr .nm b{display:inline;font-size:14px}.btr .nm small{font-size:12px;color:var(--muted);margin-left:6px;white-space:nowrap}
+.btr .askt{margin-left:6px}.bc{font-size:13px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -471,7 +475,7 @@ const OLD=[
   ['衣物',[['前開式扣子睡衣','x3–4','不能穿套頭衣服'],['保暖衣物'],['免洗內褲']]],
   ['個人護理',[['保濕護唇膏'],['乾洗髮噴霧'],['立體醫療口罩','多盒']]]
 ];
-const CATS=['日常在用',...OLD.map(g=>g[0])];
+const CATS=['日常在用',...OLD.map(g=>g[0]),'溝通與 3C'];
 const WHEN=['','術前','住院','術後第一週','恢復期','日常'];
 let D=store.get('ogs.v2',null);
 if(!D){
@@ -508,6 +512,28 @@ const BQ_RULE=[
 if(D.bagV!==3){D.items.forEach(it=>{delete it.bag;delete it.bags;it.bq={};if(it.cat==='術前事務'||it.cat==='日常在用')return;
   const r=BQ_RULE.find(([k])=>it.name.includes(k));if(r){it.bq={...r[1]};if(r[2])it.qty=r[2];}});D.bagV=3;save();}
 D.items.forEach(it=>{if(!it.bq||typeof it.bq!=='object')it.bq={};});
+if(D.bagV<4){const C=CARRY,NEW=[
+ ['小白板或筆記本＋筆','溝通與 3C',{住院包:'1 組',哥哥家:C},'1 組','術後前幾天幾乎不能說話'],
+ ['長充電線（2 公尺）','溝通與 3C',{住院包:'1 條',哥哥家:C},'1 條','病床插座常離床很遠'],
+ ['行動電源','溝通與 3C',{住院包:'1 個',哥哥家:C},'1 個',''],
+ ['口水巾／小方巾','清潔與衛生',{住院包:'4 條',哥哥家:'帶過去＋再 4 條'},'8 條','嘴唇下巴會麻，口水湯水會流'],
+ ['圍兜','清潔與衛生',{住院包:'2 件',哥哥家:C},'2 件',''],
+ ['面紙','清潔與衛生',{住院包:'2 包',哥哥家:'1 串'},'2 包＋1 串',''],
+ ['棉花棒','個人護理',{住院包:'1 盒',哥哥家:C},'1 盒','沾凡士林擦嘴唇'],
+ ['凡士林','個人護理',{住院包:'1 罐',哥哥家:C},'1 罐',''],
+ ['髮圈、髮夾','個人護理',{住院包:'1 組',哥哥家:C},'1 組',''],
+ ['枕頭用毛巾','居家舒適',{住院包:'2 條',哥哥家:'帶過去＋再 2 條'},'4 條','滲血水、流口水，方便換洗'],
+ ['眼罩、耳塞','居家舒適',{住院包:'1 組',哥哥家:C},'1 組',''],
+ ['有刻度的小杯子','進食與營養',{住院包:'1 個',哥哥家:C},'1 個','算喝了多少'],
+ ['小湯匙','進食與營養',{住院包:'2 支',哥哥家:C},'2 支',''],
+ ['保溫杯','進食與營養',{住院包:'1 個',哥哥家:C},'1 個','營養品溫的比較好入口'],
+ ['防滑拖鞋','衣物',{住院包:'1 雙',哥哥家:C},'1 雙',''],
+ ['前開式外套','衣物',{住院包:'1 件',哥哥家:C},'1 件',''],
+ ['確認哥哥家冷凍庫空出一格','術前事務',{},'','冰敷袋要輪流冰'],
+ ['住院帶健保卡、身分證','術前事務',{},'','']];
+ NEW.forEach(([name,cat,bq,qty,note],i)=>{if(D.items.some(x=>x.name===name))return;
+   D.items.push({id:'n4_'+i,name,cat,qty,note,status:'buy',when:cat==='術前事務'?'術前':'',bq:{...bq}});});
+ D.bagV=4;save();}
 const inBag=(it,b)=>!!(it.bq&&it.bq[b]);
 const bqCell=v=>!v?'<span class="bq none">—</span>':v===CARRY?'<span class="bq carry">← 醫院帶過去</span>':v.startsWith(CARRY)?`<span class="bq carry">← 醫院帶過去</span><span class="bq">${esc(v.slice(CARRY.length).replace(/^＋/,'＋'))}</span>`:`<span class="bq">${esc(v)}</span>`;
 let itemView=store.get('ogs.itemView','bag');
@@ -647,8 +673,8 @@ function renderItems(){
     const cnt=b=>{const A=D.items.filter(i=>inBag(i,b)&&i.bq[b]!==CARRY);return `${A.filter(i=>i.status!=='buy').length}/${A.length}`;};
     if(T.length)out+=`<div class="group"><div class="group-h"><h3>住院包＋哥哥家</h3><small>同一件東西放同一列</small></div>
       <p class="bagtip">12/17 帶去醫院住 4 天，12/20 出院直接到哥哥家休養兩週。「← 醫院帶過去」＝住院用完帶到哥哥家接著用，不用另外買；有寫數量的＝兩邊分開備。標「先問醫院」的，醫院常會提供。</p>
-      <div class="btab"><div class="bth"><span></span><span>東西（總共要買）</span><span>住院包 <small>已買 ${cnt('住院包')}</small></span><span>哥哥家 <small>已買 ${cnt('哥哥家')}</small></span></div>
-      ${T.map(it=>`<div class="btr"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="nm" data-it="${it.id}"><b>${esc(it.name)}${askHosp(it)&&inBag(it,'住院包')?'<i class="askt">先問醫院</i>':''}</b>${it.qty?`<span>總共 ${esc(it.qty)}</span>`:''}</div><div class="bc">${bqCell(it.bq['住院包'])}</div><div class="bc">${bqCell(it.bq['哥哥家'])}</div></div>`).join('')}</div></div>`;
+      <div class="btab"><div class="bth"><span></span><span>東西</span><span>住院包 <small>已買 ${cnt('住院包')}</small></span><span>哥哥家 <small>已買 ${cnt('哥哥家')}</small></span></div>
+      ${[...new Set([...CATS,...T.map(i=>i.cat)])].map(c=>{const R=T.filter(i=>i.cat===c);return R.length?`<div class="bsub">${esc(c)}</div>`+R.map(it=>`<div class="btr"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${it.qty?`<small>總共 ${esc(it.qty)}</small>`:''}${askHosp(it)&&inBag(it,'住院包')?'<i class="askt">先問醫院</i>':''}</div><div class="bc">${bqCell(it.bq['住院包'])}</div><div class="bc">${bqCell(it.bq['哥哥家'])}</div></div>`).join(''):'';}).join('')}</div></div>`;
     out+=grp('回家後',L.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&inBag(it,'回家後')&&!inBag(it,'住院包')&&!inBag(it,'哥哥家')),'<p class="bagtip">第 3 週以後才用，可以晚點再買。</p>');
     out+=grp('還沒分袋',L.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&!Object.keys(it.bq).length));
     out+=grp('術前事務',L.filter(isTask));out+=grp('日常在用',L.filter(i=>i.cat==='日常在用'));
