@@ -60,6 +60,24 @@
 .btr{padding:6px 12px}.btr .st{font-size:11px;padding:3px 8px;min-width:44px}.bth span:first-child{width:44px}
 .btr .nm b{display:inline;font-size:14px}.btr .nm small{font-size:12px;color:var(--muted);margin-left:6px;white-space:nowrap}
 .btr .askt{margin-left:6px}.bc{font-size:13px}
+.vlab{font-size:12px;color:var(--muted);align-self:center;margin-right:2px}
+.csum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 12px}
+.csum div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.csum span{display:block;font-size:12px;color:var(--muted)}.csum b{font-size:18px;font-variant-numeric:tabular-nums}
+.cwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin-bottom:18px}
+.ctab{min-width:720px}
+.cth,.ctr{display:grid;grid-template-columns:34px 34px 34px minmax(170px,2.2fr) 72px 92px minmax(70px,1fr) minmax(90px,1.1fr);gap:6px;align-items:center;padding:5px 10px;border-bottom:1px solid var(--line)}
+.cth{background:var(--bg);font-size:11px;font-weight:700;color:var(--muted);position:sticky;top:0;z-index:1}
+.cth span:nth-child(-n+3){text-align:center}
+.csub{display:flex;justify-content:space-between;gap:8px;padding:6px 12px;background:color-mix(in srgb,var(--tan) 30%,var(--surface));border-bottom:1px solid var(--line);font-size:13px}
+.csub b{color:var(--clay-ink)}.csub span{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.ctr .cb{display:grid;place-items:center}.ctr .cb input{width:18px;height:18px;accent-color:var(--ok);margin:0}
+.ctr .nm{cursor:pointer;min-width:0;font-size:14px}.ctr .nm small{color:var(--muted);font-size:12px;margin-left:6px;white-space:nowrap}
+.ctr.have .nm b{color:var(--muted);text-decoration:line-through}
+.ctr .pr,.ctr .sr{font:inherit;font-size:13px;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:8px;padding:4px 6px;width:100%;min-width:0}
+.ctr .pr{text-align:right;font-variant-numeric:tabular-nums}
+.ctr .pr:hover,.ctr .sr:hover,.ctr .pr:focus,.ctr .sr:focus{border-color:var(--line);background:var(--bg)}
+.ctr .bc{font-size:12px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -349,13 +367,13 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 
   <!-- 物品 -->
   <section class="tab" id="items" hidden>
-    <h2>物品</h2>
-    <p class="lede">點左邊的狀態就換下一個：要買 → 已買 → 在用。點名字可以改。</p>
+    <h2>購物車</h2>
+    <p class="lede">確認＝要不要買、在哪買、多少錢都想好了。價格、來源可以直接在表格裡改，點名字看更多。</p>
     <div class="prog"><i id="progbar"></i></div>
     <p class="lede" id="progtext"></p>
-    <div class="ask"><b>先別急著買</b>11/9 看診時先問醫院會提供什麼（冰敷頭套、漱口水、餵食針筒），看完再買。</div>
+    <div class="ask"><b>先別急著確認</b>11/9 看診時先問醫院會提供什麼（標「先問醫院」的那些），問完再確認。</div>
     <div class="chips" id="itemview"></div>
-    <div class="chips" id="itemchips"></div>
+    <div id="cartsum"></div>
     <div id="groups"></div>
   </section>
 
@@ -438,7 +456,7 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 <nav class="tabs" aria-label="主選單">
   <button data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg>首頁</button>
   <button data-tab="log"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.2"/><path d="M9 6l1.5-2h3L15 6"/></svg>紀錄</button>
-  <button data-tab="items"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 10l2 2 4-4M9 16h6"/></svg>物品</button>
+  <button data-tab="items"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 10l2 2 4-4M9 16h6"/></svg>購物車</button>
   <button data-tab="recover"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>恢復</button>
   <button data-tab="talk"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.8 3.6-6 7-6s6.2 2.2 7 6"/></svg>我</button>
 </nav>
@@ -536,7 +554,9 @@ if(D.bagV<4){const C=CARRY,NEW=[
  D.bagV=4;save();}
 const inBag=(it,b)=>!!(it.bq&&it.bq[b]);
 const bqCell=v=>!v?'<span class="bq none">—</span>':v===CARRY?'<span class="bq carry">← 醫院帶過去</span>':v.startsWith(CARRY)?`<span class="bq carry">← 醫院帶過去</span><span class="bq">${esc(v.slice(CARRY.length).replace(/^＋/,'＋'))}</span>`:`<span class="bq">${esc(v)}</span>`;
-let itemView=store.get('ogs.itemView','bag');
+const SRCS=['蝦皮','淘寶','酷澎','實體店','醫院提供','其他'];
+D.items.forEach(it=>{if(it.ok===undefined){it.ok=it.status!=='buy';it.ord=it.status!=='buy';}if(it.src===undefined)it.src='';});
+let itemView=store.get('ogs.cartView','cat');if(!['cat','src','prog'].includes(itemView))itemView='cat';
 function initMe(){D.me=D.me||{};document.querySelectorAll('[data-me]').forEach(el=>{el.value=D.me[el.dataset.me]||'';el.oninput=()=>{D.me[el.dataset.me]=el.value;save();};});}
 
 /* ---------- 照片：先存這台裝置，登入 OneDrive 就上傳到 OGS/media（.jpg，不加密） ---------- */
@@ -658,38 +678,48 @@ const bmode=b=>!b?'':b.length===7?'month':'date';
 const fmtB=b=>{if(!b)return '';const [y,m,d]=b.split('-');return d?`${+m}/${+d} 買`:`${y}/${+m} 買`;};
 function stLabel(it){return isTask(it)?ST_TASK[it.status==='buy'?'buy':'got']:ST[it.status];}
 function renderItems(){
-  const L=D.items.filter(it=>itemF==='全部'||(itemF==='要買'?it.status==='buy':itemF==='在用'?it.status==='use':false));
-  const goods=D.items.filter(it=>!isTask(it)&&it.status!=='use');const ready=goods.filter(it=>it.status==='got').length;
-  $('#progbar').style.width=(goods.length?ready/goods.length*100:0)+'%';
-  $('#progtext').textContent=`手術要準備的東西：已買 ${ready} / ${goods.length} 件`;
-  $('#itemchips').innerHTML=['全部','要買','在用'].map(k=>`<button data-if="${k}" aria-pressed="${itemF===k}">${k}</button>`).join('');
-  $('#itemview').innerHTML=[['bag','照放哪一袋'],['cat','照類別']].map(([k,t])=>`<button data-iv="${k}" aria-pressed="${itemView===k}">${t}</button>`).join('');
-  const row=(it,meta)=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic${it.photo?'':' none'}" ${it.photo?`data-m="${it.photo}"`:''}></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${meta.length?`<span>${esc(meta.join('・'))}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`;
-  const metaOf=it=>[itemView==='cat'?Object.keys(it.bq||{}).join('、'):'',it.when,fmtB(it.bought),it.note,it.place,it.price?'$'+it.price:''].filter(Boolean);
-  const grp=(title,G,extra='')=>G.length?`<div class="group"><div class="group-h"><h3>${esc(title)}</h3><small>${G.length} 件</small></div>${extra}<div class="list">${G.map(it=>row(it,metaOf(it))).join('')}</div></div>`:'';
-  let out='';
-  if(itemView==='bag'){
-    const T=L.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&(inBag(it,'住院包')||inBag(it,'哥哥家')));
-    const cnt=b=>{const A=D.items.filter(i=>inBag(i,b)&&i.bq[b]!==CARRY);return `${A.filter(i=>i.status!=='buy').length}/${A.length}`;};
-    if(T.length)out+=`<div class="group"><div class="group-h"><h3>住院包＋哥哥家</h3><small>同一件東西放同一列</small></div>
-      <p class="bagtip">12/17 帶去醫院住 4 天，12/20 出院直接到哥哥家休養兩週。「← 醫院帶過去」＝住院用完帶到哥哥家接著用，不用另外買；有寫數量的＝兩邊分開備。標「先問醫院」的，醫院常會提供。</p>
-      <div class="btab"><div class="bth"><span></span><span>東西</span><span>住院包 <small>已買 ${cnt('住院包')}</small></span><span>哥哥家 <small>已買 ${cnt('哥哥家')}</small></span></div>
-      ${[...new Set([...CATS,...T.map(i=>i.cat)])].map(c=>{const R=T.filter(i=>i.cat===c);return R.length?`<div class="bsub">${esc(c)}</div>`+R.map(it=>`<div class="btr"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${it.qty?`<small>總共 ${esc(it.qty)}</small>`:''}${askHosp(it)&&inBag(it,'住院包')?'<i class="askt">先問醫院</i>':''}</div><div class="bc">${bqCell(it.bq['住院包'])}</div><div class="bc">${bqCell(it.bq['哥哥家'])}</div></div>`).join(''):'';}).join('')}</div></div>`;
-    out+=grp('回家後',L.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&inBag(it,'回家後')&&!inBag(it,'住院包')&&!inBag(it,'哥哥家')),'<p class="bagtip">第 3 週以後才用，可以晚點再買。</p>');
-    out+=grp('還沒分袋',L.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&!Object.keys(it.bq).length));
-    out+=grp('術前事務',L.filter(isTask));out+=grp('日常在用',L.filter(i=>i.cat==='日常在用'));
-  }else out=[...new Set([...CATS,...D.items.map(i=>i.cat)])].map(c=>grp(c,L.filter(i=>i.cat===c))).join('');
-  $('#groups').innerHTML=out||'<div class="empty">沒有符合的物品</div>';
-  paint($('#items'));
+  const goods=D.items.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&it.status!=='use');
+  const got=goods.filter(i=>i.status!=='buy').length;
+  $('#progbar').style.width=(goods.length?got/goods.length*100:0)+'%';
+  $('#progtext').textContent=`已確認 ${goods.filter(i=>i.ok).length}・已下單 ${goods.filter(i=>i.ord).length}・已到手 ${got}　／ 共 ${goods.length} 件`;
+  $('#itemview').innerHTML='<span class="vlab">分組</span>'+[['cat','照類別'],['src','照來源'],['prog','照進度']].map(([k,t])=>`<button data-iv="${k}" aria-pressed="${itemView===k}">${t}</button>`).join('');
+  const cash=L=>L.filter(i=>i.src!=='醫院提供').reduce((a,i)=>a+(parseFloat(i.price)||0),0);
+  const fmt$=n=>'$'+Math.round(n).toLocaleString('zh-TW');
+  $('#cartsum').innerHTML=`<div class="csum"><div><span>已確認</span><b>${fmt$(cash(goods.filter(i=>i.ok)))}</b></div><div><span>已下單</span><b>${fmt$(cash(goods.filter(i=>i.ord)))}</b></div><div><span>還沒填價格</span><b>${goods.filter(i=>!i.price&&i.src!=='醫院提供').length} 件</b></div></div>`;
+  const cell=v=>!v?'<span class="bq none">—</span>':v===CARRY?'<span class="bq carry">← 帶過去</span>':v.startsWith(CARRY)?`<span class="bq carry">← 帶過去</span><span class="bq">${esc(v.slice(CARRY.length))}</span>`:`<span class="bq">${esc(v)}</span>`;
+  const row=it=>`<div class="ctr${it.status!=='buy'?' have':''}">
+    <label class="cb"><input type="checkbox" data-ck="ok" data-id="${it.id}" ${it.ok?'checked':''} aria-label="確認"></label>
+    <label class="cb"><input type="checkbox" data-ck="ord" data-id="${it.id}" ${it.ord?'checked':''} aria-label="下單"></label>
+    <label class="cb"><input type="checkbox" data-ck="got" data-id="${it.id}" ${it.status!=='buy'?'checked':''} aria-label="到手"></label>
+    <div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${it.qty?`<small>${esc(it.qty)}</small>`:''}${askHosp(it)&&inBag(it,'住院包')&&!it.ok?'<i class="askt">先問醫院</i>':''}</div>
+    <input class="pr" data-pr="${it.id}" inputmode="decimal" value="${esc(it.price||'')}" placeholder="$" aria-label="價格">
+    <select class="sr" data-sr="${it.id}" aria-label="來源"><option value="">—</option>${SRCS.map(x=>`<option ${it.src===x?'selected':''}>${x}</option>`).join('')}</select>
+    <div class="bc">${cell(it.bq['住院包'])}</div><div class="bc">${cell(it.bq['哥哥家'])}</div></div>`;
+  const head=`<div class="cth"><span>確認</span><span>下單</span><span>到手</span><span>東西（總共）</span><span>價格</span><span>來源</span><span>住院包</span><span>哥哥家</span></div>`;
+  let groups;
+  if(itemView==='src')groups=[...SRCS,''].map(x=>[x||'來源還沒定',i=>(i.src||'')===x]);
+  else if(itemView==='prog')groups=[['還沒確認',i=>!i.ok&&i.status==='buy'],['確認了，還沒下單',i=>i.ok&&!i.ord&&i.status==='buy'],['下單了，還沒到',i=>i.ord&&i.status==='buy'],['已到手',i=>i.status!=='buy']];
+  else groups=[...new Set([...CATS,...goods.map(i=>i.cat)])].filter(c=>c!=='日常在用'&&c!=='術前事務').map(c=>[c,i=>i.cat===c]);
+  const body=groups.map(([t,fn])=>{const G=goods.filter(fn);if(!G.length)return '';const sum=cash(G);
+    return `<div class="csub"><b>${esc(t)}</b><span>${G.length} 件${sum?'・'+fmt$(sum):''}</span></div>`+G.map(row).join('');}).join('');
+  const simple=(t,G)=>G.length?`<div class="group"><div class="group-h"><h3>${t}</h3><small>${G.length} 件</small></div><div class="list">${G.map(it=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic none"></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${it.note?`<span>${esc(it.note)}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`).join('')}</div></div>`:'';
+  $('#groups').innerHTML=(body?`<p class="bagtip">住院包、哥哥家：寫數量的＝兩邊分開備；「← 帶過去」＝住院用完帶到哥哥家接著用。</p><div class="cwrap"><div class="ctab">${head}${body}</div></div>`:'<div class="empty">還沒有東西</div>')
+    +simple('術前事務',D.items.filter(isTask))+simple('日常在用',D.items.filter(i=>i.cat==='日常在用'));
 }
 $('#items').addEventListener('click',e=>{
-  const f=e.target.closest('[data-if]');if(f){itemF=f.dataset.if;renderItems();return;}
-  const v=e.target.closest('[data-iv]');if(v){itemView=v.dataset.iv;store.set('ogs.itemView',itemView);renderItems();return;}
+  const v=e.target.closest('[data-iv]');if(v){itemView=v.dataset.iv;store.set('ogs.cartView',itemView);renderItems();return;}
   const s=e.target.closest('[data-st]');if(s){const it=D.items.find(x=>x.id===s.dataset.st);it.status=isTask(it)?(it.status==='buy'?'got':'buy'):({buy:'got',got:'use',use:'buy'})[it.status];save();renderItems();return;}
   const n=e.target.closest('[data-it]');if(n)itemDialog(D.items.find(x=>x.id===n.dataset.it));
 });
+$('#items').addEventListener('change',e=>{const t=e.target,id=t.dataset.id||t.dataset.pr||t.dataset.sr;if(!id)return;const it=D.items.find(x=>x.id===id);if(!it)return;
+  if(t.dataset.ck==='ok'){it.ok=t.checked;if(!t.checked){it.ord=false;}}
+  else if(t.dataset.ck==='ord'){it.ord=t.checked;if(t.checked)it.ok=true;}
+  else if(t.dataset.ck==='got'){it.status=t.checked?'got':'buy';if(t.checked){it.ok=true;it.ord=true;}}
+  else if(t.dataset.pr){it.price=t.value.replace(/[^\d.]/g,'');}
+  else if(t.dataset.sr){it.src=t.value;}
+  save();renderItems();});
 function itemDialog(it){
-  const isNew=!it;it=it?{...it,bq:{...(it.bq||{})}}:{id:uid(),name:'',cat:'日常在用',qty:'',note:'',status:'use',when:'',bq:{}};
+  const isNew=!it;it=it?{...it,bq:{...(it.bq||{})}}:{id:uid(),name:'',cat:'居家舒適',qty:'',note:'',status:'buy',when:'',bq:{},ok:false,ord:false,src:''};
   dialog(`<h3>${isNew?'新增物品':'修改物品'}</h3>
     <label class="fld">名稱<input id="f-name" value="${esc(it.name)}" placeholder="例如：電動牙刷"></label>
     <div class="fld">狀態<div class="seg" id="f-st">${Object.entries(ST).map(([k,t])=>`<button data-v="${k}" aria-pressed="${it.status===k}">${t}</button>`).join('')}</div></div>
@@ -697,9 +727,9 @@ function itemDialog(it){
     <div class="row3">${BAGS.map(b=>`<label class="fld">${b}<input data-bq="${b}" value="${esc((it.bq||{})[b]||'')}" placeholder="${b==='哥哥家'?'例如：2 包':'例如：1 個'}"></label>`).join('')}</div>
     <button type="button" class="mini" id="f-carry" style="margin:-4px 0 12px">哥哥家改成「醫院帶過去」</button>
     <div class="row2"><label class="fld">類別<select id="f-cat">${[...new Set([...CATS,it.cat])].map(c=>`<option ${c===it.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label class="fld">什麼時候用<select id="f-when">${WHEN.map(w=>`<option value="${w}" ${w===it.when?'selected':''}>${w||'—'}</option>`).join('')}</select></label></div>
-    <div class="row2"><label class="fld">總共要買<input id="f-qty" value="${esc(it.qty)}"></label><label class="fld">價格<input id="f-price" inputmode="numeric" value="${esc(it.price||'')}"></label></div>
+    <div class="row2"><label class="fld">總共要買<input id="f-qty" value="${esc(it.qty)}"></label><label class="fld">價格（總價）<input id="f-price" inputmode="numeric" value="${esc(it.price||'')}"></label></div>
     <div class="fld">購買日期<div class="seg" id="f-bm">${[['','不填'],['month','年月'],['date','年月日']].map(([k,t])=>`<button data-v="${k}" aria-pressed="${bmode(it.bought)===k}">${t}</button>`).join('')}</div><input id="f-bought" type="${bmode(it.bought)||'date'}" value="${esc(it.bought||'')}" ${bmode(it.bought)?'':'hidden'} style="margin-top:6px"></div>
-    <label class="fld">在哪買<input id="f-place" value="${esc(it.place||'')}" placeholder="店名或網址"></label>
+    <div class="row2"><label class="fld">來源<select id="f-src"><option value="">—</option>${SRCS.map(x=>`<option ${it.src===x?'selected':''}>${x}</option>`).join('')}</select></label><label class="fld">商品連結或店名<input id="f-place" value="${esc(it.place||'')}" placeholder="貼網址"></label></div>
     <label class="fld">備註<input id="f-note" value="${esc(it.note)}"></label>
     <div class="fld">照片</div><div class="shots" style="grid-template-columns:repeat(3,1fr)"><label class="shot${it.photo?' has':''}" ${it.photo?`data-m="${it.photo}"`:''}><input type="file" accept="image/*">${it.photo?'<span>換一張</span>':'＋ 照片'}</label></div>
     <div class="acts"><button data-x>取消</button><button class="pri" data-ok>存好</button></div>${isNew?'':'<button class="del" data-del>刪除這件</button>'}`,
@@ -713,7 +743,7 @@ function itemDialog(it){
     box.querySelector('input[type=file]').onchange=async e=>{if(!e.target.files.length)return;it.photo=await addPhoto(e.target.files[0]);const s=box.querySelector('.shot');s.classList.add('has');s.dataset.m=it.photo;[...s.childNodes].forEach(n=>{if(n.nodeType===3)n.remove()});if(!s.querySelector('span'))s.insertAdjacentHTML('beforeend','<span>換一張</span>');paint(box);};
     box.querySelector('[data-ok]').onclick=()=>{
       const v=id=>box.querySelector(id).value.trim();it.name=v('#f-name');if(!it.name)return toast('先寫名稱');
-      const bmv=box.querySelector('#f-bought');it.bought=bmv.hidden?'':bmv.value;it.bq={};box.querySelectorAll('[data-bq]').forEach(x=>{const v=x.value.trim();if(v)it.bq[x.dataset.bq]=v;});Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price'),place:v('#f-place'),note:v('#f-note')});
+      const bmv=box.querySelector('#f-bought');it.bought=bmv.hidden?'':bmv.value;it.bq={};box.querySelectorAll('[data-bq]').forEach(x=>{const v=x.value.trim();if(v)it.bq[x.dataset.bq]=v;});it.src=v('#f-src');Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price').replace(/[^\d.]/g,''),place:v('#f-place'),note:v('#f-note')});
       const i=D.items.findIndex(x=>x.id===it.id);if(i>=0)D.items[i]=it;else D.items.unshift(it);save();close();renderItems();};
     const d=box.querySelector('[data-del]');if(d)d.onclick=()=>{if(!confirm('確定刪除這件物品？'))return;D.items=D.items.filter(x=>x.id!==it.id);save();close();renderItems();};
   });
