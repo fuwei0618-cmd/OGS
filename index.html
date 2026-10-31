@@ -43,6 +43,8 @@
 .ask{background:var(--surface);border:1px dashed var(--clay);border-radius:12px;padding:10px 12px;font-size:14px;margin:4px 0 12px}.ask b{display:block;color:var(--clay-ink);font-size:13px}
 .bagtip{font-size:13px;color:var(--muted);margin:-2px 0 8px}
 .group.bag .group-h h3::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--clay);margin-right:8px;vertical-align:1px}
+.bags2{display:grid;gap:0 12px}@media (min-width:560px){.bags2{grid-template-columns:1fr 1fr;align-items:start}.bags2 .item{grid-template-columns:auto 1fr auto;gap:8px;padding:9px 10px}.bags2 .item .pic{display:none}}
+.askt{font-style:normal;font-size:11px;font-weight:700;color:var(--clay-ink);border:1px solid var(--clay);border-radius:999px;padding:0 6px;margin-left:6px;white-space:nowrap;vertical-align:1px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -471,13 +473,16 @@ initMe();
 const save=()=>store.set('ogs.v2',D);
 /* 放哪一袋：用「第一次用到它時人在哪裡」來分 */
 const BAGS=['住院包','哥哥家','回家後'];
-const BAG_TIP={'住院包':'12/17 帶去醫院。營養品各抽 3–4 份放進來，其餘留在哥哥家。','哥哥家':'出院直接去哥哥家，兩週的休養都靠這袋。','回家後':'第 3 週以後才用，可以晚點再買。'};
-const BAG_RULE=[['住院包',['睡衣','針筒','漱口水','軟毛牙刷','護唇膏','免洗內褲','口罩','小毛巾','如廁','保暖']],
-  ['哥哥家',['冰敷','冰袋','頭套','安素','高蛋白','滴雞精','濃湯','靠枕','靠墊','看護墊','矮桌','鏡子','乾洗髮','嬰兒濕紙巾','牙線','牙間刷']],
+const BAG_TIP={'住院包':'12/17 帶去醫院，住 4 天。營養品各帶 3–4 份。標「先問醫院」的，醫院常會提供，問過再決定要不要帶。','哥哥家':'出院直接去，休養兩週。兩邊都有的東西，從醫院帶回來接著用。','回家後':'第 3 週以後才用，可以晚點再買。'};
+const BAG_RULE=[['住院包',['睡衣','針筒','漱口水','軟毛牙刷','護唇膏','免洗內褲','口罩','小毛巾','如廁','保暖','冰敷','冰袋','頭套','安素','高蛋白','滴雞精','濃湯','靠枕','靠墊','看護墊','嬰兒濕紙巾','牙線','牙間刷']],
+  ['哥哥家',['睡衣','針筒','漱口水','軟毛牙刷','護唇膏','免洗內褲','口罩','小毛巾','如廁','冰敷','冰袋','頭套','安素','高蛋白','滴雞精','濃湯','靠枕','靠墊','看護墊','矮桌','鏡子','乾洗髮','嬰兒濕紙巾','牙線','牙間刷']],
   ['回家後',['布丁','優酪乳','米漿','豆花','保養']]];
-let bagFix=false;D.items.forEach(it=>{if(it.bag!==undefined)return;bagFix=true;it.bag='';if(it.cat==='術前事務'||it.cat==='日常在用')return;
-  for(const [b,ks] of BAG_RULE){if(ks.some(k=>it.name.includes(k))){it.bag=b;break;}}});
-if(bagFix)save();
+/* 醫院常會提供，帶之前先問 */
+const ASK_KW=['冰敷','冰袋','頭套','看護墊','靠枕','靠墊','針筒','漱口水'];
+const askHosp=it=>ASK_KW.some(k=>it.name.includes(k));
+if(D.bagV!==2){D.items.forEach(it=>{it.bags=[];delete it.bag;if(it.cat==='術前事務'||it.cat==='日常在用')return;
+  for(const [b,ks] of BAG_RULE){if(ks.some(k=>it.name.includes(k)))it.bags.push(b);}});D.bagV=2;save();}
+D.items.forEach(it=>{if(!Array.isArray(it.bags))it.bags=[];});
 let itemView=store.get('ogs.itemView','bag');
 function initMe(){D.me=D.me||{};document.querySelectorAll('[data-me]').forEach(el=>{el.value=D.me[el.dataset.me]||'';el.oninput=()=>{D.me[el.dataset.me]=el.value;save();};});}
 
@@ -607,12 +612,14 @@ function renderItems(){
   $('#itemchips').innerHTML=['全部','要買','在用'].map(k=>`<button data-if="${k}" aria-pressed="${itemF===k}">${k}</button>`).join('');
   $('#itemview').innerHTML=[['bag','照放哪一袋'],['cat','照類別']].map(([k,t])=>`<button data-iv="${k}" aria-pressed="${itemView===k}">${t}</button>`).join('');
   let groups;
-  if(itemView==='bag'){groups=[...BAGS.map(b=>[b,i=>!isTask(i)&&i.cat!=='日常在用'&&i.bag===b]),['還沒分袋',i=>!isTask(i)&&i.cat!=='日常在用'&&!BAGS.includes(i.bag)],['術前事務',isTask],['日常在用',i=>i.cat==='日常在用']];}
+  if(itemView==='bag'){groups=[...BAGS.map(b=>[b,i=>!isTask(i)&&i.cat!=='日常在用'&&i.bags.includes(b)]),['還沒分袋',i=>!isTask(i)&&i.cat!=='日常在用'&&!i.bags.length],['術前事務',isTask],['日常在用',i=>i.cat==='日常在用']];}
   else groups=[...new Set([...CATS,...D.items.map(i=>i.cat)])].map(c=>[c,i=>i.cat===c]);
-  $('#groups').innerHTML=groups.map(([cat,fn])=>{const G=L.filter(fn);if(!G.length)return '';
+  const html=groups.map(([cat,fn])=>{const G=L.filter(fn);if(!G.length)return '';
     const all=D.items.filter(fn),got=all.filter(i=>i.status!=='buy').length;
     const isBag=itemView==='bag'&&BAGS.includes(cat);
-    return `<div class="group${isBag?' bag':''}"><div class="group-h"><h3>${esc(cat)}</h3><small>${isBag?`已買 ${got} / ${all.length}`:G.length+' 件'}</small></div>${isBag?`<p class="bagtip">${BAG_TIP[cat]}</p>`:''}<div class="list">${G.map(it=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic${it.photo?'':' none'}" ${it.photo?`data-m="${it.photo}"`:''}></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${[itemView==='cat'?it.bag:'',it.when,fmtB(it.bought),it.note,it.place,it.price?`$${it.price}`:''].filter(Boolean).length?`<span>${esc([itemView==='cat'?it.bag:'',it.when,fmtB(it.bought),it.note,it.place,it.price?'$'+it.price:''].filter(Boolean).join('・'))}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`).join('')}</div></div>`;}).join('')||'<div class="empty">沒有符合的物品</div>';
+    return `<div class="group${isBag?' bag':''}"><div class="group-h"><h3>${esc(cat)}</h3><small>${isBag?`已買 ${got} / ${all.length}`:G.length+' 件'}</small></div>${isBag?`<p class="bagtip">${BAG_TIP[cat]}</p>`:''}<div class="list">${G.map(it=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic${it.photo?'':' none'}" ${it.photo?`data-m="${it.photo}"`:''}></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}${cat==='住院包'&&askHosp(it)?'<i class="askt">先問醫院</i>':''}</b>${[itemView==='cat'?it.bags.join('、'):'',it.when,fmtB(it.bought),it.note,it.place,it.price?`$${it.price}`:''].filter(Boolean).length?`<span>${esc([itemView==='cat'?it.bags.join('、'):'',it.when,fmtB(it.bought),it.note,it.place,it.price?'$'+it.price:''].filter(Boolean).join('・'))}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`).join('')}</div></div>`;});
+  if(itemView==='bag'){const two=html.slice(0,2).filter(Boolean).join('');$('#groups').innerHTML=(two?`<div class="bags2">${two}</div>`:'')+html.slice(2).join('')||'<div class="empty">沒有符合的物品</div>';}
+  else $('#groups').innerHTML=html.join('')||'<div class="empty">沒有符合的物品</div>';
   paint($('#items'));
 }
 $('#items').addEventListener('click',e=>{
@@ -622,11 +629,11 @@ $('#items').addEventListener('click',e=>{
   const n=e.target.closest('[data-it]');if(n)itemDialog(D.items.find(x=>x.id===n.dataset.it));
 });
 function itemDialog(it){
-  const isNew=!it;it=it?{...it}:{id:uid(),name:'',cat:'日常在用',qty:'',note:'',status:'use',when:''};
+  const isNew=!it;it=it?{...it,bags:[...(it.bags||[])]}:{id:uid(),name:'',cat:'日常在用',qty:'',note:'',status:'use',when:'',bags:[]};
   dialog(`<h3>${isNew?'新增物品':'修改物品'}</h3>
     <label class="fld">名稱<input id="f-name" value="${esc(it.name)}" placeholder="例如：電動牙刷"></label>
     <div class="fld">狀態<div class="seg" id="f-st">${Object.entries(ST).map(([k,t])=>`<button data-v="${k}" aria-pressed="${it.status===k}">${t}</button>`).join('')}</div></div>
-    <div class="fld">放哪一袋<div class="seg" id="f-bag">${[...BAGS,''].map(b=>`<button data-v="${b}" aria-pressed="${(it.bag||'')===b}">${b||'不用分'}</button>`).join('')}</div></div>
+    <div class="fld">放哪一袋（可以選好幾個）<div class="seg" id="f-bag">${BAGS.map(b=>`<button data-v="${b}" aria-pressed="${(it.bags||[]).includes(b)}">${b}</button>`).join('')}</div></div>
     <div class="row2"><label class="fld">類別<select id="f-cat">${[...new Set([...CATS,it.cat])].map(c=>`<option ${c===it.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label class="fld">什麼時候用<select id="f-when">${WHEN.map(w=>`<option value="${w}" ${w===it.when?'selected':''}>${w||'—'}</option>`).join('')}</select></label></div>
     <div class="row2"><label class="fld">數量<input id="f-qty" value="${esc(it.qty)}"></label><label class="fld">價格<input id="f-price" inputmode="numeric" value="${esc(it.price||'')}"></label></div>
     <div class="fld">購買日期<div class="seg" id="f-bm">${[['','不填'],['month','年月'],['date','年月日']].map(([k,t])=>`<button data-v="${k}" aria-pressed="${bmode(it.bought)===k}">${t}</button>`).join('')}</div><input id="f-bought" type="${bmode(it.bought)||'date'}" value="${esc(it.bought||'')}" ${bmode(it.bought)?'':'hidden'} style="margin-top:6px"></div>
@@ -640,11 +647,11 @@ function itemDialog(it){
     box.querySelectorAll('#f-bm [data-v]').forEach(b=>b.onclick=()=>{const m=b.dataset.v;box.querySelectorAll('#f-bm [data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));
       const old=bi.value;bi.hidden=!m;if(m){bi.type=m;bi.value=m==='month'?old.slice(0,7):(old.length===7?old+'-01':old);}});
     box.querySelectorAll('#f-st [data-v]').forEach(b=>b.onclick=()=>{it.status=b.dataset.v;box.querySelectorAll('#f-st [data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
-    box.querySelectorAll('#f-bag [data-v]').forEach(b=>b.onclick=()=>box.querySelectorAll('#f-bag [data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b)));
+    box.querySelectorAll('#f-bag [data-v]').forEach(b=>b.onclick=()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true'));
     box.querySelector('input[type=file]').onchange=async e=>{if(!e.target.files.length)return;it.photo=await addPhoto(e.target.files[0]);const s=box.querySelector('.shot');s.classList.add('has');s.dataset.m=it.photo;[...s.childNodes].forEach(n=>{if(n.nodeType===3)n.remove()});if(!s.querySelector('span'))s.insertAdjacentHTML('beforeend','<span>換一張</span>');paint(box);};
     box.querySelector('[data-ok]').onclick=()=>{
       const v=id=>box.querySelector(id).value.trim();it.name=v('#f-name');if(!it.name)return toast('先寫名稱');
-      const bmv=box.querySelector('#f-bought');it.bought=bmv.hidden?'':bmv.value;it.bag=(box.querySelector('#f-bag [aria-pressed="true"]')||{dataset:{v:''}}).dataset.v;Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price'),place:v('#f-place'),note:v('#f-note')});
+      const bmv=box.querySelector('#f-bought');it.bought=bmv.hidden?'':bmv.value;it.bags=[...box.querySelectorAll('#f-bag [aria-pressed="true"]')].map(x=>x.dataset.v);Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price'),place:v('#f-place'),note:v('#f-note')});
       const i=D.items.findIndex(x=>x.id===it.id);if(i>=0)D.items[i]=it;else D.items.unshift(it);save();close();renderItems();};
     const d=box.querySelector('[data-del]');if(d)d.onclick=()=>{if(!confirm('確定刪除這件物品？'))return;D.items=D.items.filter(x=>x.id!==it.id);save();close();renderItems();};
   });
