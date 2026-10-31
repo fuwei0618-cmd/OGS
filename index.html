@@ -45,6 +45,17 @@
 .group.bag .group-h h3::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--clay);margin-right:8px;vertical-align:1px}
 .bags2{display:grid;gap:0 12px}@media (min-width:560px){.bags2{grid-template-columns:1fr 1fr;align-items:start}.bags2 .item{grid-template-columns:auto 1fr auto;gap:8px;padding:9px 10px}.bags2 .item .pic{display:none}}
 .askt{font-style:normal;font-size:11px;font-weight:700;color:var(--clay-ink);border:1px solid var(--clay);border-radius:999px;padding:0 6px;margin-left:6px;white-space:nowrap;vertical-align:1px}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.btab{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.bth,.btr{display:grid;grid-template-columns:auto minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line)}
+.bth{background:var(--bg);font-size:12px;font-weight:700;color:var(--muted);position:sticky;top:0}
+.bth small{display:block;font-weight:500;font-variant-numeric:tabular-nums}
+.bth span:first-child{width:52px}
+.btr:last-child{border-bottom:0}
+.btr .nm{cursor:pointer;min-width:0}.btr .nm b{display:block;font-weight:500}.btr .nm span{display:block;font-size:12px;color:var(--muted)}
+.bc{display:grid;gap:2px;font-size:14px;font-variant-numeric:tabular-nums}
+.bq.carry{color:var(--olive);font-size:13px;font-weight:700}.bq.none{color:var(--line)}
+@media (max-width:520px){.bth,.btr{gap:6px;padding:8px}.bc{font-size:12px}.bq.carry{font-size:11px}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -474,15 +485,31 @@ const save=()=>store.set('ogs.v2',D);
 /* 放哪一袋：用「第一次用到它時人在哪裡」來分 */
 const BAGS=['住院包','哥哥家','回家後'];
 const BAG_TIP={'住院包':'12/17 帶去醫院，住 4 天。營養品各帶 3–4 份。標「先問醫院」的，醫院常會提供，問過再決定要不要帶。','哥哥家':'出院直接去，休養兩週。兩邊都有的東西，從醫院帶回來接著用。','回家後':'第 3 週以後才用，可以晚點再買。'};
-const BAG_RULE=[['住院包',['睡衣','針筒','漱口水','軟毛牙刷','護唇膏','免洗內褲','口罩','小毛巾','如廁','保暖','冰敷','冰袋','頭套','安素','高蛋白','滴雞精','濃湯','靠枕','靠墊','看護墊','嬰兒濕紙巾','牙線','牙間刷']],
+const BAG_RULE_OLD=[['住院包',['睡衣','針筒','漱口水','軟毛牙刷','護唇膏','免洗內褲','口罩','小毛巾','如廁','保暖','冰敷','冰袋','頭套','安素','高蛋白','滴雞精','濃湯','靠枕','靠墊','看護墊','嬰兒濕紙巾','牙線','牙間刷']],
   ['哥哥家',['睡衣','針筒','漱口水','軟毛牙刷','護唇膏','免洗內褲','口罩','小毛巾','如廁','冰敷','冰袋','頭套','安素','高蛋白','滴雞精','濃湯','靠枕','靠墊','看護墊','矮桌','鏡子','乾洗髮','嬰兒濕紙巾','牙線','牙間刷']],
   ['回家後',['布丁','優酪乳','米漿','豆花','保養']]];
 /* 醫院常會提供，帶之前先問 */
 const ASK_KW=['冰敷','冰袋','頭套','看護墊','靠枕','靠墊','針筒','漱口水'];
 const askHosp=it=>ASK_KW.some(k=>it.name.includes(k));
-if(D.bagV!==2){D.items.forEach(it=>{it.bags=[];delete it.bag;if(it.cat==='術前事務'||it.cat==='日常在用')return;
-  for(const [b,ks] of BAG_RULE){if(ks.some(k=>it.name.includes(k)))it.bags.push(b);}});D.bagV=2;save();}
-D.items.forEach(it=>{if(!Array.isArray(it.bags))it.bags=[];});
+/* 每一袋各放多少：bq={住院包:'3 罐',哥哥家:'帶過去'}；'帶過去' = 從醫院帶到哥哥家接著用，不用另外買 */
+const CARRY='帶過去';
+const BQ_RULE=[
+ ['安素',{住院包:'3–4 罐',哥哥家:'12–14 罐'},'15–18 罐'],['高蛋白',{住院包:'3–4 瓶',哥哥家:'12–14 瓶'},'15–18 瓶'],
+ ['滴雞精',{住院包:'3–4 包',哥哥家:'14–20 包'},'17–24 包'],['濃湯',{住院包:'2–3 包',哥哥家:'5–8 包'},'7–11 包'],
+ ['冰袋',{住院包:'3 個',哥哥家:CARRY},'3 個'],['頭套',{住院包:'1 個',哥哥家:CARRY},'1 個'],
+ ['針筒',{住院包:'3 支',哥哥家:CARRY},'3 支'],['漱口水',{住院包:'1 瓶',哥哥家:'1 瓶'},'2 瓶'],
+ ['軟毛牙刷',{住院包:'1 支',哥哥家:CARRY},'1 支'],['嬰兒濕紙巾',{住院包:'1 包',哥哥家:'2 包'},'3 包'],
+ ['如廁',{住院包:'1 包',哥哥家:'2 包'},'3 包'],['牙間刷',{住院包:'1 組',哥哥家:CARRY},'1 組'],
+ ['小毛巾',{住院包:'2 條',哥哥家:CARRY},'2 條'],['靠枕',{住院包:'1 個',哥哥家:CARRY},'1 個'],['靠墊',{住院包:'1 個',哥哥家:CARRY},'1 個'],
+ ['看護墊',{住院包:'1 包',哥哥家:'1 包'},'2 包'],['睡衣',{住院包:'2 套',哥哥家:'帶過去＋再 1–2 套'},'3–4 套'],
+ ['保暖',{住院包:'1 件'},'1 件'],['免洗內褲',{住院包:'4 件',哥哥家:'14 件'},'18 件'],['護唇膏',{住院包:'1 支',哥哥家:CARRY},'1 支'],
+ ['口罩',{住院包:'1 盒',哥哥家:CARRY},'1–2 盒'],['矮桌',{哥哥家:'1 個'},'1 個'],['鏡子',{哥哥家:'1 面'},'1 面'],['乾洗髮',{哥哥家:'1 瓶'},'1 瓶'],
+ ['布丁',{回家後:'依需要'},''],['優酪乳',{回家後:'依需要'},''],['米漿',{回家後:'依需要'},'']];
+if(D.bagV!==3){D.items.forEach(it=>{delete it.bag;delete it.bags;it.bq={};if(it.cat==='術前事務'||it.cat==='日常在用')return;
+  const r=BQ_RULE.find(([k])=>it.name.includes(k));if(r){it.bq={...r[1]};if(r[2])it.qty=r[2];}});D.bagV=3;save();}
+D.items.forEach(it=>{if(!it.bq||typeof it.bq!=='object')it.bq={};});
+const inBag=(it,b)=>!!(it.bq&&it.bq[b]);
+const bqCell=v=>!v?'<span class="bq none">—</span>':v===CARRY?'<span class="bq carry">← 醫院帶過去</span>':v.startsWith(CARRY)?`<span class="bq carry">← 醫院帶過去</span><span class="bq">${esc(v.slice(CARRY.length).replace(/^＋/,'＋'))}</span>`:`<span class="bq">${esc(v)}</span>`;
 let itemView=store.get('ogs.itemView','bag');
 function initMe(){D.me=D.me||{};document.querySelectorAll('[data-me]').forEach(el=>{el.value=D.me[el.dataset.me]||'';el.oninput=()=>{D.me[el.dataset.me]=el.value;save();};});}
 
@@ -611,15 +638,22 @@ function renderItems(){
   $('#progtext').textContent=`手術要準備的東西：已買 ${ready} / ${goods.length} 件`;
   $('#itemchips').innerHTML=['全部','要買','在用'].map(k=>`<button data-if="${k}" aria-pressed="${itemF===k}">${k}</button>`).join('');
   $('#itemview').innerHTML=[['bag','照放哪一袋'],['cat','照類別']].map(([k,t])=>`<button data-iv="${k}" aria-pressed="${itemView===k}">${t}</button>`).join('');
-  let groups;
-  if(itemView==='bag'){groups=[...BAGS.map(b=>[b,i=>!isTask(i)&&i.cat!=='日常在用'&&i.bags.includes(b)]),['還沒分袋',i=>!isTask(i)&&i.cat!=='日常在用'&&!i.bags.length],['術前事務',isTask],['日常在用',i=>i.cat==='日常在用']];}
-  else groups=[...new Set([...CATS,...D.items.map(i=>i.cat)])].map(c=>[c,i=>i.cat===c]);
-  const html=groups.map(([cat,fn])=>{const G=L.filter(fn);if(!G.length)return '';
-    const all=D.items.filter(fn),got=all.filter(i=>i.status!=='buy').length;
-    const isBag=itemView==='bag'&&BAGS.includes(cat);
-    return `<div class="group${isBag?' bag':''}"><div class="group-h"><h3>${esc(cat)}</h3><small>${isBag?`已買 ${got} / ${all.length}`:G.length+' 件'}</small></div>${isBag?`<p class="bagtip">${BAG_TIP[cat]}</p>`:''}<div class="list">${G.map(it=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic${it.photo?'':' none'}" ${it.photo?`data-m="${it.photo}"`:''}></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}${cat==='住院包'&&askHosp(it)?'<i class="askt">先問醫院</i>':''}</b>${[itemView==='cat'?it.bags.join('、'):'',it.when,fmtB(it.bought),it.note,it.place,it.price?`$${it.price}`:''].filter(Boolean).length?`<span>${esc([itemView==='cat'?it.bags.join('、'):'',it.when,fmtB(it.bought),it.note,it.place,it.price?'$'+it.price:''].filter(Boolean).join('・'))}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`).join('')}</div></div>`;});
-  if(itemView==='bag'){const two=html.slice(0,2).filter(Boolean).join('');$('#groups').innerHTML=(two?`<div class="bags2">${two}</div>`:'')+html.slice(2).join('')||'<div class="empty">沒有符合的物品</div>';}
-  else $('#groups').innerHTML=html.join('')||'<div class="empty">沒有符合的物品</div>';
+  const row=(it,meta)=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic${it.photo?'':' none'}" ${it.photo?`data-m="${it.photo}"`:''}></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${meta.length?`<span>${esc(meta.join('・'))}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`;
+  const metaOf=it=>[itemView==='cat'?Object.keys(it.bq||{}).join('、'):'',it.when,fmtB(it.bought),it.note,it.place,it.price?'$'+it.price:''].filter(Boolean);
+  const grp=(title,G,extra='')=>G.length?`<div class="group"><div class="group-h"><h3>${esc(title)}</h3><small>${G.length} 件</small></div>${extra}<div class="list">${G.map(it=>row(it,metaOf(it))).join('')}</div></div>`:'';
+  let out='';
+  if(itemView==='bag'){
+    const T=L.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&(inBag(it,'住院包')||inBag(it,'哥哥家')));
+    const cnt=b=>{const A=D.items.filter(i=>inBag(i,b)&&i.bq[b]!==CARRY);return `${A.filter(i=>i.status!=='buy').length}/${A.length}`;};
+    if(T.length)out+=`<div class="group"><div class="group-h"><h3>住院包＋哥哥家</h3><small>同一件東西放同一列</small></div>
+      <p class="bagtip">12/17 帶去醫院住 4 天，12/20 出院直接到哥哥家休養兩週。「← 醫院帶過去」＝住院用完帶到哥哥家接著用，不用另外買；有寫數量的＝兩邊分開備。標「先問醫院」的，醫院常會提供。</p>
+      <div class="btab"><div class="bth"><span></span><span>東西（總共要買）</span><span>住院包 <small>已買 ${cnt('住院包')}</small></span><span>哥哥家 <small>已買 ${cnt('哥哥家')}</small></span></div>
+      ${T.map(it=>`<div class="btr"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="nm" data-it="${it.id}"><b>${esc(it.name)}${askHosp(it)&&inBag(it,'住院包')?'<i class="askt">先問醫院</i>':''}</b>${it.qty?`<span>總共 ${esc(it.qty)}</span>`:''}</div><div class="bc">${bqCell(it.bq['住院包'])}</div><div class="bc">${bqCell(it.bq['哥哥家'])}</div></div>`).join('')}</div></div>`;
+    out+=grp('回家後',L.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&inBag(it,'回家後')&&!inBag(it,'住院包')&&!inBag(it,'哥哥家')),'<p class="bagtip">第 3 週以後才用，可以晚點再買。</p>');
+    out+=grp('還沒分袋',L.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&!Object.keys(it.bq).length));
+    out+=grp('術前事務',L.filter(isTask));out+=grp('日常在用',L.filter(i=>i.cat==='日常在用'));
+  }else out=[...new Set([...CATS,...D.items.map(i=>i.cat)])].map(c=>grp(c,L.filter(i=>i.cat===c))).join('');
+  $('#groups').innerHTML=out||'<div class="empty">沒有符合的物品</div>';
   paint($('#items'));
 }
 $('#items').addEventListener('click',e=>{
@@ -629,13 +663,15 @@ $('#items').addEventListener('click',e=>{
   const n=e.target.closest('[data-it]');if(n)itemDialog(D.items.find(x=>x.id===n.dataset.it));
 });
 function itemDialog(it){
-  const isNew=!it;it=it?{...it,bags:[...(it.bags||[])]}:{id:uid(),name:'',cat:'日常在用',qty:'',note:'',status:'use',when:'',bags:[]};
+  const isNew=!it;it=it?{...it,bq:{...(it.bq||{})}}:{id:uid(),name:'',cat:'日常在用',qty:'',note:'',status:'use',when:'',bq:{}};
   dialog(`<h3>${isNew?'新增物品':'修改物品'}</h3>
     <label class="fld">名稱<input id="f-name" value="${esc(it.name)}" placeholder="例如：電動牙刷"></label>
     <div class="fld">狀態<div class="seg" id="f-st">${Object.entries(ST).map(([k,t])=>`<button data-v="${k}" aria-pressed="${it.status===k}">${t}</button>`).join('')}</div></div>
-    <div class="fld">放哪一袋（可以選好幾個）<div class="seg" id="f-bag">${BAGS.map(b=>`<button data-v="${b}" aria-pressed="${(it.bags||[]).includes(b)}">${b}</button>`).join('')}</div></div>
+    <div class="fld">每一袋放多少（沒有就空白）</div>
+    <div class="row3">${BAGS.map(b=>`<label class="fld">${b}<input data-bq="${b}" value="${esc((it.bq||{})[b]||'')}" placeholder="${b==='哥哥家'?'例如：2 包':'例如：1 個'}"></label>`).join('')}</div>
+    <button type="button" class="mini" id="f-carry" style="margin:-4px 0 12px">哥哥家改成「醫院帶過去」</button>
     <div class="row2"><label class="fld">類別<select id="f-cat">${[...new Set([...CATS,it.cat])].map(c=>`<option ${c===it.cat?'selected':''}>${esc(c)}</option>`).join('')}</select></label><label class="fld">什麼時候用<select id="f-when">${WHEN.map(w=>`<option value="${w}" ${w===it.when?'selected':''}>${w||'—'}</option>`).join('')}</select></label></div>
-    <div class="row2"><label class="fld">數量<input id="f-qty" value="${esc(it.qty)}"></label><label class="fld">價格<input id="f-price" inputmode="numeric" value="${esc(it.price||'')}"></label></div>
+    <div class="row2"><label class="fld">總共要買<input id="f-qty" value="${esc(it.qty)}"></label><label class="fld">價格<input id="f-price" inputmode="numeric" value="${esc(it.price||'')}"></label></div>
     <div class="fld">購買日期<div class="seg" id="f-bm">${[['','不填'],['month','年月'],['date','年月日']].map(([k,t])=>`<button data-v="${k}" aria-pressed="${bmode(it.bought)===k}">${t}</button>`).join('')}</div><input id="f-bought" type="${bmode(it.bought)||'date'}" value="${esc(it.bought||'')}" ${bmode(it.bought)?'':'hidden'} style="margin-top:6px"></div>
     <label class="fld">在哪買<input id="f-place" value="${esc(it.place||'')}" placeholder="店名或網址"></label>
     <label class="fld">備註<input id="f-note" value="${esc(it.note)}"></label>
@@ -647,11 +683,11 @@ function itemDialog(it){
     box.querySelectorAll('#f-bm [data-v]').forEach(b=>b.onclick=()=>{const m=b.dataset.v;box.querySelectorAll('#f-bm [data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));
       const old=bi.value;bi.hidden=!m;if(m){bi.type=m;bi.value=m==='month'?old.slice(0,7):(old.length===7?old+'-01':old);}});
     box.querySelectorAll('#f-st [data-v]').forEach(b=>b.onclick=()=>{it.status=b.dataset.v;box.querySelectorAll('#f-st [data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
-    box.querySelectorAll('#f-bag [data-v]').forEach(b=>b.onclick=()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true'));
+    const fc=box.querySelector('#f-carry');if(fc)fc.onclick=()=>{box.querySelector('[data-bq="哥哥家"]').value=CARRY;};
     box.querySelector('input[type=file]').onchange=async e=>{if(!e.target.files.length)return;it.photo=await addPhoto(e.target.files[0]);const s=box.querySelector('.shot');s.classList.add('has');s.dataset.m=it.photo;[...s.childNodes].forEach(n=>{if(n.nodeType===3)n.remove()});if(!s.querySelector('span'))s.insertAdjacentHTML('beforeend','<span>換一張</span>');paint(box);};
     box.querySelector('[data-ok]').onclick=()=>{
       const v=id=>box.querySelector(id).value.trim();it.name=v('#f-name');if(!it.name)return toast('先寫名稱');
-      const bmv=box.querySelector('#f-bought');it.bought=bmv.hidden?'':bmv.value;it.bags=[...box.querySelectorAll('#f-bag [aria-pressed="true"]')].map(x=>x.dataset.v);Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price'),place:v('#f-place'),note:v('#f-note')});
+      const bmv=box.querySelector('#f-bought');it.bought=bmv.hidden?'':bmv.value;it.bq={};box.querySelectorAll('[data-bq]').forEach(x=>{const v=x.value.trim();if(v)it.bq[x.dataset.bq]=v;});Object.assign(it,{cat:v('#f-cat'),when:v('#f-when'),qty:v('#f-qty'),price:v('#f-price'),place:v('#f-place'),note:v('#f-note')});
       const i=D.items.findIndex(x=>x.id===it.id);if(i>=0)D.items[i]=it;else D.items.unshift(it);save();close();renderItems();};
     const d=box.querySelector('[data-del]');if(d)d.onclick=()=>{if(!confirm('確定刪除這件物品？'))return;D.items=D.items.filter(x=>x.id!==it.id);save();close();renderItems();};
   });
