@@ -98,6 +98,9 @@
 }
 body.wide .wrap{max-width:min(1240px,100%)}
 @media (min-width:1100px){body.wide .ctab{min-width:0}body.wide .cth,body.wide .ctr{grid-template-columns:34px 34px 34px minmax(200px,2.3fr) 80px 100px minmax(80px,.9fr) minmax(120px,1.1fr) minmax(160px,1.8fr)}}
+.gym{display:grid;gap:8px}@media (min-width:640px){.gym{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.gs{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;border-top:3px solid var(--olive)}
+.gs b{display:block}.gs>span{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}.gs p{margin:6px 0 0;font-size:14px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -403,6 +406,25 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     <h2>術後恢復階段</h2>
     <div class="htl-top"><p class="lede">往右滑看下一段，「現在」會自動標出來。點一段看完整內容。</p><button class="mini" id="stageAll" aria-pressed="false">展開全部</button></div>
     <div class="htl" id="htl" role="list" aria-label="恢復階段時間線"></div>
+
+    <h2>什麼時候可以回去重訓</h2>
+    <p class="lede">網路資料整理，實際以羅醫師回診時說的為準。醫師說過：1 個月內不運動、1 個月後可以騎車。</p>
+    <div class="gym">
+      <div class="gs"><b>術後 1 個月內</b><span>12/18–1/17</span><p>不運動、不重訓。只散步，2 週後約 15 分鐘。</p></div>
+      <div class="gs"><b>1 個月～6 週</b><span>1/18–1/28</span><p>散步、快走等輕度有氧，可以騎車。還不能重訓。</p></div>
+      <div class="gs"><b>6–8 週</b><span>約 1/29–2/12</span><p>回診確認骨頭癒合後，才能試<b>極輕量</b>重訓：平常重量的 30–50%，以喚醒肌肉為主。</p></div>
+      <div class="gs"><b>3 個月以後</b><span>約 3/18 起</span><p>醫師確認癒合良好，再慢慢恢復平常的重訓。拳擊、格鬥這類會撞到臉的，3–6 個月內都避免。</p></div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <h3>回去重訓時的 4 個守則</h3>
+      <ul style="margin:0;padding-left:1.1em">
+        <li><b>不要咬牙</b>：出力時習慣咬緊牙關，會對剛癒合的骨頭和骨釘造成很大壓力。這點最重要</li>
+        <li><b>不要憋氣</b>：血壓瞬間升高，可能讓傷口滲血、頭脹痛。出力時吐氣</li>
+        <li><b>先避開大重量硬舉、深蹲</b>這類腹壓很高的動作</li>
+        <li><b>臉部開刀的地方有痛、拉扯感，馬上停</b></li>
+      </ul>
+      <p class="lede" style="margin:8px 0 0">回健身房前，先跟教練說你做過正顎手術、哪天開始可以練、哪些動作先不做。前幾週吃不多，肌肉會掉一些，蛋白質要補夠再回去練。</p>
+    </div>
 
     <h2 class="inlh">每個階段帶多少<small>哥哥家每天一組：1 罐安素 + 1 瓶高蛋白 + 1 包滴雞精 + 1 杯濃湯。醫院前三天胃口小，醫院也會提供流質，帶這些當點心就夠。</small></h2>
     <div class="tablewrap"><table class="nutri"><colgroup><col style="width:24%"><col><col><col><col></colgroup>
@@ -791,7 +813,7 @@ const TOPICS=[
   yes:['鼻翼不要變寬、不要朝天','能保留原本的酒窩','術後不用長時間綁牙'],
   no:['上顎手術後鼻翼變寬、朝天','長時間綁牙，不能說話也不好清潔'],
   ref:['鼻翼變寬的解法：鼻翼基底縫合（奇美 顏欽堉醫師 2016 年論文）','現在多用鈦骨板固定，網路資料說需要綁牙的比例已經不到 1%','術後可能戴咬合板，會影響說話和清潔'],
-  qs:['手術會不會做鼻翼基底縫合，避免鼻翼變寬？','我原本的酒窩會不會消失？','用什麼固定？術後要不要綁牙？要不要戴咬合板、戴多久？']},
+  qs:['術後幾週可以重訓？要注意哪些動作？','手術會不會做鼻翼基底縫合，避免鼻翼變寬？','我原本的酒窩會不會消失？','用什麼固定？術後要不要綁牙？要不要戴咬合板、戴多久？']},
  {k:'soft',t:'消腫後的樣子',
   yes:['皮膚和肌肉跟著骨頭服貼，線條乾淨'],
   no:['骨頭動了但皮肉沒跟上，看起來厚重或模糊'],
@@ -829,12 +851,12 @@ renderConsult();
 
 /* ---------- 恢復階段 ---------- */
 const stages=[
-  {name:'術後當天',from:0,to:0,place:'醫院',body:'麻醉退後開始脹痛，雙頰快速腫脹，口內有血水，大多只能靠眼神或打字溝通。',care:'嚴格冰敷、半坐臥休息（三角靠枕）、穿前開式睡衣，避免嘴巴張太大。',food:'禁食或少量開水，依醫囑。',stuff:'冰敷袋、頭套、靠枕、看護墊、針筒、漱口水、衣物',budget:'約 $4,300–8,300（第一階段總備品）'},
-  {name:'第 1–3 天',from:1,to:3,place:'醫院',body:'腫脹最高峰期，眼周可能出現黃斑瘀青，體力很弱。',care:'持續冰敷，用針筒灌食安素、滴雞精；每次進食後用無酒精漱口水輕漱。',food:'純流質：安素、高蛋白、滴雞精、米湯。',stuff:'延續第一階段備品',budget:''},
-  {name:'第 1 週',from:4,to:7,place:'哥哥家',body:'進入消腫轉換期，腫脹從臉頰往下巴移，瘀青轉黃綠色；體力恢復到可在房間走動。',care:'問醫生是否改溫敷；改喝高營養濃湯、流質，絕對不要嚼東西。',food:'純流質和無顆粒滑順濃湯。不用吸管、不用調理機。',stuff:'第 4–5 天補貨：鮮優酪乳、布丁、濃湯',budget:'約 $500–1,000'},
-  {name:'第 2 週',from:8,to:14,place:'哥哥家',body:'外觀腫脹消 40–50%，笑起來還會緊繃僵硬，準備回診。',care:'體力允許下可以洗頭洗澡。',food:'半流質：優酪乳、布丁、濾渣豆漿、稀飯、蒸蛋、豆花。',stuff:'延續前階段物資',budget:''},
-  {name:'第 3 週～1 個月',from:15,to:30,place:'回家',body:'消腫 70–80%，輪廓線條變明顯，開始看到直面型和下巴成形。',care:'準備立體口罩回歸社交和上班，持續追蹤恢復狀況。',food:'告別純流質，過渡到免咀嚼食物：蒸蛋、豆腐、魚肉、軟爛麵線、粥。',stuff:'食物和營養品升級',budget:'約 $1,000–2,000'},
-  {name:'第 2～6 個月',from:31,to:99999,place:'定型期',body:'剩最後 10–15% 深層水腫，骨頭癒合定型，側臉線條完整呈現。',care:'臉部保濕保養，搭配溫敷輕柔按摩僵硬的咀嚼肌。',food:'逐步恢復正常飲食（依醫師評估）。',stuff:'臉部保濕修護保養品',budget:'約 $500–1,500'}
+  {name:'術後當天',move:'躺著休息，下床上廁所要有人扶。',from:0,to:0,place:'醫院',body:'麻醉退後開始脹痛，雙頰快速腫脹，口內有血水，大多只能靠眼神或打字溝通。',care:'嚴格冰敷、半坐臥休息（三角靠枕）、穿前開式睡衣，避免嘴巴張太大。',food:'禁食或少量開水，依醫囑。',stuff:'冰敷袋、頭套、靠枕、看護墊、針筒、漱口水、衣物',budget:'約 $4,300–8,300（第一階段總備品）'},
+  {name:'第 1–3 天',move:'在病房裡慢慢走，幫助消腫、避免血栓。',from:1,to:3,place:'醫院',body:'腫脹最高峰期，眼周可能出現黃斑瘀青，體力很弱。',care:'持續冰敷，用針筒灌食安素、滴雞精；每次進食後用無酒精漱口水輕漱。',food:'純流質：安素、高蛋白、滴雞精、米湯。',stuff:'延續第一階段備品',budget:''},
+  {name:'第 1 週',move:'在房間、屋內慢走就好。',from:4,to:7,place:'哥哥家',body:'進入消腫轉換期，腫脹從臉頰往下巴移，瘀青轉黃綠色；體力恢復到可在房間走動。',care:'問醫生是否改溫敷；改喝高營養濃湯、流質，絕對不要嚼東西。',food:'純流質和無顆粒滑順濃湯。不用吸管、不用調理機。',stuff:'第 4–5 天補貨：鮮優酪乳、布丁、濃湯',budget:'約 $500–1,000'},
+  {name:'第 2 週',move:'可以出門散步約 15 分鐘（醫師說的）。',from:8,to:14,place:'哥哥家',body:'外觀腫脹消 40–50%，笑起來還會緊繃僵硬，準備回診。',care:'體力允許下可以洗頭洗澡。',food:'半流質：優酪乳、布丁、濾渣豆漿、稀飯、蒸蛋、豆花。',stuff:'延續前階段物資',budget:''},
+  {name:'第 3 週～1 個月',move:'散步、慢慢加長時間。醫師說 1 個月內不運動，重訓、跑步都先不要。',from:15,to:30,place:'回家',body:'消腫 70–80%，輪廓線條變明顯，開始看到直面型和下巴成形。',care:'準備立體口罩回歸社交和上班，持續追蹤恢復狀況。',food:'告別純流質，過渡到免咀嚼食物：蒸蛋、豆腐、魚肉、軟爛麵線、粥。',stuff:'食物和營養品升級',budget:'約 $1,000–2,000'},
+  {name:'第 2～6 個月',move:'1 個月後可以騎車。6–8 週（約 1/29–2/12）回診確認骨頭癒合後，才能試極輕量重訓；3 個月後（約 3/18）醫師確認再慢慢恢復。',from:31,to:99999,place:'定型期',body:'剩最後 10–15% 深層水腫，骨頭癒合定型，側臉線條完整呈現。',care:'臉部保濕保養，搭配溫敷輕柔按摩僵硬的咀嚼肌。',food:'逐步恢復正常飲食（依醫師評估）。',stuff:'臉部保濕修護保養品',budget:'約 $500–1,500'}
 ];
 const nowIdx=post<0?-1:stages.findIndex(s=>post>=s.from&&post<=s.to);let sel=nowIdx>=0?nowIdx:0;
 /* 橫向時間線：每段一欄，平常只看身體狀態；點一段或「展開全部」看照護、飲食、物資 */
@@ -844,7 +866,7 @@ function renderStage(){
     <div class="hdot"></div>
     <div class="hhd"><b>${s.name}</b><span class="hex tan">${s.place}</span></div>
     ${i===nowIdx?'<span class="hnow">現在</span>':''}
-    <dl><div><dt>身體狀態</dt><dd>${s.body}</dd></div>${open?`<div><dt>照護重點</dt><dd>${s.care}</dd></div><div><dt>飲食</dt><dd>${s.food}</dd></div><div><dt>物資</dt><dd>${s.stuff}${s.budget?`<div class="budget">${s.budget}</div>`:''}</dd></div>`:'<div class="more">照護・飲食・物資 ▾</div>'}</dl></article>`;}).join('');
+    <dl><div><dt>身體狀態</dt><dd>${s.body}</dd></div>${open?`<div><dt>照護重點</dt><dd>${s.care}</dd></div><div><dt>飲食</dt><dd>${s.food}</dd></div><div><dt>運動</dt><dd>${s.move}</dd></div><div><dt>物資</dt><dd>${s.stuff}${s.budget?`<div class="budget">${s.budget}</div>`:''}</dd></div>`:'<div class="more">照護・飲食・物資 ▾</div>'}</dl></article>`;}).join('');
   $('#stageAll').textContent=allOpen?'收起來':'展開全部';$('#stageAll').setAttribute('aria-pressed',allOpen);
 }
 htl.addEventListener('click',e=>{const c=e.target.closest('.hcol');if(!c||allOpen)return;const i=+c.dataset.i;openSet.has(i)?openSet.delete(i):openSet.add(i);renderStage();});
