@@ -596,9 +596,8 @@ if(D.bagV<4){const NEW=NEW4;
  NEW.forEach(([name,cat,bq,qty,note],i)=>{if(D.items.some(x=>x.name===name))return;
    D.items.push({id:'n4_'+i,name,cat,qty,note,status:'buy',when:cat==='術前事務'?'術前':'',bq:{...bq}});});
  D.bagV=4;save();}
-if(D.bagV<5){[['預約貓咪託管（12/10 四 或 12/11 五 送去）','找好地方、確認日期，準備咪咪的飼料、貓砂、常用的東西'],
-  ['通知打掃阿姨','說咪咪送去託管、住院期間家裡沒人，打掃時間要不要調'],
-  ['確認誰去接咪咪回家','休養完回家前後']].forEach(([name,note],i)=>{if(!D.items.some(x=>x.name===name))D.items.push({id:'n5_'+i,name,cat:'術前事務',qty:'',note,status:'buy',when:'術前',bq:{}});});D.bagV=5;save();}
+if(D.bagV<6){D.items=D.items.filter(x=>x.id!=='n5_0'&&x.id!=='n5_2');const nm='通知打掃阿姨';let it=D.items.find(x=>x.id==='n5_1'||x.name===nm);
+  if(!it){it={id:'n5_1',name:nm,cat:'術前事務',qty:'',status:'buy',when:'術前',bq:{}};D.items.push(it);}it.note='前一週的四或五（12/10 或 12/11）貓咪託管';D.bagV=6;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
@@ -643,7 +642,7 @@ if(diff>1)c.innerHTML=`<div class="label">距離手術還有</div><div class="nu
 else if(diff===1)c.innerHTML=`<div class="label">明天就是手術日</div><div class="num">D-1</div><div class="sub">今天住院。記得聽護理師宣布禁食禁水的時間。</div>`;
 else if(diff===0)c.innerHTML=`<div class="label">今天</div><div class="num">手術日</div><div class="sub">加油，醒來就是新的開始。</div>`;
 else c.innerHTML=`<div class="label">術後第</div><div class="num">${post}<small>天</small></div><div class="sub">到「恢復」頁看這個階段要注意什麼。</div>`;
-const ms=[[2026,10,5,'白醫師討論','帶 Mood Board 照片'],[2026,11,9,'羅醫師看診','對齊美感方向；拍一組齒列照'],[2026,12,10,'貓咪送託管','12/10（四）或 12/11（五）；先通知阿姨'],[2026,12,17,'住院',''],[2026,12,18,'手術','',true],[2026,12,20,'出院','到哥哥家休養'],[null,7,null,'術後一週回診','洗頭、補貨'],[null,14,null,'術後兩週回診','可走路 15 分鐘'],[null,30,null,'術後一個月回診','可以騎車']];
+const ms=[[2026,10,5,'白醫師討論','帶 Mood Board 照片'],[2026,11,9,'羅醫師看診','對齊美感方向；拍一組齒列照'],[2026,12,10,'貓咪託管','12/10（四）或 12/11（五）；記得通知打掃阿姨'],[2026,12,17,'住院',''],[2026,12,18,'手術','',true],[2026,12,20,'出院','到哥哥家休養'],[null,7,null,'術後一週回診','洗頭、補貨'],[null,14,null,'術後兩週回診','可走路 15 分鐘'],[null,30,null,'術後一個月回診','可以騎車']];
 $('#milestones').innerHTML=ms.map(m=>{const t=m[0]?Date.UTC(m[0],m[1]-1,m[2]):surgery+m[1]*DAY;return `<li class="${t<today?'past':''} ${m[5]?'big':''}"><div class="d">${fmt(t)}</div><div class="dot"></div><div class="t"><b>${m[3]}</b>${m[4]?`<span>${m[4]}</span>`:''}</div></li>`;}).join('');
 
 /* ---------- 紀錄 ---------- */
