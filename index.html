@@ -598,6 +598,8 @@ if(D.bagV<4){const NEW=NEW4;
  D.bagV=4;save();}
 if(D.bagV<6){D.items=D.items.filter(x=>x.id!=='n5_0'&&x.id!=='n5_2');const nm='通知打掃阿姨';let it=D.items.find(x=>x.id==='n5_1'||x.name===nm);
   if(!it){it={id:'n5_1',name:nm,cat:'術前事務',qty:'',status:'buy',when:'術前',bq:{}};D.items.push(it);}it.note='前一週的四或五（12/10 或 12/11）貓咪託管';D.bagV=6;save();}
+if(D.bagV<7){const nm='健身房（重訓課）請假／暫停';if(!D.items.some(x=>x.name===nm))D.items.push({id:'n7_0',name:nm,cat:'術前事務',qty:'',status:'buy',when:'術前',bq:{},
+  note:'問能不能暫停會籍或課程。大約 12/18 停到 3/18（3 個月）；6–8 週回診確認後可以先回去練極輕量。跟教練說做過正顎、哪些動作先不做'});D.bagV=7;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
