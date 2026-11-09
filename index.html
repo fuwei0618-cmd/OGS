@@ -613,6 +613,7 @@ if(D.bagV<8){const C=CARRY;
   const tissue=D.items.find(x=>x.name==='面紙');if(tissue){tissue.bq={住院包:'醫院有附',哥哥家:'1 串'};tissue.qty='1 串';}
   const cup=D.items.find(x=>x.name==='保溫杯');if(cup)cup.note='溫的可以，不要燙。術後 4 週內不能喝熱飲';
   D.bagV=8;save();}
+if(D.bagV<9){if(!D.items.some(x=>x.name.includes('洗牙機')))D.items.push({id:'n9_0',name:'洗牙機',cat:'清潔與衛生',qty:'1 台',note:'家裡已有，醫院說要帶去（咬合板用）',status:'got',ok:true,ord:true,src:'',when:'',bq:{住院包:'1 台',哥哥家:CARRY}});D.bagV=9;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
