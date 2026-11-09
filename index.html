@@ -807,20 +807,35 @@ $('#cartPrint').onclick=()=>window.print();
 
 /* 點開看分析的待辦 */
 const INFO={pay:{t:'出院付款：怎麼付比較好',h:`
-<p class="lede">我不是理財顧問，這是幫你把選項攤開，決定還是你自己來。</p>
-<div class="cs-k">先做這兩件事</div>
-<ol class="ilist"><li><b>打電話問醫院</b>：自費能不能刷卡？有沒有信用卡分期零利率？可以分幾張卡刷嗎？</li><li><b>查信用卡額度</b>：夠不夠刷存款不夠的差額。不夠的話可以先打給銀行申請臨時調高額度。</li></ol>
-<div class="cs-k" style="margin-top:12px">四個選項</div>
+<p class="lede">我不是理財顧問，這是幫你把選項攤開，決定還是你自己來。銀行優惠常常變，申請前一定要打給銀行確認。</p>
+<div class="cs-k">目標</div>
+<p style="margin:4px 0 0">能刷 0 利率分期的部分越多越好，<b>身上多留一點現金</b>，術後的生活費、看護費、營養品比較安心。</p>
+<div class="cs-k" style="margin-top:12px">現在就做</div>
+<ol class="ilist">
+ <li><b>同一週申請兩張分期卡</b>（一起申請，信用查詢紀錄比較集中）：
+   <ul><li><b>安泰銀行 分期卡</b>：12 期 0 利率，每月負擔最輕，第一順位</li><li><b>華南銀行</b>（i網購生活卡或 Combo Life 卡）：最多 6 期 0 利率，有寫醫療費可以分期</li></ul>
+   申請時附上薪資轉帳或扣繳憑單，額度會比較高。</li>
+ <li><b>核卡後打給客服設定分期</b>：安泰設成 12 期，問清楚門檻和醫療費能不能用。</li>
+ <li><b>打給長庚批價櫃檯</b>問三件事：能不能用好幾張卡分開刷、加現金一起付？哪些卡可以分期？要在哪裡刷？（聽說醫指付 APP 不能分期，要到實體櫃檯）</li>
+ <li>手上如果已經有信用卡，也打去問醫療費能不能「單筆分期」，舊客戶的額度通常比新卡高。</li>
+</ol>
+<div class="cs-k" style="margin-top:12px">出院結帳的順序</div>
+<p style="margin:4px 0 0">先把兩張卡的額度刷滿並各自分期 → 不夠的再用存款 → 還不夠才考慮美金換台幣，保單借款放最後。</p>
+<div class="cs-k" style="margin-top:12px">四個選項比較</div>
 <div class="itab">
- <div class="ir"><b>存款</b><span class="ok">沒有利息</span><p>能付多少先付多少，但記得留一筆生活費和術後的開銷，不要全部掏空。</p></div>
- <div class="ir"><b>信用卡</b><span class="ok">一個多月內免利息</span><p>帳單大約一個多月後才繳，剛好可以等理賠進來。<b>一定要全額繳清</b>，只繳最低應繳會變成很高的循環利息。</p></div>
- <div class="ir"><b>美金換台幣</b><span class="mid">看匯率</span><p>沒有利息，但匯率比你當初買的時候差，換了就是實際虧到。本來就打算要用的錢才適合換。</p></div>
- <div class="ir"><b>保單借款</b><span class="mid">有利息</span><p>撥款快、不用審核，但要付利息，還錢前保單權益也會受影響。適合當最後的備案。</p></div>
+ <div class="ir"><b>0 利率分期卡</b><span class="ok">沒有利息</span><p>新卡額度通常不高，所以辦兩張。分期期間額度會被佔住，要繳完才慢慢回來。</p></div>
+ <div class="ir"><b>存款</b><span class="ok">沒有利息</span><p>付分期卡刷不完的部分，記得留生活費。</p></div>
+ <div class="ir"><b>美金換台幣</b><span class="mid">看匯率</span><p>匯率比當初買的時候差，換了就是實際虧到。</p></div>
+ <div class="ir"><b>保單借款</b><span class="mid">有利息</span><p>撥款快，但要付利息。最後的備案。</p></div>
 </div>
-<div class="cs-k" style="margin-top:12px">我的建議順序</div>
-<p style="margin:4px 0 0"><b>存款付大部分，差額刷信用卡</b>，出院後馬上申請理賠，理賠下來再把卡費繳掉。信用卡不能刷或額度不夠，再看美金匯率；保單借款放最後。</p>
+<div class="cs-k" style="margin-top:12px">要注意</div>
+<ul class="ilist">
+ <li><b>每期都要準時繳</b>，遲繳一次就可能要付利息和違約金。可以設定自動扣款。</li>
+ <li>不要一次申請太多張卡：短時間被很多家查信用，反而容易被拒、額度更低。</li>
+ <li>臨時調高的額度通常不能分期。</li>
+</ul>
 <div class="cs-k" style="margin-top:12px">配合理賠</div>
-<p style="margin:4px 0 0">出院拿到診斷書和收據就可以申請，不用等半年。越早申請，錢越早回來，信用卡帳單就越好處理。</p>`}};
+<p style="margin:4px 0 0">出院拿到診斷書和收據就可以申請，不用等半年。理賠下來的錢可以先留著當現金，分期照常慢慢繳。</p>`}};
 function infoDialog(it){const I=INFO[it.info];dialog(`<h3>${I.t}</h3>${I.h}<div class="btns"><button class="mini" data-edit>修改這件事</button><button class="mini" data-x>關閉</button></div>`,(box,close)=>{box.querySelector('[data-edit]').onclick=()=>{close();itemDialog(it);};});}
 function itemDialog(it){
   const isNew=!it;it=it?{...it,bq:{...(it.bq||{})}}:{id:uid(),name:'',cat:'居家舒適',qty:'',note:'',status:'buy',when:'',bq:{},ok:false,ord:false,src:''};
