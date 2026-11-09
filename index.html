@@ -106,6 +106,11 @@ body.wide .wrap{max-width:min(1240px,100%)}
 .trow:last-child{border-bottom:0}.trow .cb{display:grid;place-items:center;padding-top:2px}.trow .cb input{width:18px;height:18px;margin:0;accent-color:var(--ok)}
 .trow .nm{cursor:pointer;font-size:14px;line-height:1.5}.trow .nm small{color:var(--muted);font-size:12px;margin-left:8px}
 .trow.have .nm b{color:var(--muted);text-decoration:line-through}
+.ilist{margin:4px 0 0;padding-left:1.2em;font-size:14px}.ilist li{margin-bottom:4px}
+.itab{display:grid;gap:8px;margin-top:6px}.ir{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--bg)}
+.ir b{font-size:15px}.ir span{font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-left:8px}.ir span.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.ir span.mid{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.ir p{margin:4px 0 0;font-size:13px}
+.btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -619,12 +624,14 @@ if(D.bagV<8){const C=CARRY;
   const cup=D.items.find(x=>x.name==='保溫杯');if(cup)cup.note='溫的可以，不要燙。術後 4 週內不能喝熱飲';
   D.bagV=8;save();}
 if(D.bagV<9){if(!D.items.some(x=>x.name.includes('洗牙機')))D.items.push({id:'n9_0',name:'洗牙機',cat:'清潔與衛生',qty:'1 台',note:'家裡已有，醫院說要帶去（咬合板用）',status:'got',ok:true,ord:true,src:'',when:'',bq:{住院包:'1 台',哥哥家:CARRY}});D.bagV=9;save();}
+if(D.bagV<10){const w=D.items.find(x=>x.name.includes('洗牙機'));if(w)w.src='已有';const pt=D.items.find(x=>x.name==='決定出院付款方式');if(pt)pt.info='pay';D.bagV=10;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
 const inBag=(it,b)=>!!(it.bq&&it.bq[b]);
 const bqCell=v=>!v?'<span class="bq none">—</span>':v===CARRY?'<span class="bq carry">← 醫院帶過去</span>':v.startsWith(CARRY)?`<span class="bq carry">← 醫院帶過去</span><span class="bq">${esc(v.slice(CARRY.length).replace(/^＋/,'＋'))}</span>`:`<span class="bq">${esc(v)}</span>`;
-const SRCS=['蝦皮','淘寶','酷澎','實體店','醫院提供','其他'];
+const SRCS=['已有','蝦皮','淘寶','酷澎','實體店','醫院提供','其他'];
+const NOPAY=x=>x.src==='醫院提供'||x.src==='已有';
 D.items.forEach(it=>{if(it.ok===undefined){it.ok=it.status!=='buy';it.ord=it.status!=='buy';}if(it.src===undefined)it.src='';});
 let itemView=store.get('ogs.cartView','cat');if(!['cat','src','prog'].includes(itemView))itemView='cat';
 function initMe(){D.me=D.me||{};document.querySelectorAll('[data-me]').forEach(el=>{el.value=D.me[el.dataset.me]||'';el.oninput=()=>{D.me[el.dataset.me]=el.value;save();};});}
@@ -753,16 +760,16 @@ const TASK_GROUPS=[['請假與照顧',['請假','看護','阿姨','健身房']],
 function taskBox(){const T=D.items.filter(isTask);if(!T.length)return '';
   const grp=it=>(TASK_GROUPS.find(([,ks])=>ks.some(k=>it.name.includes(k)))||['其他'])[0];
   const names=[...TASK_GROUPS.map(g=>g[0]),'其他'];const done=T.filter(i=>i.status!=='buy').length;
-  return `<div class="group"><div class="group-h"><h3>術前事務</h3><small>完成 ${done} / ${T.length}</small></div><div class="tbox">`+names.map(g=>{const R=T.filter(i=>grp(i)===g);return R.length?`<div class="csub"><b>${g}</b><span>${R.filter(i=>i.status!=='buy').length}/${R.length}</span></div>`+R.map(it=>`<div class="trow${it.status!=='buy'?' have':''}"><label class="cb"><input type="checkbox" data-ck="got" data-id="${it.id}" ${it.status!=='buy'?'checked':''} aria-label="完成"></label><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${it.note?`<small>${esc(it.note)}</small>`:''}</div></div>`).join(''):'';}).join('')+`</div></div>`;}
+  return `<div class="group"><div class="group-h"><h3>術前事務</h3><small>完成 ${done} / ${T.length}</small></div><div class="tbox">`+names.map(g=>{const R=T.filter(i=>grp(i)===g);return R.length?`<div class="csub"><b>${g}</b><span>${R.filter(i=>i.status!=='buy').length}/${R.length}</span></div>`+R.map(it=>`<div class="trow${it.status!=='buy'?' have':''}"><label class="cb"><input type="checkbox" data-ck="got" data-id="${it.id}" ${it.status!=='buy'?'checked':''} aria-label="完成"></label><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${INFO[it.info]?'<i class="askt">點開看建議</i>':''}${it.note?`<small>${esc(it.note)}</small>`:''}</div></div>`).join(''):'';}).join('')+`</div></div>`;}
 function renderItems(){
   const goods=D.items.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&it.status!=='use');
   const got=goods.filter(i=>i.status!=='buy').length;
   $('#progbar').style.width=(goods.length?got/goods.length*100:0)+'%';
   $('#progtext').textContent=`已確認 ${goods.filter(i=>i.ok).length}・已下單 ${goods.filter(i=>i.ord).length}・已到手 ${got}　／ 共 ${goods.length} 件`;
   $('#itemview').innerHTML='<span class="vlab">分組</span>'+[['cat','照類別'],['src','照來源'],['prog','照進度']].map(([k,t])=>`<button data-iv="${k}" aria-pressed="${itemView===k}">${t}</button>`).join('');
-  const cash=L=>L.filter(i=>i.src!=='醫院提供').reduce((a,i)=>a+(parseFloat(i.price)||0),0);
+  const cash=L=>L.filter(i=>!NOPAY(i)).reduce((a,i)=>a+(parseFloat(i.price)||0),0);
   const fmt$=n=>'$'+Math.round(n).toLocaleString('zh-TW');
-  $('#cartsum').innerHTML=`<div class="csum"><div><span>已確認</span><b>${fmt$(cash(goods.filter(i=>i.ok)))}</b></div><div><span>已下單</span><b>${fmt$(cash(goods.filter(i=>i.ord)))}</b></div><div><span>還沒填價格</span><b>${goods.filter(i=>!i.price&&i.src!=='醫院提供').length} 件</b></div></div>`;
+  $('#cartsum').innerHTML=`<div class="csum"><div><span>已確認</span><b>${fmt$(cash(goods.filter(i=>i.ok)))}</b></div><div><span>已下單</span><b>${fmt$(cash(goods.filter(i=>i.ord)))}</b></div><div><span>還沒填價格</span><b>${goods.filter(i=>!i.price&&!NOPAY(i)).length} 件</b></div></div>`;
   const cell=v=>!v?'<span class="bq none">—</span>':v===CARRY?'<span class="bq carry">← 帶過去</span>':v.startsWith(CARRY)?`<span class="bq carry">← 帶過去</span><span class="bq">${esc(v.slice(CARRY.length))}</span>`:`<span class="bq">${esc(v)}</span>`;
   const row=it=>`<div class="ctr${it.status!=='buy'?' have':''}">
     <label class="cb"><input type="checkbox" data-ck="ok" data-id="${it.id}" ${it.ok?'checked':''} aria-label="確認"></label>
@@ -786,17 +793,35 @@ function renderItems(){
 $('#items').addEventListener('click',e=>{
   const v=e.target.closest('[data-iv]');if(v){itemView=v.dataset.iv;store.set('ogs.cartView',itemView);renderItems();return;}
   const s=e.target.closest('[data-st]');if(s){const it=D.items.find(x=>x.id===s.dataset.st);it.status=isTask(it)?(it.status==='buy'?'got':'buy'):({buy:'got',got:'use',use:'buy'})[it.status];save();renderItems();return;}
-  const n=e.target.closest('[data-it]');if(n)itemDialog(D.items.find(x=>x.id===n.dataset.it));
+  const n=e.target.closest('[data-it]');if(n){const it=D.items.find(x=>x.id===n.dataset.it);if(it&&INFO[it.info])infoDialog(it);else itemDialog(it);}
 });
 $('#items').addEventListener('change',e=>{const t=e.target,id=t.dataset.id||t.dataset.pr||t.dataset.sr||t.dataset.nt;if(!id)return;const it=D.items.find(x=>x.id===id);if(!it)return;
   if(t.dataset.ck==='ok'){it.ok=t.checked;if(!t.checked){it.ord=false;}}
   else if(t.dataset.ck==='ord'){it.ord=t.checked;if(t.checked)it.ok=true;}
   else if(t.dataset.ck==='got'){it.status=t.checked?'got':'buy';if(t.checked){it.ok=true;it.ord=true;}}
   else if(t.dataset.pr){it.price=t.value.replace(/[^\d.]/g,'');}
-  else if(t.dataset.sr){it.src=t.value;}
+  else if(t.dataset.sr){it.src=t.value;if(it.src==='已有'){it.status='got';it.ok=true;it.ord=true;it.price='';}}
   else if(t.dataset.nt){it.note=t.value;save();return;}
   save();renderItems();});
 $('#cartPrint').onclick=()=>window.print();
+
+/* 點開看分析的待辦 */
+const INFO={pay:{t:'出院付款：怎麼付比較好',h:`
+<p class="lede">我不是理財顧問，這是幫你把選項攤開，決定還是你自己來。</p>
+<div class="cs-k">先做這兩件事</div>
+<ol class="ilist"><li><b>打電話問醫院</b>：自費能不能刷卡？有沒有信用卡分期零利率？可以分幾張卡刷嗎？</li><li><b>查信用卡額度</b>：夠不夠刷存款不夠的差額。不夠的話可以先打給銀行申請臨時調高額度。</li></ol>
+<div class="cs-k" style="margin-top:12px">四個選項</div>
+<div class="itab">
+ <div class="ir"><b>存款</b><span class="ok">沒有利息</span><p>能付多少先付多少，但記得留一筆生活費和術後的開銷，不要全部掏空。</p></div>
+ <div class="ir"><b>信用卡</b><span class="ok">一個多月內免利息</span><p>帳單大約一個多月後才繳，剛好可以等理賠進來。<b>一定要全額繳清</b>，只繳最低應繳會變成很高的循環利息。</p></div>
+ <div class="ir"><b>美金換台幣</b><span class="mid">看匯率</span><p>沒有利息，但匯率比你當初買的時候差，換了就是實際虧到。本來就打算要用的錢才適合換。</p></div>
+ <div class="ir"><b>保單借款</b><span class="mid">有利息</span><p>撥款快、不用審核，但要付利息，還錢前保單權益也會受影響。適合當最後的備案。</p></div>
+</div>
+<div class="cs-k" style="margin-top:12px">我的建議順序</div>
+<p style="margin:4px 0 0"><b>存款付大部分，差額刷信用卡</b>，出院後馬上申請理賠，理賠下來再把卡費繳掉。信用卡不能刷或額度不夠，再看美金匯率；保單借款放最後。</p>
+<div class="cs-k" style="margin-top:12px">配合理賠</div>
+<p style="margin:4px 0 0">出院拿到診斷書和收據就可以申請，不用等半年。越早申請，錢越早回來，信用卡帳單就越好處理。</p>`}};
+function infoDialog(it){const I=INFO[it.info];dialog(`<h3>${I.t}</h3>${I.h}<div class="btns"><button class="mini" data-edit>修改這件事</button><button class="mini" data-x>關閉</button></div>`,(box,close)=>{box.querySelector('[data-edit]').onclick=()=>{close();itemDialog(it);};});}
 function itemDialog(it){
   const isNew=!it;it=it?{...it,bq:{...(it.bq||{})}}:{id:uid(),name:'',cat:'居家舒適',qty:'',note:'',status:'buy',when:'',bq:{},ok:false,ord:false,src:''};
   dialog(`<h3>${isNew?'新增物品':'修改物品'}</h3>
