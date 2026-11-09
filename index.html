@@ -101,6 +101,11 @@ body.wide .wrap{max-width:min(1240px,100%)}
 .gym{display:grid;gap:8px}@media (min-width:640px){.gym{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .gs{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;border-top:3px solid var(--olive)}
 .gs b{display:block}.gs>span{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}.gs p{margin:6px 0 0;font-size:14px}
+.tbox{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.trow{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:start;padding:6px 12px;border-bottom:1px solid var(--line)}
+.trow:last-child{border-bottom:0}.trow .cb{display:grid;place-items:center;padding-top:2px}.trow .cb input{width:18px;height:18px;margin:0;accent-color:var(--ok)}
+.trow .nm{cursor:pointer;font-size:14px;line-height:1.5}.trow .nm small{color:var(--muted);font-size:12px;margin-left:8px}
+.trow.have .nm b{color:var(--muted);text-decoration:line-through}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -742,6 +747,13 @@ const isTask=it=>it.cat==='術前事務';
 const bmode=b=>!b?'':b.length===7?'month':'date';
 const fmtB=b=>{if(!b)return '';const [y,m,d]=b.split('-');return d?`${+m}/${+d} 買`:`${y}/${+m} 買`;};
 function stLabel(it){return isTask(it)?ST_TASK[it.status==='buy'?'buy':'got']:ST[it.status];}
+
+/* 術前事務：分組、一行一件 */
+const TASK_GROUPS=[['請假與照顧',['請假','看護','阿姨','健身房']],['醫療與文件',['診斷書','健保卡','身分證','卸甲']],['錢與理賠',['保險','團險','付款','理賠']],['交通與準備',['接駁','冷凍庫']]];
+function taskBox(){const T=D.items.filter(isTask);if(!T.length)return '';
+  const grp=it=>(TASK_GROUPS.find(([,ks])=>ks.some(k=>it.name.includes(k)))||['其他'])[0];
+  const names=[...TASK_GROUPS.map(g=>g[0]),'其他'];const done=T.filter(i=>i.status!=='buy').length;
+  return `<div class="group"><div class="group-h"><h3>術前事務</h3><small>完成 ${done} / ${T.length}</small></div><div class="tbox">`+names.map(g=>{const R=T.filter(i=>grp(i)===g);return R.length?`<div class="csub"><b>${g}</b><span>${R.filter(i=>i.status!=='buy').length}/${R.length}</span></div>`+R.map(it=>`<div class="trow${it.status!=='buy'?' have':''}"><label class="cb"><input type="checkbox" data-ck="got" data-id="${it.id}" ${it.status!=='buy'?'checked':''} aria-label="完成"></label><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${it.note?`<small>${esc(it.note)}</small>`:''}</div></div>`).join(''):'';}).join('')+`</div></div>`;}
 function renderItems(){
   const goods=D.items.filter(it=>!isTask(it)&&it.cat!=='日常在用'&&it.status!=='use');
   const got=goods.filter(i=>i.status!=='buy').length;
@@ -769,7 +781,7 @@ function renderItems(){
     return `<div class="csub"><b>${esc(t)}</b><span>${G.length} 件${sum?'・'+fmt$(sum):''}</span></div>`+G.map(row).join('');}).join('');
   const simple=(t,G)=>G.length?`<div class="group"><div class="group-h"><h3>${t}</h3><small>${G.length} 件</small></div><div class="list">${G.map(it=>`<div class="item${it.status!=='buy'&&isTask(it)?' dn':''}"><button class="st ${it.status}" data-st="${it.id}">${stLabel(it)}</button><div class="pic none"></div><div class="nm" data-it="${it.id}"><b>${esc(it.name)}</b>${it.note?`<span>${esc(it.note)}</span>`:''}</div><span class="q">${esc(it.qty||'')}</span></div>`).join('')}</div></div>`:'';
   $('#groups').innerHTML=(body?`<p class="bagtip">住院包、哥哥家：寫數量的＝兩邊分開備；「← 帶過去」＝住院用完帶到哥哥家接著用。</p><div class="cwrap"><div class="ctab">${head}${body}</div></div>`:'<div class="empty">還沒有東西</div>')
-    +simple('術前事務',D.items.filter(isTask))+simple('日常在用',D.items.filter(i=>i.cat==='日常在用'));
+    +taskBox()+simple('日常在用',D.items.filter(i=>i.cat==='日常在用'));
 }
 $('#items').addEventListener('click',e=>{
   const v=e.target.closest('[data-iv]');if(v){itemView=v.dataset.iv;store.set('ogs.cartView',itemView);renderItems();return;}
