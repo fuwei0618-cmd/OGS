@@ -628,6 +628,15 @@ if(D.bagV<8){const C=CARRY;
 if(D.bagV<9){if(!D.items.some(x=>x.name.includes('洗牙機')))D.items.push({id:'n9_0',name:'洗牙機',cat:'清潔與衛生',qty:'1 台',note:'家裡已有，醫院說要帶去（咬合板用）',status:'got',ok:true,ord:true,src:'',when:'',bq:{住院包:'1 台',哥哥家:CARRY}});D.bagV=9;save();}
 if(D.bagV<10){const w=D.items.find(x=>x.name.includes('洗牙機'));if(w)w.src='已有';const pt=D.items.find(x=>x.name==='決定出院付款方式');if(pt)pt.info='pay';D.bagV=10;save();}
 if(D.bagV<11){[['安素','1514','亞培安素 HMB 升級配方 香草減甜 237ml ×24 罐，11/13 到'],['高蛋白','715','義美生醫 即飲牛奶蛋白飲 可可 250ml ×24，11/12 到'],['滴雞精','424','大成 慢熬雞精 50ml ×6（先試喝），11/13 到'],['漱口水','186','李施德霖 溫潤綠薄荷 500ml ×3，11/12 到。確認瓶身有寫無酒精']].forEach(([k,pr,nt])=>{const it=D.items.find(x=>x.name.includes(k));if(!it)return;it.src='酷澎';it.price=pr;it.ok=true;it.ord=true;it.note=nt;});D.bagV=11;save();}
+if(D.bagV<12){const C=CARRY,set=(k,src,pr,nt)=>{const it=D.items.find(x=>x.name.includes(k));if(!it)return;it.src=src;it.price=pr;it.ok=true;it.ord=true;it.note=nt;};
+  set('針筒','淘寶','46','60ml 粗口注射器 ×5（附乳膠軟套），¥9.3，11/13 前出貨');
+  set('頭套','淘寶','164','凝膠冰敷頭帶＋4 個凝膠，¥33，11/13 前出貨');
+  set('靠枕','淘寶','288','蔓越家 帶頭枕靠背 60×50cm，¥57.99，11/13 前出貨');
+  set('濃湯','蝦皮','575','明治 明倍適 玉米濃湯 ×10（效期 2027/07 後），11/13–11/16 到');
+  [['沖洗用彎頭針筒（帶刻度）','清潔與衛生',{住院包:'5 支',哥哥家:C},'5 支','蝦皮','81','沖 7 個死角用（醫院說用 1 號空針沖洗），11/20–11/28 到'],
+   ['食品級洗滌瓶（沖洗瓶）','清潔與衛生',{住院包:'1 個',哥哥家:'1 個'},'2 個','蝦皮','80','250g ×2，11/13–11/15 到']]
+  .forEach(([name,cat,bq,qty,src,price,note],k)=>{if(D.items.some(x=>x.name===name))return;D.items.push({id:'n12_'+k,name,cat,qty,note,status:'buy',when:'',bq:{...bq},ok:true,ord:true,src,price});});
+  D.bagV=12;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
