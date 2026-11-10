@@ -637,6 +637,17 @@ if(D.bagV<12){const C=CARRY,set=(k,src,pr,nt)=>{const it=D.items.find(x=>x.name.
    ['食品級洗滌瓶（沖洗瓶）','清潔與衛生',{住院包:'1 個',哥哥家:'1 個'},'2 個','蝦皮','80','250g ×2，11/13–11/15 到']]
   .forEach(([name,cat,bq,qty,src,price,note],k)=>{if(D.items.some(x=>x.name===name))return;D.items.push({id:'n12_'+k,name,cat,qty,note,status:'buy',when:'',bq:{...bq},ok:true,ord:true,src,price});});
   D.bagV=12;save();}
+if(D.bagV<13){const C=CARRY;
+  const w1=D.items.find(x=>x.name.includes('嬰兒濕紙巾')),w2=D.items.find(x=>x.name.includes('如廁'));
+  if(w1){w1.name='濕紙巾（嬰兒／如廁）';w1.qty='3 包';w1.bq={住院包:'1 包',哥哥家:'2 包'};w1.note='嬰兒濕紙巾、如廁濕紙巾合併';if(w2&&w2!==w1)D.items=D.items.filter(x=>x!==w2);}
+  const sy=D.items.find(x=>x.name==='沖洗用彎頭針筒（帶刻度）');if(sy){sy.name='12ml 彎頭沖洗針筒';}
+  const wb=D.items.find(x=>x.name==='食品級洗滌瓶（沖洗瓶）');if(wb){wb.name='沖洗瓶（250／500g）';}
+  const fs=D.items.find(x=>x.name.includes('餵食針筒'));if(fs)fs.name='60ml 餵食針筒（附軟管）';
+  [['30ml 噴鼻瓶','清潔與衛生',{住院包:'1 個',哥哥家:C},'1 個','淘寶','42',true,'清潔鼻腔用，¥8.42。噴輕一點，不要用力'],
+   ['生理食鹽水','清潔與衛生',{住院包:'2 罐',哥哥家:'帶過去＋再補'},'先買 4–6 罐','','',false,'擦臉、輕噴鼻腔、漱口都能用。鼻腔要不要沖洗先問醫師；用完再補，不用一次買 20 罐'],
+   ['U 型枕','居家舒適',{住院包:'1 個',哥哥家:C},'1 個','','',false,'半坐臥睡覺時固定頭，不會歪到臉']]
+  .forEach(([name,cat,bq,qty,src,price,ord,note],k)=>{if(D.items.some(x=>x.name===name))return;D.items.push({id:'n13_'+k,name,cat,qty,note,status:'buy',when:'',bq:{...bq},ok:ord,ord,src,price});});
+  D.bagV=13;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
