@@ -627,6 +627,7 @@ if(D.bagV<8){const C=CARRY;
   D.bagV=8;save();}
 if(D.bagV<9){if(!D.items.some(x=>x.name.includes('洗牙機')))D.items.push({id:'n9_0',name:'洗牙機',cat:'清潔與衛生',qty:'1 台',note:'家裡已有，醫院說要帶去（咬合板用）',status:'got',ok:true,ord:true,src:'',when:'',bq:{住院包:'1 台',哥哥家:CARRY}});D.bagV=9;save();}
 if(D.bagV<10){const w=D.items.find(x=>x.name.includes('洗牙機'));if(w)w.src='已有';const pt=D.items.find(x=>x.name==='決定出院付款方式');if(pt)pt.info='pay';D.bagV=10;save();}
+if(D.bagV<11){[['安素','1514','亞培安素 HMB 升級配方 香草減甜 237ml ×24 罐，11/13 到'],['高蛋白','715','義美生醫 即飲牛奶蛋白飲 可可 250ml ×24，11/12 到'],['滴雞精','424','大成 慢熬雞精 50ml ×6（先試喝），11/13 到'],['漱口水','186','李施德霖 溫潤綠薄荷 500ml ×3，11/12 到。確認瓶身有寫無酒精']].forEach(([k,pr,nt])=>{const it=D.items.find(x=>x.name.includes(k));if(!it)return;it.src='酷澎';it.price=pr;it.ok=true;it.ord=true;it.note=nt;});D.bagV=11;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
