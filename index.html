@@ -649,6 +649,13 @@ if(D.bagV<13){const C=CARRY;
   .forEach(([name,cat,bq,qty,src,price,ord,note],k)=>{if(D.items.some(x=>x.name===name))return;D.items.push({id:'n13_'+k,name,cat,qty,note,status:'buy',when:'',bq:{...bq},ok:ord,ord,src,price});});
   D.bagV=13;save();}
 if(D.bagV<14){const it=D.items.find(x=>x.name==='生理食鹽水');if(it){it.name='生理食鹽水（單次用小支）';it.qty='10–20 支';it.bq={住院包:'5 支',哥哥家:'帶過去＋再補'};it.note='可有可無。擦臉、輕噴鼻腔用，開了當次用完就丟。不要買隱形眼鏡用的緩衝液';}D.bagV=14;save();}
+if(D.bagV<15){const set=(k,pr,nt)=>{const it=D.items.find(x=>x.name.includes(k));if(!it)return;it.src='酷澎';it.price=pr;it.ok=true;it.ord=true;if(nt)it.note=nt;};
+  set('免洗內褲','234','安多輕旅行 純棉免洗三角褲 XL 4 入 ×3 包（12 件），11/13 到');
+  set('C6 牙刷','175','優美 C-6 幼兒超軟牙刷 ×12，11/13 到');
+  set('衛生棉','170','悅棉 涼感衛生棉 加長夜用 6 片 ×10 包，11/13 到');
+  set('口罩','127','美德醫療 手術防護口罩 50 片 ×2 盒，11/13 到');
+  set('看護墊','174','包大人 看護墊 XL 60×90 8 片 ×2 包，11/13 到');
+  D.bagV=15;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
