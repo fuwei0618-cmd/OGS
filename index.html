@@ -111,6 +111,7 @@ body.wide .wrap{max-width:min(1240px,100%)}
 .ir b{font-size:15px}.ir span{font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-left:8px}.ir span.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.ir span.mid{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
 .ir p{margin:4px 0 0;font-size:13px}
 .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.gs .gw{border-top:1px dashed var(--line);padding-top:6px;margin-top:8px;font-size:13px}.gs .gw b{display:inline-block;background:#d6e6ef;color:#2f5d75;border-radius:999px;padding:0 7px;font-size:11px;margin-right:6px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
@@ -417,21 +418,22 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
     <div class="htl-top"><p class="lede">往右滑看下一段，「現在」會自動標出來。點一段看完整內容。</p><button class="mini" id="stageAll" aria-pressed="false">展開全部</button></div>
     <div class="htl" id="htl" role="list" aria-label="恢復階段時間線"></div>
 
-    <h2>什麼時候可以回去重訓</h2>
+    <h2>什麼時候可以回去重訓、水療</h2>
     <p class="lede">網路資料整理，實際以羅醫師回診時說的為準。醫師說過：1 個月內不運動、1 個月後可以騎車。</p>
     <div class="gym">
-      <div class="gs"><b>術後 1 個月內</b><span>12/18–1/17</span><p>不運動、不重訓。只散步，2 週後約 15 分鐘。</p></div>
-      <div class="gs"><b>1 個月～6 週</b><span>1/18–1/28</span><p>散步、快走等輕度有氧，可以騎車。還不能重訓。</p></div>
-      <div class="gs"><b>6–8 週</b><span>約 1/29–2/12</span><p>回診確認骨頭癒合後，才能試<b>極輕量</b>重訓：平常重量的 30–50%，以喚醒肌肉為主。</p></div>
-      <div class="gs"><b>3 個月以後</b><span>約 3/18 起</span><p>醫師確認癒合良好，再慢慢恢復平常的重訓。拳擊、格鬥這類會撞到臉的，3–6 個月內都避免。</p></div>
+      <div class="gs"><b>術後 1 個月內</b><span>12/18–1/17</span><p>不運動、不重訓。只散步，2 週後約 15 分鐘。</p><p class="gw"><b>水</b>第 1 週擦澡、躺著洗頭；之後溫水淋浴，不泡澡。</p></div>
+      <div class="gs"><b>1 個月～6 週</b><span>1/18–1/28</span><p>散步、快走等輕度有氧，可以騎車。還不能重訓。</p><p class="gw"><b>水</b>還是只淋浴。口內傷口約 6 週才長好，先不要泡水療池、游泳。</p></div>
+      <div class="gs"><b>6–8 週</b><span>約 1/29–2/12</span><p>回診確認骨頭癒合後，才能試<b>極輕量</b>重訓：平常重量的 30–50%，以喚醒肌肉為主。</p><p class="gw"><b>水</b>回診確認傷口長好，可以試<b>溫水</b>水療、游泳。水柱不要對著臉，不要潛水、不要含到池水。</p></div>
+      <div class="gs"><b>3 個月以後</b><span>約 3/18 起</span><p>醫師確認癒合良好，再慢慢恢復平常的重訓。拳擊、格鬥這類會撞到臉的，3–6 個月內都避免。</p><p class="gw"><b>水</b>熱水 SPA、烤箱、蒸氣室比較安全。臉如果又腫、傷口痛就先停。</p></div>
     </div>
     <div class="card" style="margin-top:10px">
-      <h3>回去重訓時的 4 個守則</h3>
+      <h3>回去重訓、水療時的守則</h3>
       <ul style="margin:0;padding-left:1.1em">
         <li><b>不要咬牙</b>：出力時習慣咬緊牙關，會對剛癒合的骨頭和骨釘造成很大壓力。這點最重要</li>
         <li><b>不要憋氣</b>：血壓瞬間升高，可能讓傷口滲血、頭脹痛。出力時吐氣</li>
         <li><b>先避開大重量硬舉、深蹲</b>這類腹壓很高的動作</li>
         <li><b>臉部開刀的地方有痛、拉扯感，馬上停</b></li>
+        <li><b>水療先溫後熱</b>：臉會麻、感覺不到燙，術後 4 週內也不能碰熱的</li>
       </ul>
       <p class="lede" style="margin:8px 0 0">回健身房前，先跟教練說你做過正顎手術、哪天開始可以練、哪些動作先不做。前幾週吃不多，肌肉會掉一些，蛋白質要補夠再回去練。</p>
     </div>
@@ -884,7 +886,7 @@ const TOPICS=[
   yes:['鼻翼不要變寬、不要朝天','能保留原本的酒窩','術後不用長時間綁牙'],
   no:['上顎手術後鼻翼變寬、朝天','長時間綁牙，不能說話也不好清潔'],
   ref:['鼻翼變寬的解法：鼻翼基底縫合（奇美 顏欽堉醫師 2016 年論文）','現在多用鈦骨板固定，網路資料說需要綁牙的比例已經不到 1%','術後可能戴咬合板，會影響說話和清潔'],
-  qs:['術後幾週可以重訓？要注意哪些動作？','手術會不會做鼻翼基底縫合，避免鼻翼變寬？','我原本的酒窩會不會消失？','用什麼固定？術後要不要綁牙？要不要戴咬合板、戴多久？']},
+  qs:['術後幾週可以重訓？要注意哪些動作？','術後多久可以泡水療、游泳？','手術會不會做鼻翼基底縫合，避免鼻翼變寬？','我原本的酒窩會不會消失？','用什麼固定？術後要不要綁牙？要不要戴咬合板、戴多久？']},
  {k:'soft',t:'消腫後的樣子',
   yes:['皮膚和肌肉跟著骨頭服貼，線條乾淨'],
   no:['骨頭動了但皮肉沒跟上，看起來厚重或模糊'],
