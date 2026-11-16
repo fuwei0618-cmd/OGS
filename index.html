@@ -52,7 +52,7 @@
 .bth small{display:block;font-weight:500;font-variant-numeric:tabular-nums}
 .bth span:first-child{width:52px}
 .btr:last-child{border-bottom:0}
-.btr .nm{cursor:pointer;min-width:0}.btr .nm b{display:block;font-weight:500}.btr .nm span{display:block;font-size:12px;color:var(--muted)}
+.btr .nm{cursor:pointer;min-width:0}.btr .nm b{display:block;font-weight:500}.btr .nm span{display:block;font-size:12px;color:var(--muted);white-space:pre-line}
 .bc{display:grid;gap:2px;font-size:14px;font-variant-numeric:tabular-nums}
 .bq.carry{color:var(--olive);font-size:13px;font-weight:700}.bq.none{color:var(--line)}
 @media (max-width:520px){.bth,.btr{gap:6px;padding:8px}.bc{font-size:12px}.bq.carry{font-size:11px}}
@@ -104,7 +104,7 @@ body.wide .wrap{max-width:min(1240px,100%)}
 .tbox{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .trow{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:start;padding:6px 12px;border-bottom:1px solid var(--line)}
 .trow:last-child{border-bottom:0}.trow .cb{display:grid;place-items:center;padding-top:2px}.trow .cb input{width:18px;height:18px;margin:0;accent-color:var(--ok)}
-.trow .nm{cursor:pointer;font-size:14px;line-height:1.5}.trow .nm small{color:var(--muted);font-size:12px;margin-left:8px}
+.trow .nm{cursor:pointer;font-size:14px;line-height:1.5}.trow .nm small{display:block;color:var(--muted);font-size:12px;white-space:pre-line}
 .trow.have .nm b{color:var(--muted);text-decoration:line-through}
 .ilist{margin:4px 0 0;padding-left:1.2em;font-size:14px}.ilist li{margin-bottom:4px}
 .itab{display:grid;gap:8px;margin-top:6px}.ir{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--bg)}
@@ -285,7 +285,7 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 .item .pic.none{width:0;margin-left:-10px}
 .item .nm{cursor:pointer;min-width:0}
 .item .nm b{display:block;font-weight:500}
-.item .nm span{display:block;font-size:12px;color:var(--muted)}
+.item .nm span{display:block;font-size:12px;color:var(--muted);white-space:pre-line}
 .item .q{font-size:12px;color:var(--muted);white-space:nowrap}
 .item.dn .nm b{color:var(--muted)}
 /* 對話框 */
@@ -900,7 +900,7 @@ function itemDialog(it){
     <div class="row2"><label class="fld">總共要買<input id="f-qty" value="${esc(it.qty)}"></label><label class="fld">價格（總價）<input id="f-price" inputmode="numeric" value="${esc(it.price||'')}"></label></div>
     <div class="fld">購買日期<div class="seg" id="f-bm">${[['','不填'],['month','年月'],['date','年月日']].map(([k,t])=>`<button data-v="${k}" aria-pressed="${bmode(it.bought)===k}">${t}</button>`).join('')}</div><input id="f-bought" type="${bmode(it.bought)||'date'}" value="${esc(it.bought||'')}" ${bmode(it.bought)?'':'hidden'} style="margin-top:6px"></div>
     <div class="row2"><label class="fld">來源<select id="f-src"><option value="">—</option>${SRCS.map(x=>`<option ${it.src===x?'selected':''}>${x}</option>`).join('')}</select></label><label class="fld">商品連結或店名<input id="f-place" value="${esc(it.place||'')}" placeholder="貼網址"></label></div>
-    <label class="fld">備註<input id="f-note" value="${esc(it.note)}"></label>
+    <label class="fld">備註<textarea id="f-note" rows="3">${esc(it.note||'')}</textarea></label>
     <div class="fld">照片</div><div class="shots" style="grid-template-columns:repeat(3,1fr)"><label class="shot${it.photo?' has':''}" ${it.photo?`data-m="${it.photo}"`:''}><input type="file" accept="image/*">${it.photo?'<span>換一張</span>':'＋ 照片'}</label></div>
     <div class="acts"><button data-x>取消</button><button class="pri" data-ok>存好</button></div>${isNew?'':'<button class="del" data-del>刪除這件</button>'}`,
   (box,close)=>{
