@@ -684,6 +684,8 @@ if(D.bagV<16){const seen=new Map(),RANK={buy:0,got:1,use:2};
   D.bagV=16;save();}
 if(D.bagV<17){const nm='可調溫電熱水壺';if(!D.items.some(x=>x.name===nm))D.items.push({id:'n17_0',name:nm,cat:'進食與營養',qty:'1 台',status:'buy',when:'',bq:{哥哥家:'1 台'},ok:true,ord:true,src:'酷澎',price:'893',
   note:'鍋寶 智能溫控快煮壺 1.8L（KTP-8180），11/23 到\n水龍頭的水先煮滾、開蓋放幾分鐘，再設 40–50 度保溫\n用完留給哥哥或轉賣群友，盒子和說明書留著'});D.bagV=17;save();}
+if(D.bagV<18){const nm='熱水壺到貨試煮';if(!D.items.some(x=>x.name===nm))D.items.push({id:'n18_0',name:nm,cat:'術前事務',qty:'',status:'buy',when:'術前',bq:{},
+  note:'11/23 到貨後：先煮一壺水倒掉\n再試一次保溫，設 45 度，看螢幕溫度對不對\n滴手腕內側試試看溫度感覺'});D.bagV=18;save();}
 if(D.bagV<18){const it=D.items.find(x=>x.name==='可調溫電熱水壺'),L='到貨先試煮：煮一壺倒掉（新壺味道），再設保溫看螢幕溫度正不正常';if(it&&!(it.note||'').includes('試煮'))it.note=(it.note?it.note+'\n':'')+L;D.bagV=18;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
@@ -816,7 +818,7 @@ const fmtB=b=>{if(!b)return '';const [y,m,d]=b.split('-');return d?`${+m}/${+d} 
 function stLabel(it){return isTask(it)?ST_TASK[it.status==='buy'?'buy':'got']:ST[it.status];}
 
 /* 術前事務：分組、一行一件 */
-const TASK_GROUPS=[['請假與照顧',['請假','看護','阿姨','健身房']],['醫療與文件',['診斷書','健保卡','身分證','卸甲']],['錢與理賠',['保險','團險','付款','理賠']],['交通與準備',['接駁','冷凍庫']]];
+const TASK_GROUPS=[['請假與照顧',['請假','看護','阿姨','健身房']],['醫療與文件',['診斷書','健保卡','身分證','卸甲']],['錢與理賠',['保險','團險','付款','理賠']],['交通與準備',['接駁','冷凍庫','熱水壺']]];
 function taskBox(){const T=D.items.filter(isTask);if(!T.length)return '';
   const grp=it=>(TASK_GROUPS.find(([,ks])=>ks.some(k=>it.name.includes(k)))||['其他'])[0];
   const names=[...TASK_GROUPS.map(g=>g[0]),'其他'];const done=T.filter(i=>i.status!=='buy').length;
