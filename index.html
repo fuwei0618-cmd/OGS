@@ -602,7 +602,7 @@ const BQ_RULE=[
  ['保暖',{住院包:'1 件'},'1 件'],['免洗內褲',{住院包:'4 件',哥哥家:'14 件'},'18 件'],['護唇膏',{住院包:'1 支',哥哥家:CARRY},'1 支'],
  ['口罩',{住院包:'1 盒',哥哥家:CARRY},'1–2 盒'],['矮桌',{哥哥家:'1 個'},'1 個'],['鏡子',{哥哥家:'1 面'},'1 面'],['乾洗髮',{哥哥家:'1 瓶'},'1 瓶'],
  ['布丁',{回家後:'依需要'},''],['優酪乳',{回家後:'依需要'},''],['米漿',{回家後:'依需要'},'']];
-if(D.bagV!==3){D.items.forEach(it=>{delete it.bag;delete it.bags;it.bq={};if(it.cat==='術前事務'||it.cat==='日常在用')return;
+if(!(D.bagV>=3)){D.items.forEach(it=>{delete it.bag;delete it.bags;it.bq={};if(it.cat==='術前事務'||it.cat==='日常在用')return;
   const r=BQ_RULE.find(([k])=>it.name.includes(k));if(r){it.bq={...r[1]};if(r[2])it.qty=r[2];}});D.bagV=3;save();}
 D.items.forEach(it=>{if(!it.bq||typeof it.bq!=='object')it.bq={};});
 const C=CARRY,NEW4=[
@@ -676,6 +676,12 @@ if(D.bagV<15){const set=(k,pr,nt)=>{const it=D.items.find(x=>x.name.includes(k))
   set('口罩','127','美德醫療 手術防護口罩 50 片 ×2 盒，11/13 到');
   set('看護墊','174','包大人 看護墊 XL 60×90 8 片 ×2 包，11/13 到');
   D.bagV=15;save();}
+/* 修補：舊版每次打開都把資料改版重跑一遍，害同一樣東西一直重複。同名的只留一筆 */
+if(D.bagV<16){const seen=new Map(),RANK={buy:0,got:1,use:2};
+  D.items=D.items.filter(it=>{const k=it.cat+'|'+it.name,f=seen.get(k);if(!f){seen.set(k,it);return true;}
+    if((RANK[it.status]||0)>(RANK[f.status]||0))f.status=it.status;if(it.ok)f.ok=true;if(it.ord)f.ord=true;if(!f.note&&it.note)f.note=it.note;return false;});
+  const ids=new Set();D.items.forEach(it=>{if(ids.has(it.id))it.id=uid();ids.add(it.id);});
+  D.bagV=16;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
