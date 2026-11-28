@@ -715,8 +715,9 @@ if(D.bagV<25){const it=D.items.find(x=>x.name==='12/14 回診：確認看護');i
    '攙扶可行走：可，第一次下床需攙扶','是否需輪椅全抱/半抱：不需要','是否復健科：否','習慣語言：國語','作息及睡眠品質：',
    '病房床號：12/17報到後告知','看護性別：女','家屬聯絡電話：'].join('\n')+(old&&!old.startsWith('12/18–19')&&old!=='訊息內容之後補'?'\n\n'+old:'');}D.bagV=25;save();}
 if(D.bagV<26){const it=D.items.find(x=>x.name==='住院帶健保卡、身分證');if(it){it.name='住院帶健保卡、身分證、信用卡';const L='信用卡：出院付款用的分期卡';if(!(it.note||'').includes('分期卡'))it.note=(it.note?it.note+'\n':'')+L;}D.bagV=26;save();}
-if(D.bagV<27){[['12/16 晚上在家族群組發訊息','內容自己打在這裡'],['離開前交代家人照看媽媽','講好 12/17 之後由誰接手']]
+if(D.bagV<27){[['12/17 在家族群組發訊息','內容自己打在這裡'],['離開前交代家人照看媽媽','講好 12/17 之後由誰接手']]
   .forEach(([name,note],k)=>{if(!D.items.some(x=>x.name===name))D.items.push({id:'n27_'+k,name,cat:'術前事務',qty:'',status:'buy',when:'術前',bq:{},note});});D.bagV=27;save();}
+if(D.bagV<28){const it=D.items.find(x=>x.name==='12/16 晚上在家族群組發訊息');if(it)it.name='12/17 在家族群組發訊息';D.bagV=28;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
