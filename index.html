@@ -701,6 +701,8 @@ if(D.bagV<20){const an=D.items.find(x=>x.name==='安素');if(an){an.bq={哥哥�
     note:'家裡現有的，住院喝這 3 罐\n開罐請看護或家人幫忙；倒進杯子再用針筒吸\n補体康是高纖的，比較稠，吸不上來就加一點溫開水'});
   D.bagV=20;save();}
 if(D.bagV<21){const it=D.items.find(x=>x.name.includes('三角靠枕'));if(it){it.bq={哥哥家:'1 個'};const L='醫院不用帶：病床可以把床頭調高，直接送去哥哥家';if(!(it.note||'').includes('醫院不用帶'))it.note=(it.note?it.note+'\n':'')+L;}D.bagV=21;save();}
+if(D.bagV<22){[['12/14 回診：確認看護','訊息內容之後補'],['12/14 回診：診斷書（WG 請假用）','跟理賠用的一起開，問要幾份'],['12/14 回診：討論模擬圖','帶我修的那版給醫師看'],['整理房間、衣櫃','']]
+  .forEach(([name,note],k)=>{if(!D.items.some(x=>x.name===name))D.items.push({id:'n22_'+k,name,cat:'術前事務',qty:'',status:'buy',when:'術前',bq:{},note});});D.bagV=22;save();}
 
 /* 修補：同步後如果每袋數量不見了，照預設補回 */
 {let fix=false;D.items.forEach(it=>{if(Object.keys(it.bq||{}).length||it.cat==='術前事務'||it.cat==='日常在用')return;const n=NEW4.find(x=>x[0]===it.name);const r=n?n[2]:(BQ_RULE.find(([k])=>it.name.includes(k))||[])[1];if(r){it.bq={...r};fix=true;}});if(fix)save();}
@@ -832,7 +834,7 @@ const fmtB=b=>{if(!b)return '';const [y,m,d]=b.split('-');return d?`${+m}/${+d} 
 function stLabel(it){return isTask(it)?ST_TASK[it.status==='buy'?'buy':'got']:ST[it.status];}
 
 /* 術前事務：分組、一行一件 */
-const TASK_GROUPS=[['請假與照顧',['請假','看護','阿姨','健身房']],['醫療與文件',['診斷書','健保卡','身分證','卸甲']],['錢與理賠',['保險','團險','付款','理賠']],['交通與準備',['接駁','冷凍庫','送過去']]];
+const TASK_GROUPS=[['12/14 回診',['12/14']],['請假與照顧',['請假','看護','阿姨','健身房']],['醫療與文件',['診斷書','健保卡','身分證','卸甲']],['錢與理賠',['保險','團險','付款','理賠']],['交通與準備',['接駁','冷凍庫','送過去','衣櫃']]];
 function taskBox(){const T=D.items.filter(isTask);if(!T.length)return '';
   const grp=it=>(TASK_GROUPS.find(([,ks])=>ks.some(k=>it.name.includes(k)))||['其他'])[0];
   const names=[...TASK_GROUPS.map(g=>g[0]),'其他'];const done=T.filter(i=>i.status!=='buy').length;
